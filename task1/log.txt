@@ -1,0 +1,11 @@
+commit f85a4de36b68699b76652702f6aa29bf75ff3a60 (HEAD -> master)
+Author: AndreyButyrchik <butyrchykandrey@gmail.com>
+Date:   Tue Feb 6 13:43:25 2018 +0300
+
+    add status.txt
+
+commit 54fb4c1fa16ce46ebaee32d897c8b71acdeaabc1
+Author: AndreyButyrchik <butyrchykandrey@gmail.com>
+Date:   Tue Feb 6 13:37:45 2018 +0300
+
+    add .gitignore
