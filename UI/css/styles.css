@@ -2,6 +2,38 @@ html, body {
     font-family: Roboto;
 }
 
+header {
+    display: flex;
+    height: 5.86vh;
+    align-items: center;
+    background-color: #E7E8E7;
+    font-size: 1.2em;
+}
+
+.headerUserName{
+    float: left;
+    width: 30vw;
+    text-align: center;
+}
+
+.headerPortalName{
+    float: left;
+    width: 50vw;
+    text-align: center;
+}
+
+.headerAddFoto{
+    float: left;
+    width: 10vw;
+    text-align: center;
+}
+
+.headerSingInOut{
+    float: left;
+    width: 10vw;
+    text-align: center;
+}
+
 @font-face {
     font-family: Roboto;
     src: url(../fonts/Roboto.ttf);
