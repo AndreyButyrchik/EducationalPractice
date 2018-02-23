@@ -1,5 +1,28 @@
 html, body {
     font-family: Roboto;
+    color: #474143;
+}
+
+h1{
+    font-size: 1.2em;
+}
+
+h3{
+    font-size: 0.6em;
+}
+
+h4{
+    font-size: 0.5em;
+}
+
+a:visited{
+    color: #474143;
+}
+a:active{
+    color: #474143;
+}
+a:link{
+    color: #474143;
 }
 
 header {
@@ -7,31 +30,48 @@ header {
     height: 5.86vh;
     align-items: center;
     background-color: #E7E8E7;
-    font-size: 1.2em;
 }
 
 .headerUserName{
-    float: left;
     width: 30vw;
     text-align: center;
 }
 
 .headerPortalName{
-    float: left;
     width: 50vw;
     text-align: center;
 }
 
 .headerAddFoto{
-    float: left;
     width: 10vw;
     text-align: center;
 }
 
 .headerSingInOut{
-    float: left;
     width: 10vw;
     text-align: center;
+}
+
+main{
+    background-color: #ffffff;
+    height: 90.24vh;
+}
+
+footer{
+    background-color: #474143;
+    display: flex;
+    height: 3.9vh;
+    align-items: center;
+    color: #E7E2Da;
+}
+
+.footerBlock{
+    width: 20vw;
+    text-align: center;
+}
+
+::selection{
+    background-color: orangered;
 }
 
 @font-face {
