@@ -7,6 +7,10 @@ h1{
     font-size: 1.2em;
 }
 
+h2{
+    font-size: 0.9em;
+}
+
 h3{
     font-size: 0.6em;
 }
@@ -24,8 +28,12 @@ a:active{
 a:link{
     color: #474143;
 }
+p{
+    text-indent: 5%;
+}
 
 header {
+    position: fixed;
     display: flex;
     height: 5.86vh;
     align-items: center;
@@ -55,12 +63,13 @@ header {
 main{
     background-color: #ffffff;
     height: 90.24vh;
+    padding-top: 5.86vh;
 }
 
 input[type="text"] {
     border-style: none;
     border-radius: 8px;
-    box-shadow: 0px 2px  1px #474143;
+    box-shadow: 0 2px  1px #474143;
     background-color: #E7E8E7;
     outline: none;
     font-family: Roboto;
@@ -88,7 +97,60 @@ input[type="text"] {
     width: 30vw;
 }
 
+.fotoBox{
+    float: left;
+    justify-content: center;
+    width: 22.22vw;
+    height: auto;
+    margin: 1% 0 1% 2%;
+    text-align: center;
+}
+.fa-heart, .fa-edit,  .fa-trash-alt{
+    font-size: 1.4em;
+    padding: 0 8%;
+}
+
+.foto{
+    margin-top: 5%;
+    object-fit: cover;
+    width: 100%;
+    max-height: calc(22.22vw / 16 * 9);
+    background-color: #00ffff;
+}
+
+.comment{
+    width: 100%;
+    max-height: calc(22.22vw / 2);
+    margin-top: 5%;
+    border-radius: 8px;
+    box-shadow: 0 2px  1px #474143;
+    background-color: #E7E8E7;
+    font-size: 0.8em;
+    text-align: left;
+    overflow-y: hidden;
+}
+
+.hashtags{
+    width: 100%;
+    max-height: calc(22.22vw / 10);
+    margin-top: 2%;
+    border-radius: 8px;
+    box-shadow: 0 2px  1px #474143;
+    background-color: #E7E8E7;
+    font-size: 0.8em;
+    text-align: left;
+    overflow-y: hidden;
+}
+
+.data{
+    width: 100%;
+    max-height: calc(22.22vw / 10);
+    margin-top: 5%;
+    font-size: 0.7em;
+}
+
 footer{
+    position: fixed;
     background-color: #474143;
     display: flex;
     height: 3.9vh;
