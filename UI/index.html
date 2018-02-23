@@ -27,7 +27,11 @@
         </div>
     </header>
     <main>
-
+        <form class="filters">
+            <input type="text" name="username" value="Введите имя пользователя" spellcheck="false" onblur="if(this.value==''){this.value='Введите имя пользователя';}" onfocus="if(this.value=='Введите имя пользователя'){this.value='';}" class="filterName">
+            <input type="text" name="date" value="Введите дату. В формате чч.мм.гггг" spellcheck="false" onblur="if(this.value==''){this.value='Введите дату. В формате чч.мм.гггг';}" onfocus="if(this.value=='Введите дату. В формате чч.мм.гггг'){this.value='';}" class="filterDate">
+            <input type="text" name="hashtags" value="Введите хештеги" spellcheck="false" onblur="if(this.value==''){this.value='Введите хештеги';}" onfocus="if(this.value=='Введите хештеги'){this.value='';}" class="filterHashtags">
+        </form>
     </main>
     <footer>
         <div class="footerBlock">

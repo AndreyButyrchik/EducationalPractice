@@ -57,6 +57,37 @@ main{
     height: 90.24vh;
 }
 
+input[type="text"] {
+    border-style: none;
+    border-radius: 8px;
+    box-shadow: 0px 2px  1px #474143;
+    background-color: #E7E8E7;
+    outline: none;
+    font-family: Roboto;
+    color: #474143;
+    text-indent: 5%;
+}
+
+.filters{
+    display: flex;
+    justify-content: center;
+    padding-top: 1%;
+}
+
+.filterName{
+    width: 30vw;
+    margin-right: 2%;
+}
+
+.filterDate{
+    width: 30vw;
+}
+
+.filterHashtags{
+    margin-left: 2%;
+    width: 30vw;
+}
+
 footer{
     background-color: #474143;
     display: flex;
