@@ -61,9 +61,17 @@ header {
 }
 
 main{
-    background-color: #ffffff;
-    height: 90.24vh;
+    display: inline-block;
+    background-color: #fff;
     padding-top: 5.86vh;
+    padding-bottom: 3.9vh;
+}
+
+.filters{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 5vh;
 }
 
 input[type="text"] {
@@ -75,12 +83,6 @@ input[type="text"] {
     font-family: Roboto;
     color: #474143;
     text-indent: 5%;
-}
-
-.filters{
-    display: flex;
-    justify-content: center;
-    padding-top: 1%;
 }
 
 .filterName{
@@ -99,29 +101,39 @@ input[type="text"] {
 
 .fotoBox{
     float: left;
-    justify-content: center;
-    width: 22.22vw;
-    height: auto;
-    margin: 1% 0 1% 2%;
+    width: 25%;
     text-align: center;
+    justify-items: center;
+    margin-top: 3%;
 }
+
 .fa-heart, .fa-edit,  .fa-trash-alt{
     font-size: 1.4em;
-    padding: 0 8%;
+}
+
+.fa-heart:hover{
+    color: #aa0000;
 }
 
 .foto{
-    margin-top: 5%;
     object-fit: cover;
     width: 100%;
-    max-height: calc(22.22vw / 16 * 9);
+    max-height: calc(20vw / 16 * 9);
     background-color: #00ffff;
 }
 
+.fotoSpace{
+    width: 20vw;
+    margin: auto;
+    padding: 2% 0 2% 0;
+    height: calc(20vw/16*9);
+}
+
 .comment{
-    width: 100%;
-    max-height: calc(22.22vw / 2);
-    margin-top: 5%;
+    width: 20vw;
+    max-height: calc(20vw / 2);
+    margin: 2% auto 1% auto;
+    padding: 1%;
     border-radius: 8px;
     box-shadow: 0 2px  1px #474143;
     background-color: #E7E8E7;
@@ -131,9 +143,9 @@ input[type="text"] {
 }
 
 .hashtags{
-    width: 100%;
-    max-height: calc(22.22vw / 10);
-    margin-top: 2%;
+    width: 20vw;
+    margin: 1% auto 2% auto;
+    padding: 1%;
     border-radius: 8px;
     box-shadow: 0 2px  1px #474143;
     background-color: #E7E8E7;
@@ -143,18 +155,18 @@ input[type="text"] {
 }
 
 .data{
-    width: 100%;
-    max-height: calc(22.22vw / 10);
-    margin-top: 5%;
+    width: 20vw;
     font-size: 0.7em;
+    margin: auto;
 }
 
 footer{
-    position: fixed;
-    background-color: #474143;
     display: flex;
+    position: fixed;
+    bottom: 0;
     height: 3.9vh;
     align-items: center;
+    background-color: #474143;
     color: #E7E2Da;
 }
 
@@ -164,7 +176,7 @@ footer{
 }
 
 ::selection{
-    background-color: orangered;
+    background-color: orange;
 }
 
 @font-face {
