@@ -160,6 +160,12 @@ input[type="text"] {
     margin: auto;
 }
 
+.moreFoto{
+    position: relative;
+    left: 50%;
+    bottom: 0.5em;
+}
+
 footer{
     display: flex;
     position: fixed;
