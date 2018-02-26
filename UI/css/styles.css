@@ -76,7 +76,7 @@ main{
     height: 5vh;
 }
 
-input[type="text"] {
+.filt {
     border-style: none;
     border-radius: 8px;
     box-shadow: 0 2px  1px #474143;
@@ -85,6 +85,7 @@ input[type="text"] {
     font-family: Roboto;
     color: #474143;
     text-indent: 5%;
+    margin: 0 1%;
 }
 
 .filterName{
@@ -105,7 +106,6 @@ input[type="text"] {
     float: left;
     width: 25%;
     text-align: center;
-    justify-items: center;
     margin-top: 3%;
 }
 
@@ -122,7 +122,6 @@ input[type="text"] {
     object-fit: cover;
     width: 100%;
     max-height: calc(20vw / 16 * 9);
-    background-color: #00ffff;
 }
 
 .fotoSpace{
@@ -184,15 +183,13 @@ footer{
     text-align: center;
 }
 
-@media screen and (max-width: 768px){
+@media screen and (max-width: 960px){
     h1{
-        font-size: 0.9em;
-        font-weight: bold;
+        font-size: 1.2em;
     }
 
     h2{
-        font-size: 0.9em;
-        font-weight: bold;
+        font-size: 1em;
     }
 
     h3{
@@ -202,27 +199,87 @@ footer{
     h4{
         font-size: 0.8em;
     }
-    header {
-        position: fixed;
-        display: flex;
-        height: 5.86vh;
-        align-items: center;
-    }
+
     .fotoBox{
-        width: 100%;
+        float: left;
+        width: 33.3%;
         text-align: center;
-        justify-items: center;
-        margin-top: 6%;
+        margin-top: 3%;
     }
+
     .fa-heart, .fa-edit,  .fa-trash-alt{
-        font-size: 2.5em;
+        font-size: 1.5em;
         padding: 0 10%;
     }
 
     .fotoSpace{
         width: 80%;
         margin: auto;
-        padding: 2% 0 2% 0;
+        height: calc(33.3vw/16*9);
+    }
+
+    .foto{
+        width: 80%;
+        max-height: calc(33.3vw / 16 * 9);
+    }
+
+    .comment{
+        width: 80%;
+        max-height: calc(80% / 2);
+        margin: 4% auto 2% auto;
+    }
+
+    .hashtags{
+        width: 80%;
+        margin: 2% auto 4% auto;
+    }
+
+    .data{
+        width: 80%;
+    }
+
+    .footerBlock{
+        float: left;
+        width: 100%;
+        text-align: left;
+        padding: 1% 0;
+        text-indent: 5%;
+    }
+
+    footer{
+        display: block;
+        position: relative;
+        bottom: 0;
+        height: 40vh;
+    }
+}
+
+@media screen and (max-width: 768px){
+    h1{
+        font-size: 0.9em;
+    }
+
+    h2{
+        font-size: 0.9em;
+    }
+    
+    header {
+        position: fixed;
+        display: flex;
+        height: 5.86vh;
+        align-items: center;
+    }
+    
+    .fotoBox{
+        width: 100%;
+        margin-top: 6%;
+    }
+
+    .fa-heart, .fa-edit,  .fa-trash-alt{
+        font-size: 2.5em;
+    }
+
+    .fotoSpace{
         height: calc(80%/16*9);
     }
 
@@ -232,57 +289,14 @@ footer{
         max-height: calc(100% / 16 * 9);
     }
 
-    .comment{
-        width: 80%;
-        max-height: calc(80% / 2);
-        margin: 4% auto 2% auto;
-        padding: 1%;
-        border-radius: 8px;
-        box-shadow: 0 2px  1px #474143;
-        background-color: #E7E8E7;
-        font-size: 0.8em;
-        text-align: left;
-        overflow-y: hidden;
-    }
-
-    .hashtags{
-        width: 80%;
-        margin: 2% auto 4% auto;
-        padding: 1%;
-        border-radius: 8px;
-        box-shadow: 0 2px  1px #474143;
-        background-color: #E7E8E7;
-        font-size: 0.8em;
-        text-align: left;
-        overflow-y: hidden;
-    }
-
-    .data{
-        width: 80%;
-        font-size: 0.7em;
-        margin: auto;
-    }
-
     .footerBlock{
-        float: left;
-        width: 100%;
-        text-align: left;
         padding: 2% 0;
-        text-indent: 5%;
     }
 
     footer{
-        display: block;
-        position: relative;
-        bottom: 0;
         height: 50vh;
-        align-items: center;
-        background-color: #474143;
-        color: #E7E2Da;
     }
 }
-
-
 
 ::selection{
     background-color: orange;
