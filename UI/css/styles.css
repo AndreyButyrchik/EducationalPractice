@@ -5,10 +5,12 @@ html, body {
 
 h1{
     font-size: 1.2em;
+    font-weight: bold;
 }
 
 h2{
     font-size: 0.9em;
+    font-weight: bold;
 }
 
 h3{
@@ -109,6 +111,7 @@ input[type="text"] {
 
 .fa-heart, .fa-edit,  .fa-trash-alt{
     font-size: 1.4em;
+    padding: 0 10%;
 }
 
 .fa-heart:hover{
@@ -180,6 +183,106 @@ footer{
     width: 20vw;
     text-align: center;
 }
+
+@media screen and (max-width: 768px){
+    h1{
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    h2{
+        font-size: 0.9em;
+        font-weight: bold;
+    }
+
+    h3{
+        font-size: 1em;
+    }
+
+    h4{
+        font-size: 0.8em;
+    }
+    header {
+        position: fixed;
+        display: flex;
+        height: 5.86vh;
+        align-items: center;
+    }
+    .fotoBox{
+        width: 100%;
+        text-align: center;
+        justify-items: center;
+        margin-top: 6%;
+    }
+    .fa-heart, .fa-edit,  .fa-trash-alt{
+        font-size: 2.5em;
+        padding: 0 10%;
+    }
+
+    .fotoSpace{
+        width: 80%;
+        margin: auto;
+        padding: 2% 0 2% 0;
+        height: calc(80%/16*9);
+    }
+
+    .foto{
+        object-fit: cover;
+        width: 100%;
+        max-height: calc(100% / 16 * 9);
+    }
+
+    .comment{
+        width: 80%;
+        max-height: calc(80% / 2);
+        margin: 4% auto 2% auto;
+        padding: 1%;
+        border-radius: 8px;
+        box-shadow: 0 2px  1px #474143;
+        background-color: #E7E8E7;
+        font-size: 0.8em;
+        text-align: left;
+        overflow-y: hidden;
+    }
+
+    .hashtags{
+        width: 80%;
+        margin: 2% auto 4% auto;
+        padding: 1%;
+        border-radius: 8px;
+        box-shadow: 0 2px  1px #474143;
+        background-color: #E7E8E7;
+        font-size: 0.8em;
+        text-align: left;
+        overflow-y: hidden;
+    }
+
+    .data{
+        width: 80%;
+        font-size: 0.7em;
+        margin: auto;
+    }
+
+    .footerBlock{
+        float: left;
+        width: 100%;
+        text-align: left;
+        padding: 2% 0;
+        text-indent: 5%;
+    }
+
+    footer{
+        display: block;
+        position: relative;
+        bottom: 0;
+        height: 50vh;
+        align-items: center;
+        background-color: #474143;
+        color: #E7E2Da;
+    }
+}
+
+
 
 ::selection{
     background-color: orange;
