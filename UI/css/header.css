@@ -1,0 +1,25 @@
+header {
+    position: fixed;
+    display: flex;
+    height: 5.86vh;
+    align-items: center;
+    background-color: #E7E8E7;
+    box-shadow: 0 2px  1px #474143;
+    text-align: center;
+}
+
+.headerUserName{
+    width: 30vw;
+}
+
+.headerPortalName{
+    width: 50vw;
+}
+
+.headerAddFoto{
+    width: 10vw;
+}
+
+.headerSingInOut{
+    width: 10vw;
+}

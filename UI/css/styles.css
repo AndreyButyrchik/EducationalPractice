@@ -14,11 +14,11 @@ h2{
 }
 
 h3{
-    font-size: 0.6em;
+    font-size: 0.8em;
 }
 
 h4{
-    font-size: 0.5em;
+    font-size: 0.7em;
 }
 
 a:visited{
@@ -30,167 +30,43 @@ a:active{
 a:link{
     color: #474143;
 }
+
 p{
     text-indent: 5%;
 }
 
-header {
-    position: fixed;
-    display: flex;
-    height: 5.86vh;
-    align-items: center;
-    background-color: #E7E8E7;
-    box-shadow: 0 2px  1px #474143;
-}
-
-.headerUserName{
-    width: 30vw;
-    text-align: center;
-}
-
-.headerPortalName{
-    width: 50vw;
-    text-align: center;
-}
-
-.headerAddFoto{
-    width: 10vw;
-    text-align: center;
-}
-
-.headerSingInOut{
-    width: 10vw;
-    text-align: center;
-}
-
-main{
-    display: inline-block;
-    background-color: #fff;
-    padding-top: 5.86vh;
-    padding-bottom: 3.9vh;
-}
-
-.filters{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 5vh;
-}
-
-.filt {
+.box{
     border-style: none;
     border-radius: 8px;
     box-shadow: 0 2px  1px #474143;
     background-color: #E7E8E7;
-    outline: none;
-    font-family: Roboto;
-    color: #474143;
-    text-indent: 5%;
-    margin: 0 1%;
-}
-
-.filterName{
-    width: 30vw;
-    margin-right: 2%;
-}
-
-.filterDate{
-    width: 30vw;
-}
-
-.filterHashtags{
-    margin-left: 2%;
-    width: 30vw;
-}
-
-.fotoBox{
-    float: left;
-    width: 25%;
-    text-align: center;
-    margin-top: 3%;
-}
-
-.fa-heart, .fa-edit,  .fa-trash-alt{
-    font-size: 1.4em;
-    padding: 0 10%;
-}
-
-.fa-heart:hover{
-    color: #aa0000;
-}
-
-.foto{
-    object-fit: cover;
-    width: 100%;
-    max-height: calc(20vw / 16 * 9);
-}
-
-.fotoSpace{
-    width: 20vw;
-    margin: auto;
-    padding: 2% 0 2% 0;
-    height: calc(20vw/16*9);
-}
-
-.comment{
-    width: 20vw;
-    max-height: calc(20vw / 2);
-    margin: 2% auto 1% auto;
-    padding: 1%;
-    border-radius: 8px;
-    box-shadow: 0 2px  1px #474143;
-    background-color: #E7E8E7;
-    font-size: 0.8em;
-    text-align: left;
-    overflow-y: hidden;
-}
-
-.hashtags{
-    width: 20vw;
-    margin: 1% auto 2% auto;
-    padding: 1%;
-    border-radius: 8px;
-    box-shadow: 0 2px  1px #474143;
-    background-color: #E7E8E7;
-    font-size: 0.8em;
-    text-align: left;
-    overflow-y: hidden;
-}
-
-.data{
-    width: 20vw;
-    font-size: 0.7em;
-    margin: auto;
-}
-
-.moreFoto{
-    position: relative;
-    left: 50%;
-    bottom: 0.5em;
-}
-
-footer{
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    height: 3.9vh;
-    align-items: center;
-    background-color: #474143;
-    color: #E7E2Da;
-}
-
-.footerBlock{
-    width: 20vw;
-    text-align: center;
 }
 
 @media screen and (max-width: 960px){
+    h1{
+        font-size: 1.3em;
+    }
+
+    h2{
+        font-size: 1.2em;
+    }
+
+    h3{
+        font-size: 0.7em;
+    }
+
+    h4{
+        font-size: 0.6em;
+    }
+}
+
+@media screen and (max-width: 768px){
     h1{
         font-size: 1.2em;
     }
 
     h2{
-        font-size: 1em;
+        font-size: 1.1em;
     }
 
     h3{
@@ -199,103 +75,6 @@ footer{
 
     h4{
         font-size: 0.8em;
-    }
-
-    .fotoBox{
-        float: left;
-        width: 33.3%;
-        text-align: center;
-        margin-top: 3%;
-    }
-
-    .fa-heart, .fa-edit,  .fa-trash-alt{
-        font-size: 1.5em;
-        padding: 0 10%;
-    }
-
-    .fotoSpace{
-        width: 80%;
-        margin: auto;
-        height: calc(33.3vw/16*9);
-    }
-
-    .foto{
-        width: 80%;
-        max-height: calc(33.3vw / 16 * 9);
-    }
-
-    .comment{
-        width: 80%;
-        max-height: calc(80% / 2);
-        margin: 4% auto 2% auto;
-    }
-
-    .hashtags{
-        width: 80%;
-        margin: 2% auto 4% auto;
-    }
-
-    .data{
-        width: 80%;
-    }
-
-    .footerBlock{
-        float: left;
-        width: 100%;
-        text-align: left;
-        padding: 1% 0;
-        text-indent: 5%;
-    }
-
-    footer{
-        display: block;
-        position: relative;
-        bottom: 0;
-        height: 40vh;
-    }
-}
-
-@media screen and (max-width: 768px){
-    h1{
-        font-size: 0.9em;
-    }
-
-    h2{
-        font-size: 0.9em;
-    }
-    
-    header {
-        position: fixed;
-        display: flex;
-        height: 5.86vh;
-        align-items: center;
-    }
-    
-    .fotoBox{
-        width: 100%;
-        margin-top: 6%;
-    }
-
-    .fa-heart, .fa-edit,  .fa-trash-alt{
-        font-size: 2.5em;
-    }
-
-    .fotoSpace{
-        height: calc(80%/16*9);
-    }
-
-    .foto{
-        object-fit: cover;
-        width: 100%;
-        max-height: calc(100% / 16 * 9);
-    }
-
-    .footerBlock{
-        padding: 2% 0;
-    }
-
-    footer{
-        height: 50vh;
     }
 }
 
