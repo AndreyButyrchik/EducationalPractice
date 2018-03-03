@@ -179,6 +179,20 @@ var photoPostsArray = [
         if(Object.prototype.toString.call(photoPost.createdAt) !== "[object Date]"){
             return false;
         }
+        for(var i = 0; i < photoPostsArray.length; i++){
+            if((photoPostsArray[i].id === photoPost.id) && (photoPost !== photoPostsArray[i])){
+                return false;
+            }
+        }
         return true;
+    }
+    function addPhotoPost(photoPost) {
+        if(validatePhotoPost(photoPost)){
+            photoPostsArray.push(photoPost);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 })();
