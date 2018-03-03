@@ -1,4 +1,4 @@
-footer{
+footer {
     display: flex;
     position: relative;
     bottom: 0;
@@ -9,25 +9,25 @@ footer{
     width: 100%;
 }
 
-.footerBox{
+.footerBox {
     width: 20vw;
     text-align: center;
 }
 
-@media screen and (max-width: 960px){
-    footer{
+@media screen and (max-width: 960px) {
+    footer {
         position: relative;
         width: 100%;
     }
 }
 
-@media screen and (max-width: 768px){
-    .footerBox{
+@media screen and (max-width: 768px) {
+    .footerBox {
         padding: 2%;
         text-align: left;
     }
 
-    footer{
+    footer {
         display: block;
         height: 50vh;
     }
