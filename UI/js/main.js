@@ -142,8 +142,7 @@ var photoPostsArray = [
 ];
 (function() {
     function getPhotoPost(id) {
-        if (id === undefined ||
-            typeof id !== "string" ||
+        if (typeof id !== "string" ||
             Number(id) < 1 ||
             Number(id) > photoPostsArray.length) {
             return NaN;
@@ -194,5 +193,19 @@ var photoPostsArray = [
         else {
             return false;
         }
+    }
+    function removePhotoPost(id) {
+        if (typeof id !== "string" ||
+            Number(id) < 1 ||
+            Number(id) > photoPostsArray.length) {
+            return NaN;
+        }
+        for(var i = 0; i < photoPostsArray.length; i++){
+            if(photoPostsArray[i].id === id){
+                delete photoPostsArray[i];
+                return true;
+            }
+        }
+        return NaN;
     }
 })();
