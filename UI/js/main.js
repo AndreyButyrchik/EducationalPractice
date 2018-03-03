@@ -155,4 +155,30 @@ var photoPostsArray = [
         }
         return NaN;
     }
+    function validatePhotoPost(photoPost) {
+        if( typeof photoPost.id !== "string" ||
+        typeof photoPost.descriprion !== "string" ||
+        typeof photoPost.createdAt !== "object" ||
+        typeof photoPost.author !== "string" ||
+        typeof photoPost.photoLink !== "string"){
+            return false;
+        }
+        if(Number(photoPost.id) < 1 ||
+            parseInt(photoPost.id) !== Number(photoPost.id)){
+            return false;
+        }
+        if(photoPost.descriprion.length >= 200){
+            return false;
+        }
+        if(photoPost.author === ""){
+            return false;
+        }
+        if(photoPost.photoLink === ""){
+            return false;
+        }
+        if(Object.prototype.toString.call(photoPost.createdAt) !== "[object Date]"){
+            return false;
+        }
+        return true;
+    }
 })();
