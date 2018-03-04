@@ -32,7 +32,7 @@ var photoPostsArray = [
         createdAt: new Date('2018-01-09T23:00:00'),
         author: 'Ромчик Гвоздь',
         photoLink: 'https://i08.fotocdn.net/s11/154/public_pin_m/474/2311969177.jpg',
-        hashtags: ['#cool', '#smile', '#positive', '#intergalactic'],
+        hashtags: ['#cool', '#positive', '#intergalactic'],
         likes: ['Дима Зевс', 'Зоя Кожаный-Затылок', 'Луи Кирпич', 'Шурик Веселый']
     },
     {
@@ -77,7 +77,7 @@ var photoPostsArray = [
         createdAt: new Date('2018-03-02T23:00:00'),
         author: 'Луи Кирпич',
         photoLink: 'https://s79369.cdn.ngenix.net/media/photo/original/20170515/5bf6a2b3b7b906ebd3e023192883b0f3.jpg',
-        hashtags: ['#cool', '#smile', '#positive'],
+        hashtags: ['#cool', '#positive'],
         likes: ['Рома Торпеда', 'Галя Печка', 'Гена Орешек']
     },
     {
@@ -122,7 +122,7 @@ var photoPostsArray = [
         createdAt: new Date('2018-02-12T23:00:00'),
         author: 'Леха Краснопёрый',
         photoLink: 'http://lesohot.ru/upload/blogs/f92f2b517a886d5de80a4451ef38b218.jpg',
-        hashtags: ['#cool', '#smile', '#positive'],
+        hashtags: ['#cool', '#positive'],
         likes: ['Дима Зевс', 'Зоя Кожаный-Затылок', 'Луи Кирпич', 'Шурик Веселый']
     },
     {
@@ -140,7 +140,7 @@ var photoPostsArray = [
         createdAt: new Date('2018-01-29T23:00:00'),
         author: 'Даня Фазан',
         photoLink: 'http://cs7004.vk.me/v7004018/1da5a/lwbInpNmCAM.jpg',
-        hashtags: ['#cool', '#smile', '#positive', '#intergalactic'],
+        hashtags: ['#cool', '#smile', '#positive', '#intergalactic', '#yeah'],
         likes: ['Рома Торпеда', 'Галя Печка', 'Гена Орешек']
     },
     {
@@ -167,7 +167,7 @@ var photoPostsArray = [
         createdAt: new Date('2018-01-18T23:00:00'),
         author: 'Саша Соска',
         photoLink: 'http://blog.nedbright.com/wp-content/uploads/2015/10/1380443087_953250986.jpg',
-        hashtags: ['#cool', '#smile', '#positive'],
+        hashtags: ['#cool', '#positive', '#smile'],
         likes: ['Рома Торпеда', 'Галя Печка', 'Гена Орешек']
     },
     {
@@ -327,8 +327,20 @@ var photoPostsArray = [
         }
 
 
+        if ("hashtags" in filterConfig &&
+            typeof filterConfig.hashtags === "object" &&
+            Object.prototype.toString.call(filterConfig.hashtags) === "[object Array]") {
+            filtPhotoPosts = filtPhotoPosts.filter(function (item) {
+                for (var i = 0, flag = true; i < filterConfig.hashtags.length; i++) {
+                    if (item.hashtags.indexOf(filterConfig.hashtags[i]) === -1) {
+                        flag = false;
+                    }
+                }
+                return flag;
+            });
+        }
+
+
         return filtPhotoPosts.slice(skip, skip + top);
     }
-
-    removePhotoPost('5');
 })();
