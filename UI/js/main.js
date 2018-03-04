@@ -205,30 +205,31 @@ var photoPostsArray = [
             typeof  photoPost.likes !== "object") {
             return false;
         }
-        if (Number(photoPost.id) < 1 ||
-            parseInt(photoPost.id) !== Number(photoPost.id)) {
+        if (Number(photoPost.id) < 1) {
             return false;
         }
-        if (photoPost.descriprion.length >= 200) {
+        if (photoPost.descriprion.length >= 200 ||
+            photoPost.descriprion.length === 0) {
             return false;
         }
-        if (photoPost.author === "") {
+        if (photoPost.author.length === 0) {
             return false;
         }
-        if (photoPost.photoLink === "") {
+        if (photoPost.photoLink.length === 0) {
             return false;
         }
         if (Object.prototype.toString.call(photoPost.createdAt) !== "[object Date]") {
             return false;
         }
-        if (Object.prototype.toString.call(photoPost.hashtags) !== "[object Array]"){
+        if (Object.prototype.toString.call(photoPost.hashtags) !== "[object Array]") {
             return false;
         }
-        if (Object.prototype.toString.call(photoPost.likes) !== "[object Array]"){
+        if (Object.prototype.toString.call(photoPost.likes) !== "[object Array]") {
             return false;
         }
         for (var i = 0; i < photoPostsArray.length; i++) {
-            if ((photoPostsArray[i].id === photoPost.id) && (photoPost !== photoPostsArray[i])) {
+            if ((photoPostsArray[i].id === photoPost.id) &&
+                (photoPost !== photoPostsArray[i])) {
                 return false;
             }
         }
@@ -255,7 +256,7 @@ var photoPostsArray = [
         if (typeof id !== "string" ||
             Number(id) < 1 ||
             Number(id) > photoPostsArray.length) {
-            return NaN;
+            return false;
         }
         for (var i = 0; i < photoPostsArray.length; i++) {
             if (photoPostsArray[i].id === id) {
@@ -263,26 +264,35 @@ var photoPostsArray = [
                 return true;
             }
         }
-        return NaN;
+        return false;
     }
 
     function editPhotoPost(id, photoPost) {
         var sourcePhotoPost = getPhotoPost(id);
         if (sourcePhotoPost) {
-            var flag = false;
-            if ('descriprion' in photoPost && photoPost.descriprion.length < 200) {
-                sourcePhotoPost.descriprion = photoPost.descriprion;
-                flag = true;
+            if (validatePhotoPost(sourcePhotoPost)) {
+                var flag = false;
+                if ('descriprion' in photoPost &&
+                    photoPost.descriprion.length < 200 &&
+                    photoPost.descriprion.length !== 0) {
+                    sourcePhotoPost.descriprion = photoPost.descriprion;
+                    flag = true;
+                }
+                if ('photoLink' in photoPost &&
+                    photoPost.photoLink.length !== 0) {
+                    sourcePhotoPost.photoLink = photoPost.photoLink;
+                    flag = true;
+                }
+                if ('hashtags' in photoPost &&
+                    photoPost.hashtags.length !== 0) {
+                    sourcePhotoPost.hashtags = photoPost.hashtags;
+                    flag = true;
+                }
+                return flag;
             }
-            if ('photoLink' in photoPost && photoPost.photoLink !== "") {
-                sourcePhotoPost.photoLink = photoPost.photoLink;
-                flag = true;
+            else {
+                return false;
             }
-            if ('hashtags' in photoPost && photoPost.hashtags !== "") {
-                sourcePhotoPost.hashtags = photoPost.hashtags;
-                flag = true;
-            }
-            return flag;
         }
         else {
             return false;
@@ -291,13 +301,15 @@ var photoPostsArray = [
 
     function getPhotoPosts(skip, top, filterConfig) {
         if (typeof skip !== "number" ||
-            skip < 0) {
+            skip < 0 ||
+            (skip ^ 0) !== skip) {
             skip = 0;
         }
 
 
         if (typeof top !== "number" ||
-            top < 0) {
+            top < 0 ||
+            (top ^ 0) !== top) {
             top = 10;
         }
 
@@ -307,39 +319,40 @@ var photoPostsArray = [
         });
 
 
-        if ("createdAt" in filterConfig &&
-            typeof filterConfig.createdAt === "object" &&
-            Object.prototype.toString.call(filterConfig.createdAt) === "[object Date]") {
-            filtPhotoPosts = filtPhotoPosts.filter(function (item) {
-                return item.createdAt.getFullYear() === filterConfig.createdAt.getFullYear() &&
-                    item.createdAt.getMonth() === filterConfig.createdAt.getMonth() &&
-                    item.createdAt.getDay() === filterConfig.createdAt.getDay();
-            });
-        }
+        if (typeof  filterConfig === "object") {
+            if ("createdAt" in filterConfig &&
+                typeof filterConfig.createdAt === "object" &&
+                Object.prototype.toString.call(filterConfig.createdAt) === "[object Date]") {
+                filtPhotoPosts = filtPhotoPosts.filter(function (item) {
+                    return item.createdAt.getFullYear() === filterConfig.createdAt.getFullYear() &&
+                        item.createdAt.getMonth() === filterConfig.createdAt.getMonth() &&
+                        item.createdAt.getDay() === filterConfig.createdAt.getDay();
+                });
+            }
 
 
-        if ("author" in filterConfig &&
-            typeof filterConfig.author === "string" &&
-            filterConfig.author !== "") {
-            filtPhotoPosts = filtPhotoPosts.filter(function (item) {
-                return item.author === filterConfig.author;
-            });
-        }
+            if ("author" in filterConfig &&
+                typeof filterConfig.author === "string" &&
+                filterConfig.author.length !== 0) {
+                filtPhotoPosts = filtPhotoPosts.filter(function (item) {
+                    return item.author === filterConfig.author;
+                });
+            }
 
 
-        if ("hashtags" in filterConfig &&
-            typeof filterConfig.hashtags === "object" &&
-            Object.prototype.toString.call(filterConfig.hashtags) === "[object Array]") {
-            filtPhotoPosts = filtPhotoPosts.filter(function (item) {
-                for (var i = 0, flag = true; i < filterConfig.hashtags.length; i++) {
-                    if (item.hashtags.indexOf(filterConfig.hashtags[i]) === -1) {
-                        flag = false;
+            if ("hashtags" in filterConfig &&
+                typeof filterConfig.hashtags === "object" &&
+                Object.prototype.toString.call(filterConfig.hashtags) === "[object Array]") {
+                filtPhotoPosts = filtPhotoPosts.filter(function (item) {
+                    for (var i = 0, flag = true; i < filterConfig.hashtags.length; i++) {
+                        if (item.hashtags.indexOf(filterConfig.hashtags[i]) === -1) {
+                            flag = false;
+                        }
                     }
-                }
-                return flag;
-            });
+                    return flag;
+                });
+            }
         }
-
 
         return filtPhotoPosts.slice(skip, skip + top);
     }
