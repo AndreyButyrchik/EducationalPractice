@@ -232,6 +232,12 @@ var photoPostsArray = [
                 return false;
             }
         }
+        photoPost.likes.sort();
+        for (var j = 1; j < photoPost.likes.length; j++) {
+            if (photoPost.likes[j - 1] === photoPost.likes[j]) {
+                return false;
+            }
+        }
         return true;
     }
 
