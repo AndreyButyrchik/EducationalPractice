@@ -259,7 +259,7 @@ var photoPostsArray = [
         }
         for (var i = 0; i < photoPostsArray.length; i++) {
             if (photoPostsArray[i].id === id) {
-                delete photoPostsArray[i];
+                photoPostsArray.splice(i, 1);
                 return true;
             }
         }
@@ -329,4 +329,6 @@ var photoPostsArray = [
 
         return filtPhotoPosts.slice(skip, skip + top);
     }
+
+    removePhotoPost('5');
 })();
