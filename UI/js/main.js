@@ -272,6 +272,10 @@ var photoPostsArray = [
                 sourcePhotoPost.photoLink = photoPost.photoLink;
                 flag = true;
             }
+            if ('hashtags' in photoPost && photoPost.hashtags !== "") {
+                sourcePhotoPost.hashtags = photoPost.hashtags;
+                flag = true;
+            }
             return flag;
         }
         else {
@@ -319,6 +323,4 @@ var photoPostsArray = [
 
         return filtPhotoPosts.slice(skip, skip + top);
     }
-
-    alert(Object.prototype.toString.call([]));
 })();
