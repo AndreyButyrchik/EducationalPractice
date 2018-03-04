@@ -208,17 +208,22 @@ var photoPostsArray = [
         }
         return NaN;
     }
-    function editPhotoPost(id, photoPost){
+    function editPhotoPost(id, photoPost) {
         var sourcePhotoPost = getPhotoPost(id);
-        var flag = false;
-        if('descriprion' in photoPost && photoPost.descriprion.length < 200){
-            sourcePhotoPost.descriprion = photoPost.descriprion;
-            flag = true;
+        if (sourcePhotoPost) {
+            var flag = false;
+            if ('descriprion' in photoPost && photoPost.descriprion.length < 200) {
+                sourcePhotoPost.descriprion = photoPost.descriprion;
+                flag = true;
+            }
+            if ('photoLink' in photoPost && photoPost.photoLink !== "") {
+                sourcePhotoPost.photoLink = photoPost.photoLink;
+                flag = true;
+            }
+            return flag;
         }
-        if('photoLink' in photoPost && photoPost.photoLink !== ""){
-            sourcePhotoPost.photoLink = photoPost.photoLink;
-            flag = true;
+        else {
+            return false;
         }
-        return flag;
     }
 })();
