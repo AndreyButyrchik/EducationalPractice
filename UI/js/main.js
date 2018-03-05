@@ -239,7 +239,9 @@ var photoPostsArray = [
                 return false;
             }
         }
-        return true;
+        return photoPost.hashtags.every(function (item) {
+            return item.charAt(0) === "#";
+        });
     }
 
     function addPhotoPost(photoPost) {
@@ -284,7 +286,10 @@ var photoPostsArray = [
                     flag = true;
                 }
                 if ('hashtags' in photoPost &&
-                    photoPost.hashtags.length !== 0) {
+                    photoPost.hashtags.length !== 0 &&
+                    photoPost.hashtags.every(function (item) {
+                        return item.charAt(0) === "#";
+                    })) {
                     sourcePhotoPost.hashtags = photoPost.hashtags;
                     flag = true;
                 }
