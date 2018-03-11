@@ -303,10 +303,7 @@ let dataFunc = (function () {
                     flag = true;
                 }
                 if ('hashtags' in photoPost &&
-                    photoPost.hashtags.length !== 0 &&
-                    photoPost.hashtags.every(function (item) {
-                        return item.charAt(0) === "#";
-                    })) {
+                    photoPost.hashtags.length !== 0) {
                     sourcePhotoPost.hashtags = photoPost.hashtags;
                     flag = true;
                 }
@@ -483,8 +480,27 @@ let domFunc = (function () {
         removePost.remove();
     };
 
-    let editPhotoPost = function () {
-
+    let editPhotoPost = function (id, photoPost) {
+        let editPost = document.getElementById(id);
+        if ('descriprion' in photoPost &&
+            photoPost.descriprion.length < 200 &&
+            photoPost.descriprion.length !== 0) {
+            let descriptionBox = editPost.childNodes[5];
+            let description = descriptionBox.firstChild;
+            description.textContent = photoPost.descriprion;
+        }
+        if ('photoLink' in photoPost &&
+            photoPost.photoLink.length !== 0) {
+            let photoBox = editPost.childNodes[1];
+            let photo = photoBox.firstChild;
+            photo.src = photoPost.photoLink;
+        }
+        if ('hashtags' in photoPost &&
+            photoPost.hashtags.length !== 0) {
+            let hashtagsBox = editPost.childNodes[6];
+            let hashtags = hashtagsBox.firstChild;
+            hashtags.textContent = photoPost.hashtags;
+        }
     };
 
     let showElementsForAuthUser = function () {
@@ -519,8 +535,16 @@ function addPhotoPost(PhotoPost) {
 }
 
 function removePhotoPost(id) {
-    if(dataFunc.removePhotoPost(id)){
+    if (dataFunc.removePhotoPost(id)) {
         domFunc.removePhotoPost(id);
+        return true;
+    }
+    return false;
+}
+
+function editPhotoPost(id, photoPost) {
+    if (dataFunc.editPhotoPost(id, photoPost)) {
+        domFunc.editPhotoPost(id, photoPost);
         return true;
     }
     return false;
@@ -531,3 +555,9 @@ showPhotoPosts(1, 8);
 addPhotoPost(photoPostsArray[0]);
 
 removePhotoPost('1');
+
+editPhotoPost('2', {
+    descriprion: 'You don\'t own me If you ever step to me again.',
+    photoLink: 'https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/e15/11085027_1445865919040220_2096401498_n.jpg',
+    hashtags: '#smile'
+});
