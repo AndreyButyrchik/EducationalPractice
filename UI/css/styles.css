@@ -3,82 +3,84 @@ html, body {
     color: #474143;
 }
 
-h1{
+h1 {
     font-size: 1.2em;
     font-weight: bold;
 }
 
-h2{
+h2 {
     font-size: 0.9em;
     font-weight: bold;
 }
 
-h3{
+h3 {
     font-size: 0.8em;
 }
 
-h4{
+h4 {
     font-size: 0.7em;
 }
 
-a:visited{
-    color: #474143;
-}
-a:active{
-    color: #474143;
-}
-a:link{
+a:visited {
     color: #474143;
 }
 
-p{
+a:active {
+    color: #474143;
+}
+
+a:link {
+    color: #474143;
+}
+
+p {
     text-indent: 5%;
 }
 
-.box{
+.box {
     border-style: none;
     border-radius: 8px;
-    box-shadow: 0 2px  1px #474143;
+    box-shadow: 0 2px 1px #474143;
     background-color: #E7E8E7;
 }
 
-@media screen and (max-width: 960px){
-    h1{
+@media screen and (max-width: 960px) {
+    h1 {
         font-size: 1.3em;
     }
 
-    h2{
+    h2 {
         font-size: 1.2em;
     }
 
-    h3{
+    h3 {
         font-size: 0.7em;
     }
 
-    h4{
+    h4 {
         font-size: 0.6em;
     }
 }
 
-@media screen and (max-width: 768px){
-    h1{
+@media screen and (max-width: 768px) {
+    h1 {
         font-size: 1.2em;
     }
 
-    h2{
+    h2 {
         font-size: 1.1em;
     }
 
-    h3{
+    h3 {
         font-size: 1em;
     }
 
-    h4{
+    h4 {
         font-size: 0.8em;
     }
 }
 
-::selection{
+::selection {
     background-color: orange;
 }
 

@@ -1,9 +1,9 @@
-main{
+main {
     background-color: #fff;
     padding-top: 5.86vh;
 }
 
-.filtersBox{
+.filtersBox {
     display: flex;
     align-items: center;
     height: 5vh;
@@ -17,50 +17,50 @@ main{
     margin: 0 1%;
 }
 
-.filterName{
+.filterName {
     width: 30vw;
     margin-right: 2%;
 }
 
-.filterDate{
+.filterDate {
     width: 30vw;
 }
 
-.filterHashtags{
+.filterHashtags {
     margin-left: 2%;
     width: 30vw;
 }
 
-.postBox{
+.postBox {
     float: left;
     width: 25%;
     text-align: center;
     margin-top: 3%;
 }
 
-.fa-heart, .fa-edit,  .fa-trash-alt{
+.fa-heart, .fa-edit, .fa-trash-alt {
     font-size: 1.4em;
     padding: 0 10%;
 }
 
-.fa-heart:hover{
+.fa-heart:hover {
     color: #c00;
 }
 
-.foto{
+.foto {
     object-fit: cover;
     width: 100%;
     max-height: calc(20vw / 16 * 9);
 }
 
-.fotoSpace{
+.fotoSpace {
     width: 20vw;
     margin: auto;
     padding: 2% 0 2% 0;
-    height: calc(20vw/16*9);
+    height: calc(20vw / 16 * 9);
 }
 
-.commentBox{
+.commentBox {
     width: 20vw;
     max-height: calc(20vw / 2);
     margin: 2% auto 1% auto;
@@ -70,7 +70,7 @@ main{
     overflow-y: hidden;
 }
 
-.hashtagsBox{
+.hashtagsBox {
     width: 20vw;
     margin: 1% auto 2% auto;
     padding: 1%;
@@ -79,69 +79,69 @@ main{
     overflow-y: hidden;
 }
 
-.dateBox{
+.dateBox {
     width: 20vw;
     font-size: 0.7em;
     margin: auto;
 }
 
-.moreFotoButton{
+.moreFotoButton {
     width: 50%;
     position: relative;
     left: 50%;
 }
 
-@media screen and (max-width: 960px){
-    .postBox{
+@media screen and (max-width: 960px) {
+    .postBox {
         width: 33.3%;
     }
 
-    .fa-heart, .fa-edit,  .fa-trash-alt{
+    .fa-heart, .fa-edit, .fa-trash-alt {
         font-size: 1.8em;
         padding: 0 10%;
     }
 
-    .fotoSpace{
+    .fotoSpace {
         width: 100%;
         margin: auto;
-        height: calc(33.3vw / 16*9);
+        height: calc(33.3vw / 16 * 9);
     }
 
-    .foto{
+    .foto {
         width: 80%;
         max-height: calc(33.3vw / 16 * 9);
     }
 
-    .commentBox{
+    .commentBox {
         width: 80%;
         max-height: calc(80% / 2);
         margin: 4% auto 2% auto;
     }
 
-    .hashtagsBox{
+    .hashtagsBox {
         width: 80%;
         margin: 2% auto 4% auto;
     }
 
-    .dateBox{
+    .dateBox {
         width: 80%;
     }
 }
 
-@media screen and (max-width: 768px){
-    .postBox{
+@media screen and (max-width: 768px) {
+    .postBox {
         width: 100%;
     }
 
-    .fa-heart, .fa-edit,  .fa-trash-alt{
+    .fa-heart, .fa-edit, .fa-trash-alt {
         font-size: 3em;
     }
 
-    .fotoSpace{
-        height: calc(80%/16*9);
+    .fotoSpace {
+        height: calc(80% / 16 * 9);
     }
 
-    .foto{
+    .foto {
         object-fit: cover;
         width: 100%;
         max-height: calc(100% / 16 * 9);
