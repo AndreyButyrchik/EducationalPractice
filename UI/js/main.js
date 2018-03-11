@@ -422,6 +422,7 @@ let domFunc = (function () {
         let main = document.getElementsByTagName('main');
         let newPost = document.createElement('div');
         newPost.className = 'postBox';
+        newPost.id = photoPost.id;
 
         let userName = document.createElement('h2');
         userName.textContent = photoPost.author;
@@ -477,8 +478,9 @@ let domFunc = (function () {
         main[0].insertBefore(newPost, main[0].childNodes[2]);
     };
 
-    let remotePhotoPost = function () {
-
+    let removePhotoPost = function (id) {
+        let removePost = document.getElementById(id);
+        removePost.remove();
     };
 
     let editPhotoPost = function () {
@@ -492,7 +494,7 @@ let domFunc = (function () {
     return {
         showPhotoPosts,
         addPhotoPost,
-        remotePhotoPost,
+        removePhotoPost,
         editPhotoPost,
         showElementsForAuthUser
     }
@@ -516,6 +518,16 @@ function addPhotoPost(PhotoPost) {
     return false;
 }
 
-showPhotoPosts(1, 7);
+function removePhotoPost(id) {
+    if(dataFunc.removePhotoPost(id)){
+        domFunc.removePhotoPost(id);
+        return true;
+    }
+    return false;
+}
+
+showPhotoPosts(1, 8);
 
 addPhotoPost(photoPostsArray[0]);
+
+removePhotoPost('1');
