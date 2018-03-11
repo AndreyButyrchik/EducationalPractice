@@ -411,76 +411,77 @@ let domFunc = (function () {
         return dd + '.' + mm + '.' + yy;
     }
 
-    let showFotoPosts = function (postsArray) {
-        let main = document.getElementsByTagName('main');
+    let showPhotoPosts = function (postsArray) {
+        postsArray.reverse();
         postsArray.forEach(function (item) {
-            let newPost = document.createElement('div');
-            newPost.className = 'postBox';
-
-            let userName = document.createElement('h2');
-            userName.textContent = item.author;
-            newPost.appendChild(userName);
-
-            let fotoSpace = document.createElement('div');
-            fotoSpace.className = 'fotoSpace';
-            let foto = document.createElement('img');
-            foto.className = 'foto';
-            foto.src = item.photoLink;
-            fotoSpace.appendChild(foto);
-            newPost.appendChild(fotoSpace);
-
-            let likeButton = document.createElement('a');
-            let likeImage = document.createElement('i');
-            likeImage.className = 'fas fa-heart';
-            likeButton.appendChild(likeImage);
-            newPost.appendChild(likeButton);
-
-            let editButton = document.createElement('a');
-            let editImage = document.createElement('i');
-            editImage.className = 'fas fa-edit';
-            editButton.appendChild(editImage);
-            newPost.appendChild(editButton);
-
-            let trashButton = document.createElement('a');
-            let trashImage = document.createElement('i');
-            trashImage.className = 'fas fa-trash-alt';
-            trashButton.appendChild(trashImage);
-            newPost.appendChild(trashButton);
-
-            let commentBox = document.createElement('div');
-            commentBox.className = 'commentBox box';
-            let comment = document.createElement('p');
-            comment.textContent = item.descriprion;
-            commentBox.appendChild(comment);
-            newPost.appendChild(commentBox);
-
-            let hashtagsBox = document.createElement('div');
-            hashtagsBox.className = 'hashtagsBox box';
-            let hashtags = document.createElement('p');
-            hashtags.textContent = item.hashtags;
-            hashtagsBox.appendChild(hashtags);
-            newPost.appendChild(hashtagsBox);
-
-            let dateBox = document.createElement('div');
-            dateBox.className = 'dateBox';
-            let date = document.createElement('p');
-            date.textContent = 'Фото было опубликовано ' + formatDate(item.createdAt);
-            dateBox.appendChild(date);
-            newPost.appendChild(dateBox);
-
-            main[0].insertBefore(newPost, main[0].childNodes[main[0].childNodes.length - 2]);
+            addPhotoPost(item);
         });
     };
 
-    let addFotoPost = function () {
+    let addPhotoPost = function (photoPost) {
+        let main = document.getElementsByTagName('main');
+        let newPost = document.createElement('div');
+        newPost.className = 'postBox';
+
+        let userName = document.createElement('h2');
+        userName.textContent = photoPost.author;
+        newPost.appendChild(userName);
+
+        let fotoSpace = document.createElement('div');
+        fotoSpace.className = 'fotoSpace';
+        let foto = document.createElement('img');
+        foto.className = 'foto';
+        foto.src = photoPost.photoLink;
+        fotoSpace.appendChild(foto);
+        newPost.appendChild(fotoSpace);
+
+        let likeButton = document.createElement('a');
+        let likeImage = document.createElement('i');
+        likeImage.className = 'fas fa-heart';
+        likeButton.appendChild(likeImage);
+        newPost.appendChild(likeButton);
+
+        let editButton = document.createElement('a');
+        let editImage = document.createElement('i');
+        editImage.className = 'fas fa-edit';
+        editButton.appendChild(editImage);
+        newPost.appendChild(editButton);
+
+        let trashButton = document.createElement('a');
+        let trashImage = document.createElement('i');
+        trashImage.className = 'fas fa-trash-alt';
+        trashButton.appendChild(trashImage);
+        newPost.appendChild(trashButton);
+
+        let commentBox = document.createElement('div');
+        commentBox.className = 'commentBox box';
+        let comment = document.createElement('p');
+        comment.textContent = photoPost.descriprion;
+        commentBox.appendChild(comment);
+        newPost.appendChild(commentBox);
+
+        let hashtagsBox = document.createElement('div');
+        hashtagsBox.className = 'hashtagsBox box';
+        let hashtags = document.createElement('p');
+        hashtags.textContent = photoPost.hashtags;
+        hashtagsBox.appendChild(hashtags);
+        newPost.appendChild(hashtagsBox);
+
+        let dateBox = document.createElement('div');
+        dateBox.className = 'dateBox';
+        let date = document.createElement('p');
+        date.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
+        dateBox.appendChild(date);
+        newPost.appendChild(dateBox);
+
+        main[0].insertBefore(newPost, main[0].childNodes[2]);
+    };
+
+    let remotePhotoPost = function () {
 
     };
 
-    let remoteFotoPost = function () {
-
-    };
-
-    let editFotoPost = function () {
+    let editPhotoPost = function () {
 
     };
 
@@ -489,22 +490,32 @@ let domFunc = (function () {
     };
 
     return {
-        showFotoPosts,
-        addFotoPost,
-        remoteFotoPost,
-        editFotoPost,
+        showPhotoPosts,
+        addPhotoPost,
+        remotePhotoPost,
+        editPhotoPost,
         showElementsForAuthUser
     }
 
 })();
 
-function showFotoPosts(skip, top, filterConfig) {
+function showPhotoPosts(skip, top, filterConfig) {
     let postsArray = dataFunc.getPhotoPosts(skip, top, filterConfig);
     if (typeof postsArray === 'object') {
-        domFunc.showFotoPosts(postsArray);
+        domFunc.showPhotoPosts(postsArray);
         return true;
     }
     return false;
 }
 
-showFotoPosts(0, 8);
+function addPhotoPost(PhotoPost) {
+    if (dataFunc.validatePhotoPost(PhotoPost)) {
+        domFunc.addPhotoPost(PhotoPost);
+        return true;
+    }
+    return false;
+}
+
+showPhotoPosts(1, 7);
+
+addPhotoPost(photoPostsArray[0]);
