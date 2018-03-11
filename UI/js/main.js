@@ -1,6 +1,6 @@
-var user = 'Вася Пупкин';
+let user = 'Вася Пупкин';
 
-var photoPostsArray = [
+let photoPostsArray = [
     {
         id: '1',
         descriprion: 'Smile, it is the key that fits the lock of everybody\'s heart.',
@@ -203,9 +203,9 @@ var photoPostsArray = [
     }
 ];
 
-var dataFunc = (function () {
+let dataFunc = (function () {
 
-    function getPhotoPost(id) {
+    let getPhotoPost = function (id) {
         if (typeof id !== "string" ||
             Number(id) < 1) {
             return NaN;
@@ -216,9 +216,9 @@ var dataFunc = (function () {
             }
         }
         return NaN;
-    }
+    };
 
-    function validatePhotoPost(photoPost) {
+    let validatePhotoPost = function (photoPost) {
         if (typeof photoPost === "undefined" ||
             typeof photoPost.id !== "string" ||
             typeof photoPost.descriprion !== "string" ||
@@ -260,17 +260,17 @@ var dataFunc = (function () {
         return photoPost.hashtags.every(function (item) {
             return item.charAt(0) === "#";
         });
-    }
+    };
 
-    function addPhotoPost(photoPost) {
+    let addPhotoPost = function (photoPost) {
         if (validatePhotoPost(photoPost)) {
             photoPostsArray.push(photoPost);
             return true;
         }
         return false;
-    }
+    };
 
-    function removePhotoPost(id) {
+    let removePhotoPost = function (id) {
         if (typeof  id === "undefined" ||
             typeof id !== "string" ||
             Number(id) < 1) {
@@ -284,9 +284,9 @@ var dataFunc = (function () {
             }
         }
         return false;
-    }
+    };
 
-    function editPhotoPost(id, photoPost) {
+    let editPhotoPost = function (id, photoPost) {
         var sourcePhotoPost = getPhotoPost(id);
         if (sourcePhotoPost) {
             if (validatePhotoPost(sourcePhotoPost)) {
@@ -317,16 +317,16 @@ var dataFunc = (function () {
             }
         }
         return false;
-    }
+    };
 
-    function validateNumber(numb) {
+    let validateNumber = function (numb) {
         return typeof numb === "undefined" ||
             typeof numb !== "number" ||
             numb < 0 ||
             (numb ^ 0) !== numb;
-    }
+    };
 
-    function getPhotoPosts(skip, top, filterConfig) {
+    let getPhotoPosts = function (skip, top, filterConfig) {
         if (validateNumber(skip)) {
             skip = 0;
         }
@@ -334,6 +334,12 @@ var dataFunc = (function () {
 
         if (validateNumber(top)) {
             top = 10;
+        }
+
+        for (var i = skip; i < Math.min(skip + top, photoPostsArray.length); i++) {
+            if (!validatePhotoPost(photoPostsArray[i])) {
+                return false;
+            }
         }
 
 
@@ -378,28 +384,127 @@ var dataFunc = (function () {
         }
 
         return filtPhotoPosts.slice(skip, skip + top);
+    };
+
+    return {
+        getPhotoPost,
+        validatePhotoPost,
+        removePhotoPost,
+        addPhotoPost,
+        editPhotoPost,
+        getPhotoPosts
     }
 })();
 
-var domFunc = (function () {
-    function showFotoPosts() {
+let domFunc = (function () {
+    function formatDate(date) {
 
+        let dd = date.getDate();
+        if (dd < 10) dd = '0' + dd;
+
+        let mm = date.getMonth() + 1;
+        if (mm < 10) mm = '0' + mm;
+
+        let yy = date.getFullYear() % 100;
+        if (yy < 10) yy = '0' + yy;
+
+        return dd + '.' + mm + '.' + yy;
     }
 
-    function addFotoPost() {
+    let showFotoPosts = function (postsArray) {
+        let main = document.getElementsByTagName('main');
+        postsArray.forEach(function (item) {
+            let newPost = document.createElement('div');
+            newPost.className = 'postBox';
 
-    }
+            let userName = document.createElement('h2');
+            userName.textContent = item.author;
+            newPost.appendChild(userName);
 
-    function remoteFotoPost() {
+            let fotoSpace = document.createElement('div');
+            fotoSpace.className = 'fotoSpace';
+            let foto = document.createElement('img');
+            foto.className = 'foto';
+            foto.src = item.photoLink;
+            fotoSpace.appendChild(foto);
+            newPost.appendChild(fotoSpace);
 
-    }
+            let likeButton = document.createElement('a');
+            let likeImage = document.createElement('i');
+            likeImage.className = 'fas fa-heart';
+            likeButton.appendChild(likeImage);
+            newPost.appendChild(likeButton);
 
-    function editFotoPost() {
+            let editButton = document.createElement('a');
+            let editImage = document.createElement('i');
+            editImage.className = 'fas fa-edit';
+            editButton.appendChild(editImage);
+            newPost.appendChild(editButton);
 
-    }
+            let trashButton = document.createElement('a');
+            let trashImage = document.createElement('i');
+            trashImage.className = 'fas fa-trash-alt';
+            trashButton.appendChild(trashImage);
+            newPost.appendChild(trashButton);
 
-    function showElementsForAuthUser() {
+            let commentBox = document.createElement('div');
+            commentBox.className = 'commentBox box';
+            let comment = document.createElement('p');
+            comment.textContent = item.descriprion;
+            commentBox.appendChild(comment);
+            newPost.appendChild(commentBox);
 
+            let hashtagsBox = document.createElement('div');
+            hashtagsBox.className = 'hashtagsBox box';
+            let hashtags = document.createElement('p');
+            hashtags.textContent = item.hashtags;
+            hashtagsBox.appendChild(hashtags);
+            newPost.appendChild(hashtagsBox);
+
+            let dateBox = document.createElement('div');
+            dateBox.className = 'dateBox';
+            let date = document.createElement('p');
+            date.textContent = 'Фото было опубликовано ' + formatDate(item.createdAt);
+            dateBox.appendChild(date);
+            newPost.appendChild(dateBox);
+
+            main[0].insertBefore(newPost, main[0].childNodes[main[0].childNodes.length - 2]);
+        });
+    };
+
+    let addFotoPost = function () {
+
+    };
+
+    let remoteFotoPost = function () {
+
+    };
+
+    let editFotoPost = function () {
+
+    };
+
+    let showElementsForAuthUser = function () {
+
+    };
+
+    return {
+        showFotoPosts,
+        addFotoPost,
+        remoteFotoPost,
+        editFotoPost,
+        showElementsForAuthUser
     }
 
 })();
+
+function showFotoPosts(skip, top, filterConfig) {
+    let postsArray = dataFunc.getPhotoPosts(skip, top, filterConfig);
+    if (typeof postsArray === 'object') {
+        domFunc.showFotoPosts(postsArray);
+        return true;
+    }
+    return false;
+}
+
+showFotoPosts(0, 8);
