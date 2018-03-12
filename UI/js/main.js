@@ -416,66 +416,26 @@ let domFunc = (function () {
     };
 
     let addPhotoPost = function (photoPost) {
+        const postTemplate =
+            '<h2></h2>\n' +
+            '<div class="fotoSpace">\n' +
+            '   <img class="foto" src="">\n' +
+            '</div>\n' +
+            '<a><i class="fas fa-heart"></i></a>\n' +
+            '<div class="commentBox box"><p></p></div>\n' +
+            '<div class="hashtagsBox box"><p></p></div>\n' +
+            '<div class="dateBox"><p></p></div>\n';
         let main = document.getElementsByTagName('main');
         let newPost = document.createElement('div');
+
         newPost.className = 'postBox';
         newPost.id = photoPost.id;
-
-        let userName = document.createElement('h2');
-        userName.textContent = photoPost.author;
-        newPost.appendChild(userName);
-
-        let fotoSpace = document.createElement('div');
-        fotoSpace.className = 'fotoSpace';
-        let foto = document.createElement('img');
-        foto.className = 'foto';
-        foto.src = photoPost.photoLink;
-        fotoSpace.appendChild(foto);
-        newPost.appendChild(fotoSpace);
-
-        let likeButton = document.createElement('a');
-        let likeImage = document.createElement('i');
-        likeImage.className = 'fas fa-heart';
-        likeButton.appendChild(likeImage);
-        newPost.appendChild(likeButton);
-
-        if (user != null) {
-            let editButton = document.createElement('a');
-            let editImage = document.createElement('i');
-            editImage.className = 'fas fa-edit';
-            editButton.appendChild(editImage);
-            newPost.appendChild(editButton);
-        }
-
-        if (user != null) {
-            let trashButton = document.createElement('a');
-            let trashImage = document.createElement('i');
-            trashImage.className = 'fas fa-trash-alt';
-            trashButton.appendChild(trashImage);
-            newPost.appendChild(trashButton);
-        }
-
-        let commentBox = document.createElement('div');
-        commentBox.className = 'commentBox box';
-        let comment = document.createElement('p');
-        comment.textContent = photoPost.descriprion;
-        commentBox.appendChild(comment);
-        newPost.appendChild(commentBox);
-
-        let hashtagsBox = document.createElement('div');
-        hashtagsBox.className = 'hashtagsBox box';
-        let hashtags = document.createElement('p');
-        hashtags.textContent = photoPost.hashtags;
-        hashtagsBox.appendChild(hashtags);
-        newPost.appendChild(hashtagsBox);
-
-        let dateBox = document.createElement('div');
-        dateBox.className = 'dateBox';
-        let date = document.createElement('p');
-        date.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
-        dateBox.appendChild(date);
-        newPost.appendChild(dateBox);
-
+        newPost.innerHTML = postTemplate;
+        newPost.firstChild.textContent = photoPost.author;
+        newPost.childNodes[2].childNodes[1].src = photoPost.photoLink;
+        newPost.childNodes[6].firstChild.textContent = photoPost.descriprion;
+        newPost.childNodes[8].firstChild.textContent = photoPost.hashtags;
+        newPost.childNodes[10].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
         main[0].insertBefore(newPost, main[0].childNodes[2]);
     };
 
