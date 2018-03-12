@@ -543,7 +543,7 @@ function showPhotoPosts(skip, top, filterConfig) {
 }
 
 function addPhotoPost(PhotoPost) {
-    if (dataFunc.validatePhotoPost(PhotoPost)) {
+    if (dataFunc.addPhotoPost(PhotoPost)) {
         domFunc.addPhotoPost(PhotoPost);
         return true;
     }
