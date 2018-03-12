@@ -495,6 +495,23 @@ let domFunc = (function () {
         singInLink.appendChild(singInImg);
         headerSingIn.appendChild(singInLink);
         header[0].appendChild(headerSingIn);
+
+        let main = document.getElementsByTagName('main');
+        let posts = main[0].getElementsByClassName('postBox')
+        let postsArray = Array.prototype.slice.call(posts);
+        postsArray.forEach(function (item) {
+            let editButton = document.createElement('a');
+            let editImage = document.createElement('i');
+            editImage.className = 'fas fa-edit';
+            editButton.appendChild(editImage);
+            item.insertBefore(editButton, item.childNodes[6]);
+
+            let trashButton = document.createElement('a');
+            let trashImage = document.createElement('i');
+            trashImage.className = 'fas fa-trash-alt';
+            trashButton.appendChild(trashImage);
+            item.insertBefore(trashButton, item.childNodes[6]);
+        })
     };
 
     let showFilterUsers = function () {
