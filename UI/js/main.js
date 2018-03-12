@@ -1,4 +1,4 @@
-let user = 'Вася Пупкин';
+let user = 'Пашка';
 
 let photoPostsArray = [
     {
@@ -439,17 +439,21 @@ let domFunc = (function () {
         likeButton.appendChild(likeImage);
         newPost.appendChild(likeButton);
 
-        let editButton = document.createElement('a');
-        let editImage = document.createElement('i');
-        editImage.className = 'fas fa-edit';
-        editButton.appendChild(editImage);
-        newPost.appendChild(editButton);
+        if(user != null) {
+            let editButton = document.createElement('a');
+            let editImage = document.createElement('i');
+            editImage.className = 'fas fa-edit';
+            editButton.appendChild(editImage);
+            newPost.appendChild(editButton);
+        }
 
-        let trashButton = document.createElement('a');
-        let trashImage = document.createElement('i');
-        trashImage.className = 'fas fa-trash-alt';
-        trashButton.appendChild(trashImage);
-        newPost.appendChild(trashButton);
+        if(user != null) {
+            let trashButton = document.createElement('a');
+            let trashImage = document.createElement('i');
+            trashImage.className = 'fas fa-trash-alt';
+            trashButton.appendChild(trashImage);
+            newPost.appendChild(trashButton);
+        }
 
         let commentBox = document.createElement('div');
         commentBox.className = 'commentBox box';
@@ -485,26 +489,52 @@ let domFunc = (function () {
         if ('descriprion' in photoPost &&
             photoPost.descriprion.length < 200 &&
             photoPost.descriprion.length !== 0) {
-            let descriptionBox = editPost.childNodes[5];
-            let description = descriptionBox.firstChild;
+            let descriptionBox = editPost.getElementsByClassName('commentBox');
+            let description = descriptionBox[0].firstChild;
             description.textContent = photoPost.descriprion;
         }
         if ('photoLink' in photoPost &&
             photoPost.photoLink.length !== 0) {
-            let photoBox = editPost.childNodes[1];
-            let photo = photoBox.firstChild;
+            let photoBox = editPost.getElementsByClassName('fotoSpace');
+            let photo = photoBox[0].firstChild;
             photo.src = photoPost.photoLink;
         }
         if ('hashtags' in photoPost &&
             photoPost.hashtags.length !== 0) {
-            let hashtagsBox = editPost.childNodes[6];
-            let hashtags = hashtagsBox.firstChild;
+            let hashtagsBox = editPost.getElementsByClassName('hashtagsBox');
+            let hashtags = hashtagsBox[0].firstChild;
             hashtags.textContent = photoPost.hashtags;
         }
     };
 
     let showElementsForAuthUser = function () {
+        let header = document.getElementsByTagName('header');
+        let headerUserName = document.createElement('div');
+        headerUserName.className = 'headerUserName';
+        let userName = document.createElement('h1');
+        userName.textContent = user;
+        headerUserName.appendChild(userName);
+        header[0].insertBefore(headerUserName, header[0].childNodes[0]);
 
+        let headerAddFoto = document.createElement('div');
+        headerAddFoto.className = 'headerAddFoto';
+        let addFotoLink = document.createElement('a');
+        addFotoLink.href = '#';
+        let addFotoImg = document.createElement('i');
+        addFotoImg.className = 'fas fa-plus-circle';
+        addFotoLink.appendChild(addFotoImg);
+        headerAddFoto.appendChild(addFotoLink);
+        header[0].appendChild(headerAddFoto);
+
+        let headerSingIn = document.createElement('div');
+        headerSingIn.className = 'headerSingInOut';
+        let singInLink = document.createElement('a');
+        singInLink.href = '#';
+        let singInImg = document.createElement('i');
+        singInImg.className = 'fas fa-sign-out-alt';
+        singInLink.appendChild(singInImg);
+        headerSingIn.appendChild(singInLink);
+        header[0].appendChild(headerSingIn);
     };
 
     return {
@@ -550,6 +580,26 @@ function editPhotoPost(id, photoPost) {
     return false;
 }
 
+function showElementsForUser() {
+    if(user !== null){
+        domFunc.showElementsForAuthUser();
+    }
+    else{
+        let header = document.getElementsByTagName('header');
+        let headerSingOut = document.createElement('div');
+        headerSingOut.className = 'headerSingInOut';
+        let singOutLink = document.createElement('a');
+        singOutLink.href = '#';
+        let singOutImg = document.createElement('i');
+        singOutImg.className = 'fas fa-sign-in-alt';
+        singOutLink.appendChild(singOutImg);
+        headerSingOut.appendChild(singOutLink);
+        header[0].appendChild(headerSingOut);
+        let portalName = document.querySelector('.headerPortalName');
+        portalName.style.width = '90vw';
+    }
+}
+
 showPhotoPosts(1, 8);
 
 addPhotoPost(photoPostsArray[0]);
@@ -561,3 +611,5 @@ editPhotoPost('2', {
     photoLink: 'https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/e15/11085027_1445865919040220_2096401498_n.jpg',
     hashtags: '#smile'
 });
+
+showElementsForUser();
