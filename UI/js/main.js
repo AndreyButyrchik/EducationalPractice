@@ -17,7 +17,7 @@ let photoPostsArray = [
         createdAt: new Date('2018-03-01T23:00:00'),
         author: 'Дима Зевс',
         photoLink: 'https://pp.userapi.com/c305713/u11158447/154446725/x_60f14c4f.jpg',
-        hashtags: ['#cool', '#smile', '#positive'],
+        hashtags: ['#cool', '#smile', '#positive', '#intergalactic'],
         likes: ['Рома Торпеда', 'Галя Печка', 'Гена Орешек'],
         removed: false
     },
@@ -439,7 +439,7 @@ let domFunc = (function () {
         likeButton.appendChild(likeImage);
         newPost.appendChild(likeButton);
 
-        if(user != null) {
+        if (user != null) {
             let editButton = document.createElement('a');
             let editImage = document.createElement('i');
             editImage.className = 'fas fa-edit';
@@ -447,7 +447,7 @@ let domFunc = (function () {
             newPost.appendChild(editButton);
         }
 
-        if(user != null) {
+        if (user != null) {
             let trashButton = document.createElement('a');
             let trashImage = document.createElement('i');
             trashImage.className = 'fas fa-trash-alt';
@@ -546,13 +546,29 @@ let domFunc = (function () {
         })
     };
 
+    let showFilterHashtags = function () {
+        let dataUsers = document.getElementById('hashtags');
+        let uniqueHashtags = new Set();
+        photoPostsArray.forEach(function (item) {
+            item.hashtags.forEach(function (hashtag) {
+                uniqueHashtags.add(hashtag);
+            });
+        });
+        uniqueHashtags.forEach(function (item) {
+            let hashtag = document.createElement('option');
+            hashtag.value = item;
+            dataUsers.appendChild(hashtag);
+        })
+    };
+
     return {
         showPhotoPosts,
         addPhotoPost,
         removePhotoPost,
         editPhotoPost,
         showElementsForAuthUser,
-        showFilterUsers
+        showFilterUsers,
+        showFilterHashtags
     }
 
 })();
@@ -591,10 +607,10 @@ function editPhotoPost(id, photoPost) {
 }
 
 function showElementsForUser() {
-    if(user !== null){
+    if (user !== null) {
         domFunc.showElementsForAuthUser();
     }
-    else{
+    else {
         let header = document.getElementsByTagName('header');
         let headerSingOut = document.createElement('div');
         headerSingOut.className = 'headerSingInOut';
@@ -619,9 +635,11 @@ removePhotoPost('1');
 editPhotoPost('2', {
     descriprion: 'You don\'t own me If you ever step to me again.',
     photoLink: 'https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/e15/11085027_1445865919040220_2096401498_n.jpg',
-    hashtags: '#smile'
+    hashtags: ['#smile']
 });
 
 showElementsForUser();
 
 domFunc.showFilterUsers();
+
+domFunc.showFilterHashtags();
