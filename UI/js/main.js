@@ -537,12 +537,22 @@ let domFunc = (function () {
         header[0].appendChild(headerSingIn);
     };
 
+    let showFilterUsers = function () {
+        let dataUsers = document.getElementById('userNames');
+        photoPostsArray.forEach(function (item) {
+            let userName = document.createElement('option');
+            userName.value = item.author;
+            dataUsers.appendChild(userName);
+        })
+    };
+
     return {
         showPhotoPosts,
         addPhotoPost,
         removePhotoPost,
         editPhotoPost,
-        showElementsForAuthUser
+        showElementsForAuthUser,
+        showFilterUsers
     }
 
 })();
@@ -613,3 +623,5 @@ editPhotoPost('2', {
 });
 
 showElementsForUser();
+
+domFunc.showFilterUsers();

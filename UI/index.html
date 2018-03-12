@@ -17,8 +17,10 @@
         </div>
     </header>
     <main>
-        <form class="filtersBox" autocomplete="on">
-            <input type="text" name="username" placeholder="Введите имя пользователя" spellcheck="false" class="filterName filter box">
+        <form class="filtersBox" autocomplete="off">
+            <input type="text" list="userNames" placeholder="Введите имя пользователя" spellcheck="false" class="filterName filter box">
+            <datalist id="userNames">
+            </datalist>
             <input type="text" name="date" placeholder="Введите дату. В формате чч.мм.гггг" spellcheck="false" class="filterDate filter box">
             <input type="text" name="hashtags" placeholder="Введите хештеги" spellcheck="false" class="filterHashtags filter box">
             <input type="submit" style="display: none;">
