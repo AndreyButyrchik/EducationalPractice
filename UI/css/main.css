@@ -1,6 +1,7 @@
 main {
     background-color: #fff;
     padding-top: 5.86vh;
+    min-height: 88vh;
 }
 
 .filtersBox {
@@ -62,21 +63,20 @@ main {
 
 .commentBox {
     width: 20vw;
-    max-height: calc(20vw / 2);
+    height: 6vh;
     margin: 2% auto 1% auto;
     padding: 1%;
     font-size: 0.8em;
     text-align: left;
-    overflow-y: hidden;
 }
 
 .hashtagsBox {
     width: 20vw;
+    max-height: 5vh;
     margin: 1% auto 2% auto;
     padding: 1%;
     font-size: 0.8em;
     text-align: left;
-    overflow-y: hidden;
 }
 
 .dateBox {
@@ -86,9 +86,9 @@ main {
 }
 
 .moreFotoButton {
-    width: 50%;
+    width: 100%;
     position: relative;
-    left: 50%;
+    text-align: center;
 }
 
 @media screen and (max-width: 960px) {

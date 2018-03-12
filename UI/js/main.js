@@ -434,7 +434,7 @@ let domFunc = (function () {
         newPost.firstChild.textContent = photoPost.author;
         newPost.childNodes[2].childNodes[1].src = photoPost.photoLink;
         newPost.childNodes[6].firstChild.textContent = photoPost.descriprion;
-        newPost.childNodes[8].firstChild.textContent = photoPost.hashtags;
+        newPost.childNodes[8].firstChild.textContent = photoPost.hashtags.join(' ');
         newPost.childNodes[10].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
         main[0].insertBefore(newPost, main[0].childNodes[2]);
     };
@@ -603,11 +603,11 @@ function showElementsForUser() {
     }
 }
 
-showPhotoPosts(1, 8);
+showPhotoPosts(1, 9);
 
 addPhotoPost(photoPostsArray[0]);
 
-removePhotoPost('1');
+removePhotoPost('5');
 
 editPhotoPost('2', {
     descriprion: 'You don\'t own me If you ever step to me again.',

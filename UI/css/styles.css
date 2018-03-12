@@ -42,6 +42,9 @@ p {
     border-radius: 8px;
     box-shadow: 0 2px 1px #474143;
     background-color: #E7E8E7;
+    line-height: 1.1em;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 @media screen and (max-width: 960px) {
