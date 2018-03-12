@@ -497,7 +497,7 @@ let domFunc = (function () {
         header[0].appendChild(headerSingIn);
 
         let main = document.getElementsByTagName('main');
-        let posts = main[0].getElementsByClassName('postBox')
+        let posts = main[0].getElementsByClassName('postBox');
         let postsArray = Array.prototype.slice.call(posts);
         postsArray.forEach(function (item) {
             let editButton = document.createElement('a');

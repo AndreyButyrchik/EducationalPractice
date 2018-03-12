@@ -45,7 +45,18 @@ main {
 }
 
 .fa-heart:hover {
+    transition: .3s;
+    transform: scale(1.2);
     color: #c00;
+}
+
+.fa-heart {
+    transition: .3s;
+}
+
+.fa-trash-alt:hover{
+    animation: swing 0.6s ease;
+    animation-iteration-count: 1;
 }
 
 .foto {
@@ -72,7 +83,7 @@ main {
 
 .hashtagsBox {
     width: 20vw;
-    max-height: 5vh;
+    max-height: 2.2vh;
     margin: 1% auto 2% auto;
     padding: 1%;
     font-size: 0.8em;
@@ -145,5 +156,32 @@ main {
         object-fit: cover;
         width: 100%;
         max-height: calc(100% / 16 * 9);
+    }
+}
+
+@keyframes swing {
+    15% {
+        -webkit-transform: translateX(3px);
+        transform: translateX(3px);
+    }
+    30% {
+        -webkit-transform: translateX(-3px);
+        transform: translateX(-3px);
+    }
+    40% {
+        -webkit-transform: translateX(2px);
+        transform: translateX(2px);
+    }
+    50% {
+        -webkit-transform: translateX(-2px);
+        transform: translateX(-2px);
+    }
+    65% {
+        -webkit-transform: translateX(1px);
+        transform: translateX(1px);
+    }
+    100% {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
     }
 }
