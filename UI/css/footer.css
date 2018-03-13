@@ -1,8 +1,7 @@
 footer {
     display: flex;
     position: relative;
-    bottom: 0;
-    padding: 1% 0;
+    height: 6.14vh;
     align-items: center;
     background-color: #474143;
     color: #E7E2Da;
