@@ -346,7 +346,7 @@ let dataFunc = (function () {
 
 
         if (typeof  filterConfig === "object") {
-            if ("createdAt" in filterConfig &&
+            if (filterConfig.createdAt &&
                 typeof filterConfig.createdAt === "object" &&
                 filterConfig.createdAt instanceof Date) {
                 filtPhotoPosts = filtPhotoPosts.filter(function (item) {
@@ -357,7 +357,7 @@ let dataFunc = (function () {
             }
 
 
-            if ("author" in filterConfig &&
+            if (filterConfig.author &&
                 typeof filterConfig.author === "string" &&
                 filterConfig.author.length !== 0) {
                 filtPhotoPosts = filtPhotoPosts.filter(function (item) {
@@ -366,7 +366,7 @@ let dataFunc = (function () {
             }
 
 
-            if ("hashtags" in filterConfig &&
+            if (filterConfig.hashtags &&
                 typeof filterConfig.hashtags === "object" &&
                 filterConfig.hashtags instanceof Array) {
                 filtPhotoPosts = filtPhotoPosts.filter(function (item) {
@@ -383,13 +383,27 @@ let dataFunc = (function () {
         return filtPhotoPosts.slice(skip, skip + top);
     };
 
+    let likePhotoPost = function (id) {
+        let post = getPhotoPost(id);
+        if (post && validatePhotoPost(post)) {
+            let idxUser = post.likes.indexOf(user);
+            if (idxUser === -1) {
+                post.likes.push(user);
+                return true
+            }
+            post.likes.splice(idxUser, 1);
+        }
+        return false;
+    };
+
     return {
         getPhotoPost,
         validatePhotoPost,
         removePhotoPost,
         addPhotoPost,
         editPhotoPost,
-        getPhotoPosts
+        getPhotoPosts,
+        likePhotoPost
     }
 })();
 
@@ -417,26 +431,20 @@ let domFunc = (function () {
 
     let addPhotoPost = function (photoPost) {
         const postTemplate =
-            '<h2></h2>\n' +
-            '<div class="fotoSpace">\n' +
-            '   <img class="foto" src="">\n' +
-            '</div>\n' +
-            '<a><i class="fas fa-heart"></i></a>\n' +
-            '<div class="commentBox box"><p></p></div>\n' +
-            '<div class="hashtagsBox box"><p></p></div>\n' +
-            '<div class="dateBox"><p></p></div>\n';
+            `<div class="postBox" id="${photoPost.id}">` +
+            `<h2>${photoPost.author}</h2>` +
+            `<div class="fotoSpace">` +
+            `<img class="foto" src="${photoPost.photoLink}">` +
+            `</div>` +
+            `<a><i class="fas fa-heart"></i></a>` +
+            `<div class="commentBox box"><p>${photoPost.descriprion}</p></div>` +
+            `<div class="hashtagsBox box"><p>${photoPost.hashtags}</p></div>` +
+            `<div class="dateBox"><p>Фото было опубликовано ${formatDate(photoPost.createdAt)}</p></div>` +
+            `</div>`;
         let main = document.getElementsByTagName('main');
-        let newPost = document.createElement('div');
-
-        newPost.className = 'postBox';
-        newPost.id = photoPost.id;
+        let newPost = document.createElement('template');
         newPost.innerHTML = postTemplate;
-        newPost.firstChild.textContent = photoPost.author;
-        newPost.childNodes[2].childNodes[1].src = photoPost.photoLink;
-        newPost.childNodes[6].firstChild.textContent = photoPost.descriprion;
-        newPost.childNodes[8].firstChild.textContent = photoPost.hashtags.join(' ');
-        newPost.childNodes[10].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
-        main[0].insertBefore(newPost, main[0].childNodes[2]);
+        main[0].insertBefore(newPost.content, main[0].childNodes[2]);
     };
 
     let removePhotoPost = function (id) {
@@ -500,17 +508,18 @@ let domFunc = (function () {
         let posts = main[0].getElementsByClassName('postBox');
         let postsArray = Array.prototype.slice.call(posts);
         postsArray.forEach(function (item) {
+            let like = item.getElementsByClassName('commentBox');
             let editButton = document.createElement('a');
             let editImage = document.createElement('i');
             editImage.className = 'fas fa-edit';
             editButton.appendChild(editImage);
-            item.insertBefore(editButton, item.childNodes[6]);
+            item.insertBefore(editButton, like[0]);
 
             let trashButton = document.createElement('a');
             let trashImage = document.createElement('i');
             trashImage.className = 'fas fa-trash-alt';
             trashButton.appendChild(trashImage);
-            item.insertBefore(trashButton, item.childNodes[6]);
+            item.insertBefore(trashButton, like[0]);
         })
     };
 
@@ -538,6 +547,18 @@ let domFunc = (function () {
         })
     };
 
+    let likePost = function (id) {
+        let post = document.getElementById(id);
+        let heart = post.getElementsByClassName('fa-heart');
+        heart[0].style.color = '#c00';
+    };
+
+    let unLikePost = function (id) {
+        let post = document.getElementById(id);
+        let heart = post.getElementsByClassName('fa-heart');
+        heart[0].style.color = '#474143';
+    };
+
     return {
         showPhotoPosts,
         addPhotoPost,
@@ -545,7 +566,9 @@ let domFunc = (function () {
         editPhotoPost,
         showElementsForAuthUser,
         showFilterUsers,
-        showFilterHashtags
+        showFilterHashtags,
+        likePost,
+        unLikePost
     }
 
 })();
@@ -603,6 +626,18 @@ function showElementsForUser() {
     }
 }
 
+function likePost(id) {
+    if (user !== null) {
+        if (dataFunc.likePhotoPost(id)) {
+            domFunc.likePost(id);
+
+        }
+        else {
+            domFunc.unLikePost(id);
+        }
+    }
+}
+
 showPhotoPosts(1, 9);
 
 addPhotoPost(photoPostsArray[0]);
@@ -620,3 +655,5 @@ showElementsForUser();
 domFunc.showFilterUsers();
 
 domFunc.showFilterHashtags();
+
+likePost('9');
