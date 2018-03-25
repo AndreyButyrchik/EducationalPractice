@@ -1,4 +1,6 @@
-let user = 'Пашка';
+let user = 'Галя Печка';
+
+let filterConfig = {createdAt: {}, author: '', hashtags: []};
 
 let photoPostsArray = [
     {
@@ -208,14 +210,14 @@ let dataFunc = (function () {
     let getPhotoPost = function (id) {
         if (typeof id !== "string" ||
             Number(id) < 1) {
-            return NaN;
+            return false;
         }
-        for (var i = 0; i < photoPostsArray.length; i++) {
+        for (let i = 0; i < photoPostsArray.length; i++) {
             if (photoPostsArray[i].id === id) {
                 return photoPostsArray[i];
             }
         }
-        return NaN;
+        return false;
     };
 
     let validatePhotoPost = function (photoPost) {
@@ -251,7 +253,7 @@ let dataFunc = (function () {
         if (!(photoPost.hashtags instanceof Array)) {
             return false;
         }
-        for (var i = 0; i < photoPostsArray.length; i++) {
+        for (let i = 0; i < photoPostsArray.length; i++) {
             if ((photoPostsArray[i].id === photoPost.id) &&
                 (photoPost !== photoPostsArray[i])) {
                 return false;
@@ -276,7 +278,7 @@ let dataFunc = (function () {
             Number(id) < 1) {
             return false;
         }
-        for (var i = 0; i < photoPostsArray.length; i++) {
+        for (let i = 0; i < photoPostsArray.length; i++) {
             if (photoPostsArray[i].id === id) {
                 photoPostsArray[i].removed = true;
                 photoPostsArray.splice(i, 1);
@@ -287,22 +289,22 @@ let dataFunc = (function () {
     };
 
     let editPhotoPost = function (id, photoPost) {
-        var sourcePhotoPost = getPhotoPost(id);
+        let sourcePhotoPost = getPhotoPost(id);
         if (sourcePhotoPost) {
             if (validatePhotoPost(sourcePhotoPost)) {
-                var flag = false;
-                if ('descriprion' in photoPost &&
+                let flag = false;
+                if (photoPost.descriprion &&
                     photoPost.descriprion.length < 200 &&
                     photoPost.descriprion.length !== 0) {
                     sourcePhotoPost.descriprion = photoPost.descriprion;
                     flag = true;
                 }
-                if ('photoLink' in photoPost &&
+                if (photoPost.photoLink &&
                     photoPost.photoLink.length !== 0) {
                     sourcePhotoPost.photoLink = photoPost.photoLink;
                     flag = true;
                 }
-                if ('hashtags' in photoPost &&
+                if (photoPost.hashtags &&
                     photoPost.hashtags.length !== 0) {
                     sourcePhotoPost.hashtags = photoPost.hashtags;
                     flag = true;
@@ -333,14 +335,14 @@ let dataFunc = (function () {
             top = 10;
         }
 
-        for (var i = skip; i < Math.min(skip + top, photoPostsArray.length); i++) {
+        for (let i = skip; i < Math.min(skip + top, photoPostsArray.length); i++) {
             if (!validatePhotoPost(photoPostsArray[i])) {
                 return false;
             }
         }
 
 
-        var filtPhotoPosts = photoPostsArray.sort(function (a, b) {
+        let filtPhotoPosts = photoPostsArray.sort(function (a, b) {
             return b.createdAt - a.createdAt;
         });
 
@@ -352,7 +354,7 @@ let dataFunc = (function () {
                 filtPhotoPosts = filtPhotoPosts.filter(function (item) {
                     return item.createdAt.getFullYear() === filterConfig.createdAt.getFullYear() &&
                         item.createdAt.getMonth() === filterConfig.createdAt.getMonth() &&
-                        item.createdAt.getDay() === filterConfig.createdAt.getDay();
+                        item.createdAt.getDate() === filterConfig.createdAt.getDate();
                 });
             }
 
@@ -370,7 +372,8 @@ let dataFunc = (function () {
                 typeof filterConfig.hashtags === "object" &&
                 filterConfig.hashtags instanceof Array) {
                 filtPhotoPosts = filtPhotoPosts.filter(function (item) {
-                    for (var i = 0, flag = true; i < filterConfig.hashtags.length; i++) {
+                    let flag = true;
+                    for (let i = 0; i < filterConfig.hashtags.length; i++) {
                         if (item.hashtags.indexOf(filterConfig.hashtags[i]) === -1) {
                             flag = false;
                         }
@@ -378,6 +381,15 @@ let dataFunc = (function () {
                     return flag;
                 });
             }
+        }
+
+
+        let buttonGetMoreFotoPosts = document.getElementsByClassName('moreFotoButton')[0];
+        if ((skip + top) > filtPhotoPosts.length) {
+            buttonGetMoreFotoPosts.style.display = 'none';
+        }
+        else {
+            buttonGetMoreFotoPosts.style.display = 'inline-block';
         }
 
         return filtPhotoPosts.slice(skip, skip + top);
@@ -416,10 +428,65 @@ let domFunc = (function () {
         let mm = date.getMonth() + 1;
         if (mm < 10) mm = '0' + mm;
 
-        let yy = date.getFullYear() % 100;
+        let yy = date.getFullYear();
         if (yy < 10) yy = '0' + yy;
 
         return dd + '.' + mm + '.' + yy;
+    }
+
+    function showUserName() {
+        let header = document.getElementsByTagName('header')[0];
+        let headerUserName = document.createElement('div');
+        let userName = document.createElement('h1');
+        headerUserName.className = 'headerUserName';
+        userName.textContent = user;
+        headerUserName.appendChild(userName);
+        header.insertBefore(headerUserName, header.childNodes[0]);
+    }
+
+    function showButtonAddFoto() {
+        let header = document.getElementsByTagName('header')[0];
+        let headerAddFoto = document.createElement('div');
+        headerAddFoto.className = 'headerAddFoto';
+        let addFotoLink = document.createElement('a');
+        addFotoLink.href = '#';
+        let addFotoImg = document.createElement('i');
+        addFotoImg.className = 'fas fa-plus-circle';
+        addFotoLink.appendChild(addFotoImg);
+        headerAddFoto.appendChild(addFotoLink);
+        header.appendChild(headerAddFoto);
+    }
+
+    function showButtonSignIn() {
+        let header = document.getElementsByTagName('header')[0];
+        let headerSingIn = document.createElement('div');
+        headerSingIn.className = 'headerSingInOut';
+        let singInLink = document.createElement('a');
+        singInLink.href = '#';
+        let singInImg = document.createElement('i');
+        singInImg.className = 'fas fa-sign-out-alt';
+        singInLink.appendChild(singInImg);
+        headerSingIn.appendChild(singInLink);
+        header.appendChild(headerSingIn);
+    }
+
+    function showButtonEditPost(item) {
+        let commentBox = item.getElementsByClassName('commentBox')[0];
+        let editButton = document.createElement('a');
+        let editImage = document.createElement('i');
+        editImage.className = 'fas fa-edit';
+        editButton.appendChild(editImage);
+        item.insertBefore(editButton, commentBox);
+    }
+
+    function showButtonTrash(item) {
+        events.eRemovePost(item);
+        let commentBox = item.getElementsByClassName('commentBox')[0];
+        let trashButton = document.createElement('a');
+        let trashImage = document.createElement('i');
+        trashImage.className = 'fas fa-trash-alt';
+        trashButton.appendChild(trashImage);
+        item.insertBefore(trashButton, commentBox);
     }
 
     let showPhotoPosts = function (postsArray) {
@@ -430,21 +497,25 @@ let domFunc = (function () {
     };
 
     let addPhotoPost = function (photoPost) {
-        const postTemplate =
-            `<div class="postBox" id="${photoPost.id}">` +
-            `<h2>${photoPost.author}</h2>` +
-            `<div class="fotoSpace">` +
-            `<img class="foto" src="${photoPost.photoLink}">` +
-            `</div>` +
-            `<a><i class="fas fa-heart"></i></a>` +
-            `<div class="commentBox box"><p>${photoPost.descriprion}</p></div>` +
-            `<div class="hashtagsBox box"><p>${photoPost.hashtags}</p></div>` +
-            `<div class="dateBox"><p>Фото было опубликовано ${formatDate(photoPost.createdAt)}</p></div>` +
-            `</div>`;
-        let main = document.getElementsByTagName('main');
-        let newPost = document.createElement('template');
-        newPost.innerHTML = postTemplate;
-        main[0].insertBefore(newPost.content, main[0].childNodes[2]);
+        let main = document.getElementsByTagName('main')[0];
+        let template = document.getElementById('templatePost');
+        let newPost = template.content.cloneNode(true).childNodes[1];
+        events.eLikePost(newPost);
+        newPost.id = photoPost.id;
+        newPost.childNodes[1].textContent = photoPost.author;
+        newPost.childNodes[3].firstChild.src = photoPost.photoLink;
+        newPost.childNodes[7].firstChild.textContent = photoPost.descriprion;
+        newPost.childNodes[9].firstChild.textContent = photoPost.hashtags;
+        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
+        if (photoPost.likes.indexOf(user) !== -1) {
+            newPost.childNodes[5].style.color = '#c00';
+            newPost.childNodes[5].style.transform = 'scale(1.2)';
+        }
+        if (user === photoPost.author) {
+            showButtonEditPost(newPost);
+            showButtonTrash(newPost);
+        }
+        main.insertBefore(newPost, main.childNodes[main.childNodes.length - 2]);
     };
 
     let removePhotoPost = function (id) {
@@ -454,20 +525,20 @@ let domFunc = (function () {
 
     let editPhotoPost = function (id, photoPost) {
         let editPost = document.getElementById(id);
-        if ('descriprion' in photoPost &&
+        if (photoPost.descriprion &&
             photoPost.descriprion.length < 200 &&
             photoPost.descriprion.length !== 0) {
             let descriptionBox = editPost.getElementsByClassName('commentBox');
             let description = descriptionBox[0].firstChild;
             description.textContent = photoPost.descriprion;
         }
-        if ('photoLink' in photoPost &&
+        if (photoPost.photoLink &&
             photoPost.photoLink.length !== 0) {
             let photoBox = editPost.getElementsByClassName('fotoSpace');
             let photo = photoBox[0].firstChild;
             photo.src = photoPost.photoLink;
         }
-        if ('hashtags' in photoPost &&
+        if (photoPost.hashtags &&
             photoPost.hashtags.length !== 0) {
             let hashtagsBox = editPost.getElementsByClassName('hashtagsBox');
             let hashtags = hashtagsBox[0].firstChild;
@@ -476,52 +547,10 @@ let domFunc = (function () {
     };
 
     let showElementsForAuthUser = function () {
-        let header = document.getElementsByTagName('header');
-        let headerUserName = document.createElement('div');
-        headerUserName.className = 'headerUserName';
-        let userName = document.createElement('h1');
-        userName.textContent = user;
-        headerUserName.appendChild(userName);
-        header[0].insertBefore(headerUserName, header[0].childNodes[0]);
-
-        let headerAddFoto = document.createElement('div');
-        headerAddFoto.className = 'headerAddFoto';
-        let addFotoLink = document.createElement('a');
-        addFotoLink.href = '#';
-        let addFotoImg = document.createElement('i');
-        addFotoImg.className = 'fas fa-plus-circle';
-        addFotoLink.appendChild(addFotoImg);
-        headerAddFoto.appendChild(addFotoLink);
-        header[0].appendChild(headerAddFoto);
-
-        let headerSingIn = document.createElement('div');
-        headerSingIn.className = 'headerSingInOut';
-        let singInLink = document.createElement('a');
-        singInLink.href = '#';
-        let singInImg = document.createElement('i');
-        singInImg.className = 'fas fa-sign-out-alt';
-        singInLink.appendChild(singInImg);
-        headerSingIn.appendChild(singInLink);
-        header[0].appendChild(headerSingIn);
-
-        let main = document.getElementsByTagName('main');
-        let posts = main[0].getElementsByClassName('postBox');
-        let postsArray = Array.prototype.slice.call(posts);
-        postsArray.forEach(function (item) {
-            let like = item.getElementsByClassName('commentBox');
-            let editButton = document.createElement('a');
-            let editImage = document.createElement('i');
-            editImage.className = 'fas fa-edit';
-            editButton.appendChild(editImage);
-            item.insertBefore(editButton, like[0]);
-
-            let trashButton = document.createElement('a');
-            let trashImage = document.createElement('i');
-            trashImage.className = 'fas fa-trash-alt';
-            trashButton.appendChild(trashImage);
-            item.insertBefore(trashButton, like[0]);
-        })
-    };
+        showUserName();
+        showButtonAddFoto();
+        showButtonSignIn();
+    }; //
 
     let showFilterUsers = function () {
         let dataUsers = document.getElementById('userNames');
@@ -549,14 +578,18 @@ let domFunc = (function () {
 
     let likePost = function (id) {
         let post = document.getElementById(id);
-        let heart = post.getElementsByClassName('fa-heart');
-        heart[0].style.color = '#c00';
+        let heart = post.getElementsByClassName('fa-heart')[0];
+        heart.style.transition = '.2s';
+        heart.style.color = '#c00';
+        heart.style.transform = 'scale(1.2)';
     };
 
     let unLikePost = function (id) {
         let post = document.getElementById(id);
-        let heart = post.getElementsByClassName('fa-heart');
-        heart[0].style.color = '#474143';
+        let heart = post.getElementsByClassName('fa-heart')[0];
+        heart.style.transition = '.2s';
+        heart.style.color = '#474143';
+        heart.style.transform = 'scale(1)';
     };
 
     return {
@@ -590,10 +623,13 @@ function addPhotoPost(PhotoPost) {
     return false;
 }
 
-function removePhotoPost(id) {
-    if (dataFunc.removePhotoPost(id)) {
-        domFunc.removePhotoPost(id);
-        return true;
+function removePhotoPost(event) {
+    if (event.target.classList.contains('fa-trash-alt')) {
+        event.target.style.animation = 'swing 0.6s ease';
+        if (dataFunc.removePhotoPost(this.id)) {
+            domFunc.removePhotoPost(this.id);
+            return true;
+        }
     }
     return false;
 }
@@ -626,29 +662,97 @@ function showElementsForUser() {
     }
 }
 
-function likePost(id) {
-    if (user !== null) {
-        if (dataFunc.likePhotoPost(id)) {
-            domFunc.likePost(id);
-
+function likePost(event) {
+    if (user !== null && event.target.classList.contains('fa-heart')) {
+        if (dataFunc.likePhotoPost(this.id)) {
+            domFunc.likePost(this.id);
         }
         else {
-            domFunc.unLikePost(id);
+            domFunc.unLikePost(this.id);
         }
     }
 }
 
-showPhotoPosts(1, 9);
+let events = (function () {
 
-addPhotoPost(photoPostsArray[0]);
+    function resetPosts() {
+        let main = document.getElementsByClassName('postBox');
+        let posts = Array.prototype.slice.call(main);
+        posts.forEach(function (post) {
+            post.remove();
+        });
+    }
 
-removePhotoPost('5');
+    function filtingPhotoPosts() {
+        resetPosts();
+        showPhotoPosts(0, 8, filterConfig);
+    }
 
-editPhotoPost('2', {
-    descriprion: 'You don\'t own me If you ever step to me again.',
-    photoLink: 'https://scontent.cdninstagram.com/hphotos-xaf1/t51.2885-15/e15/11085027_1445865919040220_2096401498_n.jpg',
-    hashtags: ['#smile']
-});
+    function showMorePhotoPosts() {
+        let cntShowPosts = document.getElementsByClassName('postBox').length;
+        showPhotoPosts(cntShowPosts, 8, filterConfig);
+    }
+
+    let eLikePost = function (post) {
+        post.addEventListener('click', likePost);
+    };
+
+    let eRemovePost = function (post) {
+        post.addEventListener('click', removePhotoPost);
+    };
+
+    let eShowMorePhotoPosts = function () {
+        let moreFotoButton = document.getElementsByClassName('moreFotoButton')[0];
+        moreFotoButton.addEventListener('click', showMorePhotoPosts)
+    };
+
+    let filterByAuthor = function () {
+        let filtForm = document.forms.author;
+        let filtInput = filtForm.childNodes[1];
+        let author = filtInput.value;
+        filterConfig.author = author;
+        filtingPhotoPosts();
+    };
+
+    let filterByDate = function () {
+        let filtForm = document.forms.date;
+        let filtInput = filtForm.childNodes[1];
+        let date = filtInput.value;
+        if (date !== '') {
+            let listDate = date.split('.');
+            filterConfig.createdAt = new Date(listDate[2], listDate[1] - 1, listDate[0]);
+        }
+        else {
+            filterConfig.createdAt = {};
+        }
+        filtingPhotoPosts();
+    };
+
+    let filterByHashtags = function () {
+        let filtForm = document.forms.hashtags;
+        let filtInput = filtForm.childNodes[1];
+        let hashtags = filtInput.value;
+        let listHashtags = hashtags.split(' ');
+        if (listHashtags.length !== 1 || listHashtags[0] !== '') {
+            filterConfig.hashtags = listHashtags;
+        }
+        else {
+            filterConfig.hashtags = [];
+        }
+        filtingPhotoPosts();
+    };
+
+    return {
+        eLikePost,
+        eRemovePost,
+        eShowMorePhotoPosts,
+        filterByAuthor,
+        filterByDate,
+        filterByHashtags
+    }
+})();
+
+showPhotoPosts(0, 8, filterConfig);
 
 showElementsForUser();
 
@@ -656,4 +760,4 @@ domFunc.showFilterUsers();
 
 domFunc.showFilterHashtags();
 
-likePost('9');
+events.eShowMorePhotoPosts();
