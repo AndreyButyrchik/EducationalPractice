@@ -624,12 +624,11 @@ function addPhotoPost(PhotoPost) {
 }
 
 function removePhotoPost(event) {
-    if (event.target.classList.contains('fa-trash-alt')) {
-        event.target.style.animation = 'swing 0.6s ease';
-        if (dataFunc.removePhotoPost(this.id)) {
-            domFunc.removePhotoPost(this.id);
-            return true;
-        }
+    let modalWindow = document.getElementById('modalWindowConfirmDelete');
+    modalWindow.style.display = 'none';
+    let id = event.target.value;
+    if (dataFunc.removePhotoPost(id)) {
+        domFunc.removePhotoPost(id);
     }
     return false;
 }
@@ -693,12 +692,24 @@ let events = (function () {
         showPhotoPosts(cntShowPosts, 8, filterConfig);
     }
 
+    function showModalRemovePost(event) {
+        let modalWindow = document.getElementById('modalWindowConfirmDelete');
+        modalWindow.style.display = 'flex';
+        let buttonConfirm = document.forms.confirmDelete.childNodes[1];
+        buttonConfirm.onclick = removePhotoPost;
+        buttonConfirm.value = this.id;
+        let buttonReset = document.forms.confirmDelete.childNodes[3];
+        buttonReset.addEventListener('click', function () {
+            modalWindow.style.display = 'none';
+        });
+    }
+
     let eLikePost = function (post) {
         post.addEventListener('click', likePost);
     };
 
     let eRemovePost = function (post) {
-        post.addEventListener('click', removePhotoPost);
+        post.addEventListener('click', showModalRemovePost);
     };
 
     let eShowMorePhotoPosts = function () {
