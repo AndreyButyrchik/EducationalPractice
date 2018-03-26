@@ -50,12 +50,41 @@
         </div>
     </template>
     <dialog id="modalWindowConfirmDelete">
-        <div class="box confirmBox">
+        <div class="box modalBox">
             <h2>Удаление</h2>
             <h3>Вы действительно хотите удалить пост?</h3>
             <form name="confirmDelete">
                 <button name="Yes" type="submit" class="box">Да</button>
                 <button name="No" type="reset" class="box">Нет</button>
+            </form>
+        </div>
+    </dialog>
+    <dialog id="modalWindowSingIn">
+        <div class="box modalBox">
+            <h2>Вход</h2>
+            <form name="authorization">
+                <input name="login" type="text" placeholder="Введите логин" spellcheck="false"  maxlength="15">
+                <input name="password" type="password" placeholder="Введите пароль" spellcheck="false"  maxlength="20">
+                <button name="next" type="submit" class="box">Далее</button>
+            </form>
+        </div>
+    </dialog>
+    <dialog id="modalWindowAddEditPhotoPost">
+        <div class="box modalBox modalBoxAddEditPhoto">
+            <h2></h2>
+            <div class="drug-drop">
+                <i class="fas fa-upload"></i>
+                <h3>Перетащите фото для загрузки</h3>
+                <form name="uploadPhoto">
+                    <label for="upPhoto" class="chous box">Или нажмите добавить фото</label>
+                    <input name="upPhoto" id="upPhoto" type="file" accept="image/*" class="box" onchange="events.eChooseFile(); return false;">
+                </form>
+            </div>
+            <form name="submitPost">
+                <input name="addDescription" type="text" placeholder="Введите описание.">
+                <input name="addHashtags" type="text" placeholder="Введите хештеги." spellcheck="false">
+                <h4>Дата: </h4>
+                <button name="publishPost" type="submit" class="box">Опубликовать</button>
             </form>
         </div>
     </dialog>

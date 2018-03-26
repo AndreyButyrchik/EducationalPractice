@@ -66,6 +66,7 @@ main {
 .fa-heart, .fa-edit, .fa-trash-alt {
     font-size: 1.4em;
     padding: 0 10%;
+    cursor: pointer;
 }
 
 .foto {
@@ -109,10 +110,10 @@ main {
     width: 100%;
     position: relative;
     text-align: center;
+    cursor: pointer;
 }
 
 #modalWindowConfirmDelete {
-    //display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -123,24 +124,115 @@ main {
     background-color: rgba(0,0,0,.6);
 }
 
-.confirmBox {
+.modalBox {
     width: 30%;
     height: 30%;
     padding: 2%;
     text-align: center;
-    line-height: 3em;
+    line-height: 2.5em;
     font-weight: bold;
+    background-color: #E7E8E7;
     animation-name: animatetop;
     animation-duration: 0.4s
 }
 
-button[name=Yes], [name=No] {
+button[name=Yes], [name=No], [name=next] {
     font-family: Roboto;
     font-weight: bold;
     background-color: #C4C4C4;
     width: 5em;
     height: 1.5em;
     margin: 0 5%;
+    outline: none;
+    cursor: pointer;
+}
+
+#modalWindowSingIn {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: rgba(0,0,0,.6);
+}
+
+input[name=login], [name=password] {
+    font-family: Roboto;
+    font-weight: bold;
+    background-color: #E7E8E7;
+    border: none;
+    width: 80%;
+    height: 1.5em;
+    margin: 0 5%;
+    outline: none;
+    border-bottom: 2px solid #C4C4C4;
+}
+
+#modalWindowAddEditPhotoPost {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: rgba(0,0,0,.6);
+}
+
+.drug-drop{
+    padding: 2%;
+    border: 2px dotted #474143;
+    line-height: 2em;
+}
+
+.modalBoxAddEditPhoto{
+    width: 50%;
+    height: 60%;
+}
+
+.chous{
+    width: 80%;
+    padding: .5em;
+    text-align: center;
+    margin: auto;
+    cursor: pointer;
+    display: block;
+    background-color: #A69E9D;
+}
+
+#upPhoto{
+    display: none;
+}
+
+input[name=addDescription], [name=addHashtags] {
+    font-family: Roboto;
+    font-weight: bold;
+    color: #474143;
+    background-color: #A69E9D;
+    border: 2px solid #A69E9D;
+    border-radius: 8px;
+    text-indent: 1em;
+    width: 80%;
+    height: 1.5em;
+    margin: 0 5%;
+    outline: none;
+}
+
+button[name=publishPost]{
+    font-family: Roboto;
+    font-weight: bold;
+    background-color: #C4C4C4;
+    width: 15em;
+    height: 1.5em;
+    margin: 0 5%;
+    outline: none;
+    cursor: pointer;
+}
+
+.highlight {
+    background-color: #A69E9D;
 }
 
 @media screen and (max-width: 960px) {
@@ -203,7 +295,7 @@ button[name=Yes], [name=No] {
         max-height: calc(100% / 16 * 9);
     }
 
-    .confirmBox {
+    .modalBox {
         width: 80%;
         height: 35%;
         padding: 2%;
@@ -213,6 +305,12 @@ button[name=Yes], [name=No] {
         animation-name: animatetop;
         animation-duration: 0.4s
     }
+
+    .modalBoxAddEditPhoto{
+        width: 50%;
+        height: 70%;
+    }
+
 }
 
 @keyframes animatetop {

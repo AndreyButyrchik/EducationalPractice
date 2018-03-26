@@ -448,12 +448,11 @@ let domFunc = (function () {
         let header = document.getElementsByTagName('header')[0];
         let headerAddFoto = document.createElement('div');
         headerAddFoto.className = 'headerAddFoto';
-        let addFotoLink = document.createElement('a');
-        addFotoLink.href = '#';
         let addFotoImg = document.createElement('i');
         addFotoImg.className = 'fas fa-plus-circle';
-        addFotoLink.appendChild(addFotoImg);
-        headerAddFoto.appendChild(addFotoLink);
+        addFotoImg.style.cursor = 'pointer';
+        addFotoImg.onclick = events.eShowModalAddPost;
+        headerAddFoto.appendChild(addFotoImg);
         header.appendChild(headerAddFoto);
     }
 
@@ -461,12 +460,11 @@ let domFunc = (function () {
         let header = document.getElementsByTagName('header')[0];
         let headerSingIn = document.createElement('div');
         headerSingIn.className = 'headerSingInOut';
-        let singInLink = document.createElement('a');
-        singInLink.href = '#';
         let singInImg = document.createElement('i');
         singInImg.className = 'fas fa-sign-out-alt';
-        singInLink.appendChild(singInImg);
-        headerSingIn.appendChild(singInLink);
+        singInImg.onclick = events.eSingOut;
+        singInImg.style.cursor = 'pointer';
+        headerSingIn.appendChild(singInImg);
         header.appendChild(headerSingIn);
     }
 
@@ -480,23 +478,24 @@ let domFunc = (function () {
     }
 
     function showButtonTrash(item) {
-        events.eRemovePost(item);
         let commentBox = item.getElementsByClassName('commentBox')[0];
-        let trashButton = document.createElement('a');
         let trashImage = document.createElement('i');
         trashImage.className = 'fas fa-trash-alt';
-        trashButton.appendChild(trashImage);
-        item.insertBefore(trashButton, commentBox);
+        trashImage.style.cursor = 'pointer';
+        trashImage.onclick = events.showModalRemovePost;
+        item.insertBefore(trashImage, commentBox);
     }
 
-    let showPhotoPosts = function (postsArray) {
-        postsArray.reverse();
+    let showPhotoPosts = function (postsArray, flag) {
+        if (flag) {
+            postsArray.reverse();
+        }
         postsArray.forEach(function (item) {
-            addPhotoPost(item);
+            addPhotoPost(item, flag);
         });
     };
 
-    let addPhotoPost = function (photoPost) {
+    let addPhotoPost = function (photoPost, flag) {
         let main = document.getElementsByTagName('main')[0];
         let template = document.getElementById('templatePost');
         let newPost = template.content.cloneNode(true).childNodes[1];
@@ -515,7 +514,12 @@ let domFunc = (function () {
             showButtonEditPost(newPost);
             showButtonTrash(newPost);
         }
-        main.insertBefore(newPost, main.childNodes[main.childNodes.length - 2]);
+        if (flag) {
+            main.insertBefore(newPost, main.childNodes[3]);
+        }
+        else {
+            main.insertBefore(newPost, main.childNodes[main.childNodes.length - 2]);
+        }
     };
 
     let removePhotoPost = function (id) {
@@ -550,7 +554,21 @@ let domFunc = (function () {
         showUserName();
         showButtonAddFoto();
         showButtonSignIn();
-    }; //
+
+        let buttonSingIn = document.getElementsByClassName('fa-sign-in-alt')[0];
+        if (buttonSingIn !== undefined) {
+            buttonSingIn.remove();
+        }
+
+        let posts = document.getElementsByClassName('postBox');
+        [].forEach.call(posts, function (item) {
+            let author = item.childNodes[1].textContent;
+            if (author === user && (item.getElementsByClassName('fa-trash-alt')[0]) === undefined) {
+                showButtonEditPost(item);
+                showButtonTrash(item);
+            }
+        });
+    };
 
     let showFilterUsers = function () {
         let dataUsers = document.getElementById('userNames');
@@ -592,6 +610,20 @@ let domFunc = (function () {
         heart.style.transform = 'scale(1)';
     };
 
+    let showButtonSingIn = function () {
+        let header = document.getElementsByTagName('header');
+        let headerSingOut = document.createElement('div');
+        headerSingOut.className = 'headerSingInOut';
+        let singOutImg = document.createElement('i');
+        singOutImg.className = 'fas fa-sign-in-alt';
+        singOutImg.style.cursor = 'pointer';
+        singOutImg.addEventListener('click', events.eSingIn);
+        headerSingOut.appendChild(singOutImg);
+        header[0].appendChild(headerSingOut);
+        let portalName = document.querySelector('.headerPortalName');
+        portalName.style.width = '90vw';
+    };
+
     return {
         showPhotoPosts,
         addPhotoPost,
@@ -601,23 +633,24 @@ let domFunc = (function () {
         showFilterUsers,
         showFilterHashtags,
         likePost,
-        unLikePost
+        unLikePost,
+        showButtonSingIn
     }
 
 })();
 
-function showPhotoPosts(skip, top, filterConfig) {
+function showPhotoPosts(skip, top, filterConfig, flag) {
     let postsArray = dataFunc.getPhotoPosts(skip, top, filterConfig);
     if (typeof postsArray === 'object') {
-        domFunc.showPhotoPosts(postsArray);
+        domFunc.showPhotoPosts(postsArray, flag);
         return true;
     }
     return false;
 }
 
-function addPhotoPost(PhotoPost) {
+function addPhotoPost(PhotoPost, flag) {
     if (dataFunc.addPhotoPost(PhotoPost)) {
-        domFunc.addPhotoPost(PhotoPost);
+        domFunc.addPhotoPost(PhotoPost, flag);
         return true;
     }
     return false;
@@ -646,18 +679,7 @@ function showElementsForUser() {
         domFunc.showElementsForAuthUser();
     }
     else {
-        let header = document.getElementsByTagName('header');
-        let headerSingOut = document.createElement('div');
-        headerSingOut.className = 'headerSingInOut';
-        let singOutLink = document.createElement('a');
-        singOutLink.href = '#';
-        let singOutImg = document.createElement('i');
-        singOutImg.className = 'fas fa-sign-in-alt';
-        singOutLink.appendChild(singOutImg);
-        headerSingOut.appendChild(singOutLink);
-        header[0].appendChild(headerSingOut);
-        let portalName = document.querySelector('.headerPortalName');
-        portalName.style.width = '90vw';
+        domFunc.showButtonSingIn();
     }
 }
 
@@ -673,6 +695,35 @@ function likePost(event) {
 }
 
 let events = (function () {
+    let fileTypes = [
+        'image/jpeg',
+        'image/img',
+        'image/png',
+        'image/jpg'
+    ];
+
+    function getUniqueId() {
+        let id = 0;
+        photoPostsArray.forEach(function (item) {
+            id = Math.max(id, item.id);
+        });
+        id = id + 1;
+        return id.toString();
+    }
+
+    function formatDate(date) {
+
+        let dd = date.getDate();
+        if (dd < 10) dd = '0' + dd;
+
+        let mm = date.getMonth() + 1;
+        if (mm < 10) mm = '0' + mm;
+
+        let yy = date.getFullYear();
+        if (yy < 10) yy = '0' + yy;
+
+        return dd + '.' + mm + '.' + yy;
+    }
 
     function resetPosts() {
         let main = document.getElementsByClassName('postBox');
@@ -689,32 +740,207 @@ let events = (function () {
 
     function showMorePhotoPosts() {
         let cntShowPosts = document.getElementsByClassName('postBox').length;
-        showPhotoPosts(cntShowPosts, 8, filterConfig);
+        showPhotoPosts(cntShowPosts, 8, filterConfig, false);
     }
 
-    function showModalRemovePost(event) {
+    function logIn() {
+        let modalWindow = document.getElementById('modalWindowSingIn');
+        let inputLogin = document.forms.authorization.childNodes[1];
+        let inputPassword = document.forms.authorization.childNodes[3]; // ?
+        user = inputLogin.value;
+        let buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
+        buttonSignOut.remove();
+        domFunc.showElementsForAuthUser();
+        modalWindow.style.display = 'none';
+        return false;
+    }
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function setImgSrc(src) {
+        let submitPost = document.forms.submitPost;
+        submitPost.value = src;
+    }
+
+    function loadFoto(file) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function () {
+            setImgSrc(reader.result);
+        };
+    }
+
+    function validFileType(file) {
+        for (let i = 0; i < fileTypes.length; i++) {
+            if (file.type === fileTypes[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function checkSuccess() {
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        let modalWindow = window.childNodes[1];
+        let drugDrop = modalWindow.childNodes[3];
+
+        let upLoadIcon = drugDrop.childNodes[1];
+        upLoadIcon.className = 'fas fa-check';
+        upLoadIcon.style.color = '#0f0';
+
+        let label = drugDrop.childNodes[3];
+        label.textContent = 'Фото загружено';
+    }
+
+    function checkInvalid() {
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        let modalWindow = window.childNodes[1];
+        let drugDrop = modalWindow.childNodes[3];
+
+        let upLoadIcon = drugDrop.childNodes[1];
+        upLoadIcon.className = 'fas fa-exclamation-circle';
+        upLoadIcon.style.color = '#f00';
+
+        let label = drugDrop.childNodes[3];
+        label.textContent = 'Ошибка';
+
+        let submitForm = document.forms.submitPost;
+        submitForm.childNodes[1].value = '';
+        submitForm.value = '';
+        submitForm.childNodes[3].value = [];
+    }
+
+    function handleDrop(e) {
+        let dt = e.dataTransfer;
+        let dtfiles = dt.files;
+        let file = Array.from(dtfiles);
+        if (validFileType(file[0])) {
+            loadFoto(file[0]);
+            checkSuccess();
+        }
+        else {
+            checkInvalid();
+        }
+
+    }
+
+    function eDropDownArea() {
+        let dropArea = document.getElementsByClassName('drug-drop')[0];
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false)
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false)
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false)
+        });
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function highlight(e) {
+            dropArea.classList.add('highlight')
+        }
+
+        function unhighlight(e) {
+            dropArea.classList.remove('highlight')
+        }
+    }
+
+    function resetFormAddPhoto() {
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        let modalWindow = window.childNodes[1];
+        let drugDrop = modalWindow.childNodes[3];
+
+        let upLoadIcon = drugDrop.childNodes[1];
+        upLoadIcon.className = 'fas fa-upload';
+        upLoadIcon.style.color = '#474143';
+
+        let label = drugDrop.childNodes[3];
+        label.textContent = 'Перетащите фото для загрузки';
+
+        let submitForm = document.forms.submitPost;
+        submitForm.childNodes[1].value = '';
+        submitForm.value = '';
+        submitForm.childNodes[3].value = [];
+    }
+
+    let eChooseFile = function () {
+        let file = document.forms.uploadPhoto.childNodes[3].files;
+        if (file.length === 0) {
+            checkInvalid();
+        } else {
+            if (validFileType(file[0])) {
+                loadFoto(file[0]);
+                checkSuccess();
+            }
+            else {
+                checkInvalid();
+            }
+        }
+    };
+
+    let showModalRemovePost = function (event) {
         let modalWindow = document.getElementById('modalWindowConfirmDelete');
         modalWindow.style.display = 'flex';
         let buttonConfirm = document.forms.confirmDelete.childNodes[1];
         buttonConfirm.onclick = removePhotoPost;
-        buttonConfirm.value = this.id;
+        buttonConfirm.value = event.target.parentElement.id;
         let buttonReset = document.forms.confirmDelete.childNodes[3];
         buttonReset.addEventListener('click', function () {
             modalWindow.style.display = 'none';
         });
-    }
+    };
 
     let eLikePost = function (post) {
         post.addEventListener('click', likePost);
     };
 
-    let eRemovePost = function (post) {
-        post.addEventListener('click', showModalRemovePost);
-    };
-
     let eShowMorePhotoPosts = function () {
         let moreFotoButton = document.getElementsByClassName('moreFotoButton')[0];
         moreFotoButton.addEventListener('click', showMorePhotoPosts)
+    };
+
+    let eSingIn = function () {
+        let modalWindow = document.getElementById('modalWindowSingIn');
+        modalWindow.style.display = 'flex';
+        let buttonNext = document.forms.authorization.childNodes[5];
+        buttonNext.onclick = logIn;
+    };
+
+    let logOut = function () {
+        user = null;
+
+        let author = document.getElementsByClassName('headerUserName')[0];
+        author.remove();
+
+        let buttonAddPhoto = document.getElementsByClassName('headerAddFoto')[0];
+        buttonAddPhoto.remove();
+
+        let buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
+        buttonSignOut.remove();
+
+        domFunc.showButtonSingIn();
+
+        let posts = document.getElementsByClassName('postBox');
+        [].forEach.call(posts, function (item) {
+            let like = item.getElementsByClassName('fa-heart')[0];
+            like.style.transition = '.2s';
+            like.style.color = '#474143';
+            like.style.transform = 'scale(1)';
+
+            let edit = item.getElementsByClassName('fa-edit')[0];
+            let trash = item.getElementsByClassName('fa-trash-alt')[0];
+            if (edit !== undefined || trash !== undefined) {
+                edit.remove();
+                trash.remove();
+            }
+        });
+
     };
 
     let filterByAuthor = function () {
@@ -753,17 +979,54 @@ let events = (function () {
         filtingPhotoPosts();
     };
 
+    let eShowModalAddPost = function () {
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        window.style.display = 'flex';
+        let modalWindow = window.childNodes[1];
+        modalWindow.childNodes[1].textContent = user;
+        modalWindow.childNodes[5].childNodes[5].textContent = 'Дата: ' + formatDate(new Date());
+        eDropDownArea();
+        let submit = document.forms.submitPost.childNodes[7];
+        submit.onclick = eAddPost;
+    };
+
+    let eAddPost = function () {
+        let submitForm = document.forms.submitPost;
+        let photoPost = {
+            id: '',
+            descriprion: '',
+            createdAt: new Date(),
+            author: user,
+            photoLink: '',
+            hashtags: [],
+            likes: [''],
+            removed: false
+        };
+        photoPost.id = getUniqueId();
+        photoPost.descriprion = submitForm.childNodes[1].value;
+        photoPost.photoLink = submitForm.value;
+        photoPost.hashtags = submitForm.childNodes[3].value.split(' ');
+        addPhotoPost(photoPost, true);
+        document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
+        resetFormAddPhoto();
+        return false;
+    };
+
     return {
         eLikePost,
-        eRemovePost,
+        showModalRemovePost,
         eShowMorePhotoPosts,
         filterByAuthor,
         filterByDate,
-        filterByHashtags
+        filterByHashtags,
+        eSingIn,
+        eSingOut: logOut,
+        eShowModalAddPost,
+        eChooseFile
     }
 })();
 
-showPhotoPosts(0, 8, filterConfig);
+showPhotoPosts(0, 8, filterConfig, true);
 
 showElementsForUser();
 
