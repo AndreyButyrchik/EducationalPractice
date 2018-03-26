@@ -63,9 +63,9 @@
         <div class="box modalBox">
             <h2>Вход</h2>
             <form name="authorization">
-                <input name="login" type="text" placeholder="Введите логин" spellcheck="false"  maxlength="15">
-                <input name="password" type="password" placeholder="Введите пароль" spellcheck="false"  maxlength="20">
-                <button name="next" type="submit" class="box">Далее</button>
+                <input name="login" type="text" placeholder="Введите логин" spellcheck="false" maxlength="20">
+                <input name="password" type="password" placeholder="Введите пароль" spellcheck="false" maxlength="20">
+                <button name="next" type="button" class="box">Далее</button>
             </form>
         </div>
     </dialog>
@@ -77,18 +77,19 @@
                 <h3>Перетащите фото для загрузки</h3>
                 <form name="uploadPhoto">
                     <label for="upPhoto" class="chous box">Или нажмите добавить фото</label>
-                    <input name="upPhoto" id="upPhoto" type="file" accept="image/*" class="box" onchange="events.eChooseFile(); return false;">
+                    <input name="upPhoto" id="upPhoto" type="file" accept="image/*" class="box"
+                           onchange="events.eChooseFile();" maxlength="20">
                 </form>
             </div>
             <form name="submitPost">
-                <input name="addDescription" type="text" placeholder="Введите описание.">
-                <input name="addHashtags" type="text" placeholder="Введите хештеги." spellcheck="false">
+                <input name="addDescription" type="text" placeholder="Введите описание." maxlength="200">
+                <input name="addHashtags" type="text" placeholder="Введите хештеги." spellcheck="false" maxlength="50">
                 <h4>Дата: </h4>
-                <button name="publishPost" type="submit" class="box">Опубликовать</button>
+                <button name="publishPost" type="button" class="box">Опубликовать</button>
             </form>
         </div>
     </dialog>
-    <i class="fas fa-angle-down fa-3x moreFotoButton"></i>
+    <i class="fas fa-angle-down fa-3x moreFotoButton" onclick="events.eShowMorePhotoPosts();"></i>
 </main>
 <footer>
     <div class="footerBox">

@@ -292,24 +292,24 @@ let dataFunc = (function () {
         let sourcePhotoPost = getPhotoPost(id);
         if (sourcePhotoPost) {
             if (validatePhotoPost(sourcePhotoPost)) {
-                let flag = false;
+                let insertBefore = false;
                 if (photoPost.descriprion &&
                     photoPost.descriprion.length < 200 &&
                     photoPost.descriprion.length !== 0) {
                     sourcePhotoPost.descriprion = photoPost.descriprion;
-                    flag = true;
+                    insertBefore = true;
                 }
                 if (photoPost.photoLink &&
                     photoPost.photoLink.length !== 0) {
                     sourcePhotoPost.photoLink = photoPost.photoLink;
-                    flag = true;
+                    insertBefore = true;
                 }
                 if (photoPost.hashtags &&
                     photoPost.hashtags.length !== 0) {
                     sourcePhotoPost.hashtags = photoPost.hashtags;
-                    flag = true;
+                    insertBefore = true;
                 }
-                return flag;
+                return insertBefore;
             }
             else {
                 return false;
@@ -372,13 +372,13 @@ let dataFunc = (function () {
                 typeof filterConfig.hashtags === "object" &&
                 filterConfig.hashtags instanceof Array) {
                 filtPhotoPosts = filtPhotoPosts.filter(function (item) {
-                    let flag = true;
+                    let correctHashtags = true;
                     for (let i = 0; i < filterConfig.hashtags.length; i++) {
                         if (item.hashtags.indexOf(filterConfig.hashtags[i]) === -1) {
-                            flag = false;
+                            correctHashtags = false;
                         }
                     }
-                    return flag;
+                    return correctHashtags;
                 });
             }
         }
@@ -423,13 +423,19 @@ let domFunc = (function () {
     function formatDate(date) {
 
         let dd = date.getDate();
-        if (dd < 10) dd = '0' + dd;
+        if (dd < 10) {
+            dd = `0${dd}`;
+        }
 
         let mm = date.getMonth() + 1;
-        if (mm < 10) mm = '0' + mm;
+        if (mm < 10) {
+            mm = `0${mm}`;
+        }
 
         let yy = date.getFullYear();
-        if (yy < 10) yy = '0' + yy;
+        if (yy < 10) {
+            yy = `0${yy}`;
+        }
 
         return dd + '.' + mm + '.' + yy;
     }
@@ -462,7 +468,7 @@ let domFunc = (function () {
         headerSingIn.className = 'headerSingInOut';
         let singInImg = document.createElement('i');
         singInImg.className = 'fas fa-sign-out-alt';
-        singInImg.onclick = events.eSingOut;
+        singInImg.onclick = events.logOut;
         singInImg.style.cursor = 'pointer';
         headerSingIn.appendChild(singInImg);
         header.appendChild(headerSingIn);
@@ -470,11 +476,10 @@ let domFunc = (function () {
 
     function showButtonEditPost(item) {
         let commentBox = item.getElementsByClassName('commentBox')[0];
-        let editButton = document.createElement('a');
         let editImage = document.createElement('i');
         editImage.className = 'fas fa-edit';
-        editButton.appendChild(editImage);
-        item.insertBefore(editButton, commentBox);
+        editImage.onclick = events.eShowModalEditPost;
+        item.insertBefore(editImage, commentBox);
     }
 
     function showButtonTrash(item) {
@@ -486,16 +491,16 @@ let domFunc = (function () {
         item.insertBefore(trashImage, commentBox);
     }
 
-    let showPhotoPosts = function (postsArray, flag) {
-        if (flag) {
+    let showPhotoPosts = function (postsArray, insertBefore) {
+        if (insertBefore) {
             postsArray.reverse();
         }
         postsArray.forEach(function (item) {
-            addPhotoPost(item, flag);
+            addPhotoPost(item, insertBefore);
         });
     };
 
-    let addPhotoPost = function (photoPost, flag) {
+    let addPhotoPost = function (photoPost, insertBefore) {
         let main = document.getElementsByTagName('main')[0];
         let template = document.getElementById('templatePost');
         let newPost = template.content.cloneNode(true).childNodes[1];
@@ -504,17 +509,17 @@ let domFunc = (function () {
         newPost.childNodes[1].textContent = photoPost.author;
         newPost.childNodes[3].firstChild.src = photoPost.photoLink;
         newPost.childNodes[7].firstChild.textContent = photoPost.descriprion;
-        newPost.childNodes[9].firstChild.textContent = photoPost.hashtags;
+        newPost.childNodes[9].firstChild.textContent = photoPost.hashtags.join(' ');
         newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
-        if (photoPost.likes.indexOf(user) !== -1) {
-            newPost.childNodes[5].style.color = '#c00';
-            newPost.childNodes[5].style.transform = 'scale(1.2)';
-        }
         if (user === photoPost.author) {
             showButtonEditPost(newPost);
             showButtonTrash(newPost);
         }
-        if (flag) {
+        if (photoPost.likes.indexOf(user) !== -1) {
+            let heart = newPost.getElementsByClassName('fa-heart')[0];
+            heart.className = 'fas fa-heart like';
+        }
+        if (insertBefore) {
             main.insertBefore(newPost, main.childNodes[3]);
         }
         else {
@@ -567,6 +572,12 @@ let domFunc = (function () {
                 showButtonEditPost(item);
                 showButtonTrash(item);
             }
+            let id = item.id;
+            let dataPost = dataFunc.getPhotoPost(id);
+            if (dataPost.likes.indexOf(user) !== -1) {
+                let heart = item.getElementsByClassName('fa-heart')[0];
+                heart.className = 'fas fa-heart like';
+            }
         });
     };
 
@@ -597,17 +608,13 @@ let domFunc = (function () {
     let likePost = function (id) {
         let post = document.getElementById(id);
         let heart = post.getElementsByClassName('fa-heart')[0];
-        heart.style.transition = '.2s';
-        heart.style.color = '#c00';
-        heart.style.transform = 'scale(1.2)';
+        heart.className = 'fas fa-heart like';
     };
 
     let unLikePost = function (id) {
         let post = document.getElementById(id);
         let heart = post.getElementsByClassName('fa-heart')[0];
-        heart.style.transition = '.2s';
-        heart.style.color = '#474143';
-        heart.style.transform = 'scale(1)';
+        heart.className = 'fas fa-heart unlike';
     };
 
     let showButtonSingIn = function () {
@@ -639,18 +646,18 @@ let domFunc = (function () {
 
 })();
 
-function showPhotoPosts(skip, top, filterConfig, flag) {
+function showPhotoPosts(skip, top, filterConfig, insertBefore) {
     let postsArray = dataFunc.getPhotoPosts(skip, top, filterConfig);
     if (typeof postsArray === 'object') {
-        domFunc.showPhotoPosts(postsArray, flag);
+        domFunc.showPhotoPosts(postsArray, insertBefore);
         return true;
     }
     return false;
 }
 
-function addPhotoPost(PhotoPost, flag) {
+function addPhotoPost(PhotoPost, insertBefore) {
     if (dataFunc.addPhotoPost(PhotoPost)) {
-        domFunc.addPhotoPost(PhotoPost, flag);
+        domFunc.addPhotoPost(PhotoPost, insertBefore);
         return true;
     }
     return false;
@@ -736,11 +743,6 @@ let events = (function () {
     function filtingPhotoPosts() {
         resetPosts();
         showPhotoPosts(0, 8, filterConfig);
-    }
-
-    function showMorePhotoPosts() {
-        let cntShowPosts = document.getElementsByClassName('postBox').length;
-        showPhotoPosts(cntShowPosts, 8, filterConfig, false);
     }
 
     function logIn() {
@@ -829,14 +831,18 @@ let events = (function () {
 
     function eDropDownArea() {
         let dropArea = document.getElementsByClassName('drug-drop')[0];
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        let ePrefDefaults = ['dragenter', 'dragover', 'dragleave', 'drop'];
+        ePrefDefaults.forEach(eventName => {
             dropArea.addEventListener(eventName, preventDefaults, false)
         });
 
-        ['dragenter', 'dragover'].forEach(eventName => {
+        let eHighLight = ['dragenter', 'dragover'];
+        eHighLight.forEach(eventName => {
             dropArea.addEventListener(eventName, highlight, false)
         });
-        ['dragleave', 'drop'].forEach(eventName => {
+
+        let eUnHighLight = ['dragleave', 'drop'];
+        eUnHighLight.forEach(eventName => {
             dropArea.addEventListener(eventName, unhighlight, false)
         });
 
@@ -867,6 +873,11 @@ let events = (function () {
         submitForm.childNodes[1].value = '';
         submitForm.value = '';
         submitForm.childNodes[3].value = [];
+        modalWindow.childNodes[5].childNodes[7].textContent = 'Опубликовать';
+
+        let submit = document.forms.submitPost.childNodes[7];
+        submit.removeEventListener('click', eEditPost);
+        submit.removeEventListener('click', eAddPost);
     }
 
     let eChooseFile = function () {
@@ -900,11 +911,6 @@ let events = (function () {
         post.addEventListener('click', likePost);
     };
 
-    let eShowMorePhotoPosts = function () {
-        let moreFotoButton = document.getElementsByClassName('moreFotoButton')[0];
-        moreFotoButton.addEventListener('click', showMorePhotoPosts)
-    };
-
     let eSingIn = function () {
         let modalWindow = document.getElementById('modalWindowSingIn');
         modalWindow.style.display = 'flex';
@@ -929,9 +935,7 @@ let events = (function () {
         let posts = document.getElementsByClassName('postBox');
         [].forEach.call(posts, function (item) {
             let like = item.getElementsByClassName('fa-heart')[0];
-            like.style.transition = '.2s';
-            like.style.color = '#474143';
-            like.style.transform = 'scale(1)';
+            heart.className = 'fas fa-heart unlike';
 
             let edit = item.getElementsByClassName('fa-edit')[0];
             let trash = item.getElementsByClassName('fa-trash-alt')[0];
@@ -941,6 +945,11 @@ let events = (function () {
             }
         });
 
+    };
+
+    let eShowMorePhotoPosts = function () {
+        let cntShowPosts = document.getElementsByClassName('postBox').length;
+        showPhotoPosts(cntShowPosts, 8, filterConfig, false);
     };
 
     let filterByAuthor = function () {
@@ -980,6 +989,7 @@ let events = (function () {
     };
 
     let eShowModalAddPost = function () {
+        resetFormAddPhoto();
         let window = document.getElementById('modalWindowAddEditPhotoPost');
         window.style.display = 'flex';
         let modalWindow = window.childNodes[1];
@@ -987,7 +997,27 @@ let events = (function () {
         modalWindow.childNodes[5].childNodes[5].textContent = 'Дата: ' + formatDate(new Date());
         eDropDownArea();
         let submit = document.forms.submitPost.childNodes[7];
-        submit.onclick = eAddPost;
+        submit.addEventListener('click', eAddPost);
+    };
+
+    let eShowModalEditPost = function (event) {
+        resetFormAddPhoto();
+        let post = event.target.parentElement;
+        let description = post.getElementsByClassName('commentBox')[0].textContent;
+        let hashtags = post.getElementsByClassName('hashtagsBox')[0].textContent;
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        window.style.display = 'flex';
+        let modalWindow = window.childNodes[1];
+        modalWindow.childNodes[5].childNodes[1].value = description;
+        modalWindow.childNodes[5].childNodes[3].value = hashtags;
+        modalWindow.childNodes[5].childNodes[7].textContent = 'Изменить';
+        modalWindow.childNodes[1].textContent = user;
+        modalWindow.childNodes[5].childNodes[5].textContent = 'Дата: ' + formatDate(new Date());
+        eDropDownArea();
+        checkSuccess();
+        document.forms.submitPost.value = post.getElementsByClassName('foto')[0].src;
+        let submit = document.forms.submitPost.childNodes[7];
+        submit.addEventListener('click', eEditPost.bind(null, post));
     };
 
     let eAddPost = function () {
@@ -1008,8 +1038,17 @@ let events = (function () {
         photoPost.hashtags = submitForm.childNodes[3].value.split(' ');
         addPhotoPost(photoPost, true);
         document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
-        resetFormAddPhoto();
-        return false;
+    };
+
+    let eEditPost = function (post, event) {
+        let submitForm = document.forms.submitPost;
+        let description = post.getElementsByClassName('commentBox')[0].firstChild;
+        let hashtags = post.getElementsByClassName('hashtagsBox')[0].firstChild;
+        let img = post.getElementsByClassName('foto')[0];
+        description.textContent = submitForm.childNodes[1].value;
+        img.src = submitForm.value;
+        hashtags.textContent = submitForm.childNodes[3].value;
+        document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
     };
 
     return {
@@ -1020,9 +1059,10 @@ let events = (function () {
         filterByDate,
         filterByHashtags,
         eSingIn,
-        eSingOut: logOut,
+        logOut,
         eShowModalAddPost,
-        eChooseFile
+        eChooseFile,
+        eShowModalEditPost
     }
 })();
 
@@ -1033,5 +1073,3 @@ showElementsForUser();
 domFunc.showFilterUsers();
 
 domFunc.showFilterHashtags();
-
-events.eShowMorePhotoPosts();
