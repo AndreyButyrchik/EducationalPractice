@@ -206,6 +206,25 @@ let photoPostsArray = [
 ];
 
 let dataFunc = (function () {
+    let formatDate = function (date) {
+
+        let dd = date.getDate();
+        if (dd < 10) {
+            dd = `0${dd}`;
+        }
+
+        let mm = date.getMonth() + 1;
+        if (mm < 10) {
+            mm = `0${mm}`;
+        }
+
+        let yy = date.getFullYear();
+        if (yy < 10) {
+            yy = `0${yy}`;
+        }
+
+        return dd + '.' + mm + '.' + yy;
+    };
 
     let getPhotoPost = function (id) {
         if (typeof id !== "string" ||
@@ -415,30 +434,12 @@ let dataFunc = (function () {
         addPhotoPost,
         editPhotoPost,
         getPhotoPosts,
-        likePhotoPost
+        likePhotoPost,
+        formatDate
     }
 })();
 
 let domFunc = (function () {
-    function formatDate(date) {
-
-        let dd = date.getDate();
-        if (dd < 10) {
-            dd = `0${dd}`;
-        }
-
-        let mm = date.getMonth() + 1;
-        if (mm < 10) {
-            mm = `0${mm}`;
-        }
-
-        let yy = date.getFullYear();
-        if (yy < 10) {
-            yy = `0${yy}`;
-        }
-
-        return dd + '.' + mm + '.' + yy;
-    }
 
     function showUserName() {
         let header = document.getElementsByTagName('header')[0];
@@ -510,7 +511,7 @@ let domFunc = (function () {
         newPost.childNodes[3].firstChild.src = photoPost.photoLink;
         newPost.childNodes[7].firstChild.textContent = photoPost.descriprion;
         newPost.childNodes[9].firstChild.textContent = photoPost.hashtags.join(' ');
-        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
+        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + dataFunc.formatDate(photoPost.createdAt);
         if (user === photoPost.author) {
             showButtonEditPost(newPost);
             showButtonTrash(newPost);
@@ -718,23 +719,9 @@ let events = (function () {
         return id.toString();
     }
 
-    function formatDate(date) {
-
-        let dd = date.getDate();
-        if (dd < 10) dd = '0' + dd;
-
-        let mm = date.getMonth() + 1;
-        if (mm < 10) mm = '0' + mm;
-
-        let yy = date.getFullYear();
-        if (yy < 10) yy = '0' + yy;
-
-        return dd + '.' + mm + '.' + yy;
-    }
-
     function resetPosts() {
-        let main = document.getElementsByClassName('postBox');
-        let posts = Array.prototype.slice.call(main);
+        let postList = document.getElementsByClassName('postBox');
+        let posts = Array.prototype.slice.call(postList);
         posts.forEach(function (post) {
             post.remove();
         });
@@ -747,14 +734,13 @@ let events = (function () {
 
     function logIn() {
         let modalWindow = document.getElementById('modalWindowSingIn');
-        let inputLogin = document.forms.authorization.childNodes[1];
-        let inputPassword = document.forms.authorization.childNodes[3]; // ?
+        let inputLogin = document.getElementsByName('login')[0];
+        let inputPassword = document.getElementsByName('password')[0]; // ?
         user = inputLogin.value;
         let buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
         buttonSignOut.remove();
         domFunc.showElementsForAuthUser();
         modalWindow.style.display = 'none';
-        return false;
     }
 
     function preventDefaults(e) {
@@ -786,33 +772,33 @@ let events = (function () {
 
     function checkSuccess() {
         let window = document.getElementById('modalWindowAddEditPhotoPost');
-        let modalWindow = window.childNodes[1];
-        let drugDrop = modalWindow.childNodes[3];
+        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
+        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
 
-        let upLoadIcon = drugDrop.childNodes[1];
+        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
         upLoadIcon.className = 'fas fa-check';
         upLoadIcon.style.color = '#0f0';
 
-        let label = drugDrop.childNodes[3];
+        let label = drugDrop.getElementsByClassName('chous')[0];
         label.textContent = 'Фото загружено';
     }
 
     function checkInvalid() {
         let window = document.getElementById('modalWindowAddEditPhotoPost');
-        let modalWindow = window.childNodes[1];
-        let drugDrop = modalWindow.childNodes[3];
+        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
+        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
 
-        let upLoadIcon = drugDrop.childNodes[1];
+        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
         upLoadIcon.className = 'fas fa-exclamation-circle';
         upLoadIcon.style.color = '#f00';
 
-        let label = drugDrop.childNodes[3];
+        let label = drugDrop.getElementsByClassName('chous')[0];
         label.textContent = 'Ошибка';
 
         let submitForm = document.forms.submitPost;
-        submitForm.childNodes[1].value = '';
+        document.getElementsByName('addDescription')[0].value = '';
+        document.getElementsByName('addHashtags')[0].value = [];
         submitForm.value = '';
-        submitForm.childNodes[3].value = [];
     }
 
     function handleDrop(e) {
@@ -859,29 +845,29 @@ let events = (function () {
 
     function resetFormAddPhoto() {
         let window = document.getElementById('modalWindowAddEditPhotoPost');
-        let modalWindow = window.childNodes[1];
-        let drugDrop = modalWindow.childNodes[3];
+        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
+        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
 
-        let upLoadIcon = drugDrop.childNodes[1];
+        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
         upLoadIcon.className = 'fas fa-upload';
         upLoadIcon.style.color = '#474143';
 
-        let label = drugDrop.childNodes[3];
+        let label = drugDrop.getElementsByClassName('chous')[0];
         label.textContent = 'Перетащите фото для загрузки';
 
         let submitForm = document.forms.submitPost;
-        submitForm.childNodes[1].value = '';
+        document.getElementsByName('addDescription')[0].value = '';
+        document.getElementsByName('addHashtags')[0].value = [];
         submitForm.value = '';
-        submitForm.childNodes[3].value = [];
-        modalWindow.childNodes[5].childNodes[7].textContent = 'Опубликовать';
+        document.getElementsByName('publishPost')[0].textContent = 'Опубликовать';
 
-        let submit = document.forms.submitPost.childNodes[7];
+        let submit = document.getElementsByName('publishPost')[0];
         submit.removeEventListener('click', eEditPost);
         submit.removeEventListener('click', eAddPost);
     }
 
     let eChooseFile = function () {
-        let file = document.forms.uploadPhoto.childNodes[3].files;
+        let file = document.getElementById('upPhoto').files;
         if (file.length === 0) {
             checkInvalid();
         } else {
@@ -893,15 +879,16 @@ let events = (function () {
                 checkInvalid();
             }
         }
+        return false;
     };
 
     let showModalRemovePost = function (event) {
         let modalWindow = document.getElementById('modalWindowConfirmDelete');
         modalWindow.style.display = 'flex';
-        let buttonConfirm = document.forms.confirmDelete.childNodes[1];
+        let buttonConfirm = document.getElementsByName('Yes')[0];
         buttonConfirm.onclick = removePhotoPost;
         buttonConfirm.value = event.target.parentElement.id;
-        let buttonReset = document.forms.confirmDelete.childNodes[3];
+        let buttonReset = document.getElementsByName('No')[0];
         buttonReset.addEventListener('click', function () {
             modalWindow.style.display = 'none';
         });
@@ -914,7 +901,7 @@ let events = (function () {
     let eSingIn = function () {
         let modalWindow = document.getElementById('modalWindowSingIn');
         modalWindow.style.display = 'flex';
-        let buttonNext = document.forms.authorization.childNodes[5];
+        let buttonNext = document.getElementsByName('next')[0];
         buttonNext.onclick = logIn;
     };
 
@@ -955,8 +942,7 @@ let events = (function () {
     let filterByAuthor = function () {
         let filtForm = document.forms.author;
         let filtInput = filtForm.childNodes[1];
-        let author = filtInput.value;
-        filterConfig.author = author;
+        filterConfig.author = filtInput.value;
         filtingPhotoPosts();
     };
 
@@ -992,11 +978,11 @@ let events = (function () {
         resetFormAddPhoto();
         let window = document.getElementById('modalWindowAddEditPhotoPost');
         window.style.display = 'flex';
-        let modalWindow = window.childNodes[1];
-        modalWindow.childNodes[1].textContent = user;
-        modalWindow.childNodes[5].childNodes[5].textContent = 'Дата: ' + formatDate(new Date());
+        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
+        modalWindow.getElementsByTagName('h2')[0].textContent = user;
+        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + dataFunc.formatDate(new Date());
         eDropDownArea();
-        let submit = document.forms.submitPost.childNodes[7];
+        let submit = document.getElementsByName('publishPost')[0]; // on publish post
         submit.addEventListener('click', eAddPost);
     };
 
@@ -1008,15 +994,15 @@ let events = (function () {
         let window = document.getElementById('modalWindowAddEditPhotoPost');
         window.style.display = 'flex';
         let modalWindow = window.childNodes[1];
-        modalWindow.childNodes[5].childNodes[1].value = description;
-        modalWindow.childNodes[5].childNodes[3].value = hashtags;
-        modalWindow.childNodes[5].childNodes[7].textContent = 'Изменить';
-        modalWindow.childNodes[1].textContent = user;
-        modalWindow.childNodes[5].childNodes[5].textContent = 'Дата: ' + formatDate(new Date());
+        document.getElementsByName('addDescription')[0].value = description;
+        document.getElementsByName('addHashtags')[0].value = hashtags;
+        document.getElementsByName('publishPost')[0].textContent = 'Изменить';
+        modalWindow.getElementsByTagName('h2')[0].textContent = user;
+        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + dataFunc.formatDate(new Date());
         eDropDownArea();
         checkSuccess();
         document.forms.submitPost.value = post.getElementsByClassName('foto')[0].src;
-        let submit = document.forms.submitPost.childNodes[7];
+        let submit = document.getElementsByName('publishPost')[0]; // on submitPost
         submit.addEventListener('click', eEditPost.bind(null, post));
     };
 
@@ -1033,9 +1019,9 @@ let events = (function () {
             removed: false
         };
         photoPost.id = getUniqueId();
-        photoPost.descriprion = submitForm.childNodes[1].value;
+        photoPost.descriprion = document.getElementsByName('addDescription')[0].value;
+        photoPost.hashtags =  document.getElementsByName('addHashtags')[0].value.split(' ');
         photoPost.photoLink = submitForm.value;
-        photoPost.hashtags = submitForm.childNodes[3].value.split(' ');
         addPhotoPost(photoPost, true);
         document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
     };
@@ -1045,9 +1031,9 @@ let events = (function () {
         let description = post.getElementsByClassName('commentBox')[0].firstChild;
         let hashtags = post.getElementsByClassName('hashtagsBox')[0].firstChild;
         let img = post.getElementsByClassName('foto')[0];
-        description.textContent = submitForm.childNodes[1].value;
+        description.textContent = document.getElementsByName('addDescription')[0].value;
         img.src = submitForm.value;
-        hashtags.textContent = submitForm.childNodes[3].value;
+        hashtags.textContent = document.getElementsByName('addHashtags')[0].value;
         document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
     };
 
