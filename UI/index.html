@@ -26,13 +26,15 @@
             <button type="submit"></button>
         </form>
         <form name="date" class="filterDate" autocomplete="off" onsubmit="events.filterByDate(); return false;">
-            <input type="text" name="date" placeholder="Введите дату. В формате чч.мм.гггг"
-                   pattern="\d\d\.\d\d\.\d\d\d\d" spellcheck="false" class="filter">
+            <input type="text" name="date" placeholder="Введите дату"
+                   pattern="\d\d\.\d\d\.\d\d\d\d" spellcheck="false" title="Формат: чч.мм.гггг Пример: '13.01.2018'"
+                   class="filter">
             <button type="submit"></button>
         </form>
         <form name="hashtags" class="filterHashtags" autocomplete="off"
               onsubmit="events.filterByHashtags(); return false;">
-            <input type="text" list="hashtags" placeholder="Введите хештеги" spellcheck="false" class="filter">
+            <input type="text" list="hashtags" placeholder="Введите хештеги" spellcheck="false" class="filter"
+                   pattern="((#\b\w+\b)(\s?))+" title="Формат: #хештег1 [#хештег2...] Пример: '#smile #intergalactic'">
             <datalist id="hashtags">
             </datalist>
             <button type="submit"></button>
@@ -49,7 +51,7 @@
             <div class="dateBox"><p></p></div>
         </div>
     </template>
-    <dialog id="modalWindowConfirmDelete">
+    <dialog id="modalWindowConfirmDelete" onclick="events.closeWindow(event)">
         <div class="box modalBox">
             <h2>Удаление</h2>
             <h3>Вы действительно хотите удалить пост?</h3>
@@ -59,17 +61,19 @@
             </form>
         </div>
     </dialog>
-    <dialog id="modalWindowSingIn">
+    <dialog id="modalWindowSingIn" onclick="events.closeWindow(event);">
         <div class="box modalBox">
             <h2>Вход</h2>
             <form name="authorization">
-                <input name="login" type="text" placeholder="Введите логин" spellcheck="false" maxlength="20">
-                <input name="password" type="password" placeholder="Введите пароль" spellcheck="false" maxlength="20">
+                <input name="login" type="text" placeholder="Введите логин" spellcheck="false" minlength="3"
+                       maxlength="25" required autocomplete="off">
+                <input name="password" type="password" placeholder="Введите пароль" spellcheck="false" minlength="8"
+                       maxlength="25" required>
                 <button name="next" type="button" class="box">Далее</button>
             </form>
         </div>
     </dialog>
-    <dialog id="modalWindowAddEditPhotoPost">
+    <dialog id="modalWindowAddEditPhotoPost" onclick="events.closeWindow(event);">
         <div class="box modalBox modalBoxAddEditPhoto">
             <h2></h2>
             <div class="drug-drop">
@@ -78,15 +82,23 @@
                 <form name="uploadPhoto">
                     <label for="upPhoto" class="chous box">Или нажмите добавить фото</label>
                     <input name="upPhoto" id="upPhoto" type="file" accept="image/*" class="box"
-                           onchange="events.eChooseFile();" maxlength="20">
+                           onchange="events.eChooseFile();" required>
                 </form>
             </div>
             <form name="submitPost">
-                <input name="addDescription" type="text" placeholder="Введите описание." maxlength="200">
-                <input name="addHashtags" type="text" placeholder="Введите хештеги." spellcheck="false" maxlength="50">
+                <input name="addDescription" type="text" placeholder="Введите описание." maxlength="200"
+                       autocomplete="off" required>
+                <input name="addHashtags" type="text" placeholder="Введите хештеги." spellcheck="false" maxlength="50"
+                       autocomplete="off" pattern="((#\b\w+\b)(\s?))+" required>
                 <h4>Дата: </h4>
                 <button name="publishPost" type="button" class="box">Опубликовать</button>
             </form>
+        </div>
+    </dialog>
+    <dialog id="modalWindowError" onclick="events.closeWindow(event);">
+        <div class="box modalBox error">
+            <h2>Ошибка</h2>
+            <p></p>
         </div>
     </dialog>
     <i class="fas fa-angle-down fa-3x moreFotoButton" onclick="events.eShowMorePhotoPosts();"></i>
@@ -114,5 +126,8 @@
     </div>
 </footer>
 </body>
-<script src="./js/main.js"></script>
+<script src="./js/dataFunctions.js" defer></script>
+<script src="./js/domFunctions.js" defer></script>
+<script src="./js/events.js" defer></script>
+<script src="./js/main.js" defer></script>
 </html>
