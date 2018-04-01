@@ -47,6 +47,18 @@ p {
     overflow-y: auto;
 }
 
+.like {
+    transition: .2s;
+    color: #c00;
+    transform: scale(1.2);
+}
+
+.unlike{
+    transition: .2s;
+    color: #474143;
+    transform: scale(1);
+}
+
 @media screen and (max-width: 960px) {
     h1 {
         font-size: 1.3em;
@@ -67,11 +79,11 @@ p {
 
 @media screen and (max-width: 768px) {
     h1 {
-        font-size: 1.2em;
+        font-size: 1.1em;
     }
 
     h2 {
-        font-size: 1.1em;
+        font-size: 1em;
     }
 
     h3 {

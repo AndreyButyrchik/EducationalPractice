@@ -1,13 +1,15 @@
 main {
     background-color: #fff;
-    padding-top: 5.86vh;
+    padding-top: 9vh;
     min-height: 88vh;
 }
 
 .filtersBox {
     display: flex;
     align-items: center;
+    justify-content: center;
     height: 5vh;
+    width: 100%;
 }
 
 .filter {
@@ -19,44 +21,52 @@ main {
 }
 
 .filterName {
-    width: 30vw;
+    display: flex;
     margin-right: 2%;
 }
 
+.filterName input, .filterDate input, .filterHashtags input {
+    width: 28vw;
+    background-color: #E7E8E7;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    margin: 0;
+}
+
+.filterName button, .filterDate button, .filterHashtags button {
+    border: none;
+    background: #E7E8E7;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    outline: none;
+}
+
+.filterName button:before, .filterDate button:before, .filterHashtags button:before {
+    font-family: 'Font Awesome 5 Free';
+    content: "\f0b0";
+    font-weight: 900;
+}
+
 .filterDate {
-    width: 30vw;
+    display: flex;
 }
 
 .filterHashtags {
+    display: flex;
     margin-left: 2%;
-    width: 30vw;
 }
 
 .postBox {
     float: left;
     width: 25%;
     text-align: center;
-    margin-top: 3%;
+    margin: 3% 0 3% 0;
 }
 
 .fa-heart, .fa-edit, .fa-trash-alt {
     font-size: 1.4em;
     padding: 0 10%;
-}
-
-.fa-heart:hover {
-    transition: .3s;
-    transform: scale(1.2);
-    color: #c00;
-}
-
-.fa-heart {
-    transition: .3s;
-}
-
-.fa-trash-alt:hover{
-    animation: swing 0.6s ease;
-    animation-iteration-count: 1;
+    cursor: pointer;
 }
 
 .foto {
@@ -100,6 +110,160 @@ main {
     width: 100%;
     position: relative;
     text-align: center;
+    cursor: pointer;
+}
+
+#modalWindowConfirmDelete {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.modalBox {
+    width: 30%;
+    padding: 2%;
+    text-align: center;
+    line-height: 2.5em;
+    font-weight: bold;
+    background-color: #E7E8E7;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+button[name=Yes], [name=No], [name=next] {
+    font-family: Roboto;
+    font-weight: bold;
+    background-color: #C4C4C4;
+    width: 5em;
+    height: 1.5em;
+    margin: 0 5%;
+    outline: none;
+    cursor: pointer;
+}
+
+#modalWindowSingIn {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+input[name=login], [name=password] {
+    font-family: Roboto;
+    font-weight: bold;
+    background-color: #E7E8E7;
+    border: none;
+    width: 80%;
+    height: 1.5em;
+    margin: 0 5%;
+    outline: none;
+    border-bottom: 2px solid #C4C4C4;
+}
+
+input[name=login]:required:valid, [name=password]:required:valid {
+    border-bottom: 2px solid #0c0;
+}
+
+input[name=login]:invalid, [name=password]:invalid {
+    border-bottom: 2px solid #c00;
+}
+
+#modalWindowAddEditPhotoPost {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.drug-drop {
+    padding: 2%;
+    border: 2px dotted #474143;
+    line-height: 2em;
+}
+
+.modalBoxAddEditPhoto {
+    width: 50%;
+    height: 60%;
+}
+
+.chous {
+    width: 80%;
+    padding: .5em;
+    text-align: center;
+    margin: auto;
+    cursor: pointer;
+    display: block;
+    background-color: #A69E9D;
+}
+
+#upPhoto {
+    display: none;
+}
+
+input[name=addDescription], [name=addHashtags] {
+    font-family: Roboto;
+    font-weight: bold;
+    color: #474143;
+    background-color: #A69E9D;
+    border: 2px solid #A69E9D;
+    border-radius: 8px;
+    text-indent: 1em;
+    width: 80%;
+    height: 1.5em;
+    margin: 0 5%;
+    outline: none;
+}
+
+input[name=addDescription]:invalid, [name=addHashtags]:invalid {
+    border: 2px solid #c00;
+}
+
+input[name=addDescription]:required:valid, [name=addHashtags]:required:valid {
+    border: 2px solid #0c0;
+}
+
+button[name=publishPost] {
+    font-family: Roboto;
+    font-weight: bold;
+    background-color: #C4C4C4;
+    width: 15em;
+    height: 1.5em;
+    margin: 0 5%;
+    outline: none;
+    cursor: pointer;
+}
+
+#modalWindowError {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, .6);
+}
+
+.error > p {
+    font-size: 0.8em;
+    line-height: 1.5em;
+}
+
+.highlight {
+    background-color: #A69E9D;
 }
 
 @media screen and (max-width: 960px) {
@@ -140,12 +304,16 @@ main {
 }
 
 @media screen and (max-width: 768px) {
+    .filterName input, .filterDate input, .filterHashtags input {
+        width: 20vw;
+    }
+
     .postBox {
         width: 100%;
     }
 
     .fa-heart, .fa-edit, .fa-trash-alt {
-        font-size: 3em;
+        font-size: 2.6em;
     }
 
     .fotoSpace {
@@ -157,31 +325,34 @@ main {
         width: 100%;
         max-height: calc(100% / 16 * 9);
     }
+
+    .modalBox {
+        width: 80%;
+        height: 35%;
+        padding: 2%;
+        text-align: center;
+        line-height: 3em;
+        font-weight: bold;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+    .modalBoxAddEditPhoto {
+        width: 70%;
+        height: auto;
+    }
+
+    .error {
+        height: auto;
+    }
+
 }
 
-@keyframes swing {
-    15% {
-        -webkit-transform: translateX(3px);
-        transform: translateX(3px);
+@keyframes animatetop {
+    from {
+        opacity: 0
     }
-    30% {
-        -webkit-transform: translateX(-3px);
-        transform: translateX(-3px);
-    }
-    40% {
-        -webkit-transform: translateX(2px);
-        transform: translateX(2px);
-    }
-    50% {
-        -webkit-transform: translateX(-2px);
-        transform: translateX(-2px);
-    }
-    65% {
-        -webkit-transform: translateX(1px);
-        transform: translateX(1px);
-    }
-    100% {
-        -webkit-transform: translateX(0);
-        transform: translateX(0);
+    to {
+        opacity: 1
     }
 }

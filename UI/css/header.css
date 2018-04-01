@@ -7,6 +7,7 @@ header {
     background-color: #E7E8E7;
     box-shadow: 0 2px 1px #474143;
     text-align: center;
+    z-index: 1;
 }
 
 .headerUserName {
