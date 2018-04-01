@@ -24,10 +24,14 @@ let dataFunc = (function () {
             Number(id) < 1) {
             return false;
         }
-        for (let i = 0; i < photoPostsArray.length; i++) {
-            if (photoPostsArray[i].id === id) {
-                return photoPostsArray[i];
-            }
+        let post = localStorage.getItem(id);
+        if (post) {
+            return JSON.parse(post, function (key, value) {
+                if (key === 'createdAt') {
+                    return new Date(value);
+                }
+                return value;
+            });
         }
         return false;
     };
@@ -65,12 +69,6 @@ let dataFunc = (function () {
         if (!(photoPost.hashtags instanceof Array)) {
             return false;
         }
-        for (let i = 0; i < photoPostsArray.length; i++) {
-            if ((photoPostsArray[i].id === photoPost.id) &&
-                (photoPost !== photoPostsArray[i])) {
-                return false;
-            }
-        }
         return photoPost.hashtags.every(function (item) {
             return (item.charAt(0) === "#" && item.length > 1);
         });
@@ -78,7 +76,8 @@ let dataFunc = (function () {
 
     let addPhotoPost = function (photoPost) {
         if (validatePhotoPost(photoPost)) {
-            photoPostsArray.push(photoPost);
+            let jsonPost = JSON.stringify(photoPost);
+            localStorage.setItem(photoPost.id, jsonPost);
             return true;
         }
         return false;
@@ -90,14 +89,11 @@ let dataFunc = (function () {
             Number(id) < 1) {
             return false;
         }
-        for (let i = 0; i < photoPostsArray.length; i++) {
-            if (photoPostsArray[i].id === id) {
-                photoPostsArray[i].removed = true;
-                photoPostsArray.splice(i, 1);
-                return true;
-            }
-        }
-        return false;
+        let jsonPost = localStorage.getItem(id);
+        let post = JSON.parse(jsonPost);
+        post.removed = true;
+        localStorage.removeItem(id);
+        return true;
     };
 
     let editPhotoPost = function (id, photoPost) {
@@ -121,10 +117,10 @@ let dataFunc = (function () {
                     sourcePhotoPost.hashtags = photoPost.hashtags;
                     insertBefore = true;
                 }
-                return insertBefore;
-            }
-            else {
-                return false;
+                if (insertBefore) {
+                    localStorage.setItem(sourcePhotoPost.id, JSON.stringify(sourcePhotoPost));
+                    return true;
+                }
             }
         }
         return false;
@@ -147,19 +143,27 @@ let dataFunc = (function () {
             top = 10;
         }
 
-        for (let i = skip; i < Math.min(skip + top, photoPostsArray.length); i++) {
-            if (!validatePhotoPost(photoPostsArray[i])) {
+        for (let i = skip; i < Math.min(skip + top, localStorage.length); i++) {
+            let key = localStorage.key(i);
+            let post = getPhotoPost(key);
+            if (!validatePhotoPost(post)) {
                 return false;
             }
         }
 
+        let postsArray = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            let id = localStorage.key(i);
+            let post = getPhotoPost(id);
+            postsArray.push(post);
+        }
 
-        let filtPhotoPosts = photoPostsArray.sort(function (a, b) {
+        let filtPhotoPosts = postsArray.sort(function (a, b) {
             return b.createdAt - a.createdAt;
         });
 
 
-        if (typeof  filterConfig === "object") {
+        if (typeof filterConfig === "object") {
             if (filterConfig.createdAt &&
                 typeof filterConfig.createdAt === "object" &&
                 filterConfig.createdAt instanceof Date) {
@@ -216,9 +220,11 @@ let dataFunc = (function () {
             let idxUser = post.likes.indexOf(user);
             if (idxUser === -1) {
                 post.likes.push(user);
+                localStorage.setItem(post.id, JSON.stringify(post));
                 return true
             }
             post.likes.splice(idxUser, 1);
+            localStorage.setItem(post.id, JSON.stringify(post));
         }
         return false;
     };

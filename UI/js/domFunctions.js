@@ -144,9 +144,11 @@ let domFunc = (function () {
     let showFilterUsers = function () {
         let dataUsers = document.getElementById('userNames');
         let uniqueNames = new Set();
-        photoPostsArray.forEach(function (item) {
-            uniqueNames.add(item.author);
-        });
+        for ( let i = 0; i < localStorage.length; i++) {
+            let id = localStorage.key(i);
+            let post = dataFunc.getPhotoPost(id);
+            uniqueNames.add(post.author);
+        }
         uniqueNames.forEach(function (item) {
             let userName = document.createElement('option');
             userName.value = item;
@@ -157,11 +159,13 @@ let domFunc = (function () {
     let showFilterHashtags = function () {
         let dataUsers = document.getElementById('hashtags');
         let uniqueHashtags = new Set();
-        photoPostsArray.forEach(function (item) {
-            item.hashtags.forEach(function (hashtag) {
+        for (let i = 0; i < localStorage.length; i++) {
+            let id = localStorage.key(i);
+            let post = dataFunc.getPhotoPost(id);
+            post.hashtags.forEach(function (hashtag) {
                 uniqueHashtags.add(hashtag);
             });
-        });
+        }
         uniqueHashtags.forEach(function (item) {
             let hashtag = document.createElement('option');
             hashtag.value = item;

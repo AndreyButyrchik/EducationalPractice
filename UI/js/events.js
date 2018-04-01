@@ -10,9 +10,10 @@ let events = (function () {
 
     function getUniqueId() {
         let id = 0;
-        photoPostsArray.forEach(function (item) {
-            id = Math.max(id, item.id);
-        });
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = parseInt(localStorage.key(i));
+            id = Math.max(id, key);
+        }
         id = id + 1;
         return id.toString();
     }
@@ -318,45 +319,33 @@ let events = (function () {
     let eAddPost = function () {
         let addForm = document.forms.submitPost;
         let photoPost = {
-            id: '',
-            descriprion: '',
+            id: `${getUniqueId()}`,
+            descriprion: `${document.getElementsByName('addDescription')[0].value}`,
             createdAt: new Date(),
             author: user,
-            photoLink: '',
-            hashtags: [],
+            photoLink: `${addForm.value}`,
+            hashtags: document.getElementsByName('addHashtags')[0].value.split(' '),
             likes: [''],
             removed: false
         };
-        photoPost.id = getUniqueId();
-        photoPost.descriprion = document.getElementsByName('addDescription')[0].value;
-        photoPost.hashtags = document.getElementsByName('addHashtags')[0].value.split(' ');
-        photoPost.photoLink = addForm.value;
         if (addPhotoPost(photoPost, true)) {
             document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
-        }
-        else {
-
         }
     };
 
     let eEditPost = function () {
-        let editPhotoPost = document.forms.submitPost;
-        let description = currentEditedPost.getElementsByClassName('commentBox')[0].firstChild;
-        let hashtags = currentEditedPost.getElementsByClassName('hashtagsBox')[0].firstChild;
-        let img = currentEditedPost.getElementsByClassName('foto')[0];
-        if (dataFunc.validatePhotoPost({
-                id: getUniqueId(),
-                descriprion: `${document.getElementsByName('addDescription')[0].value}`,
-                createdAt: new Date(),
-                author: user,
-                photoLink: editPhotoPost.value,
-                hashtags: document.getElementsByName('addHashtags')[0].value.split(' '),
-                likes: ['Дима Зевс'],
-                removed: false
-            })) {
-            description.textContent = document.getElementsByName('addDescription')[0].value;
-            img.src = editPhotoPost.value;
-            hashtags.textContent = document.getElementsByName('addHashtags')[0].value;
+        let editForm = document.forms.submitPost;
+        let photoPost = {
+            id: currentEditedPost.id,
+            descriprion: `${document.getElementsByName('addDescription')[0].value}`,
+            createdAt: currentEditedPost.createdAt,
+            author: user,
+            photoLink: `${editForm.value}`,
+            hashtags: document.getElementsByName('addHashtags')[0].value.split(' '),
+            likes: currentEditedPost.likes,
+            removed: false
+        };
+        if (editPhotoPost(currentEditedPost.id, photoPost)) {
             document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
         }
     };
