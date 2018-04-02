@@ -102,10 +102,13 @@ let dataFunc = (function () {
             Number(id) < 1) {
             return false;
         }
-        let jsonPost = localStorage.getItem(id);
-        let post = JSON.parse(jsonPost);
-        post.removed = true;
-        localStorage.removeItem(id);
+        let xhr = new XMLHttpRequest();
+        xhr.open('DELETE', '/delete/' + id, false);
+        xhr.send();
+        if (xhr.status !== 200) {
+            console.log('ошибка: ' + (xhr.status ? xhr.statusText : 'запрос не удался'));
+            return false;
+        }
         return true;
     };
 
