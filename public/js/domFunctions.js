@@ -144,9 +144,9 @@ let domFunc = (function () {
     let showFilterUsers = function () {
         let dataUsers = document.getElementById('userNames');
         let uniqueNames = new Set();
-        for ( let i = 0; i < localStorage.length; i++) {
-            let id = localStorage.key(i);
-            let post = dataFunc.getPhotoPost(id);
+        let length = dataFunc.getPhotoPostsLength();
+        for ( let i = 0; i < length; i++) {
+            let post = dataFunc.getPhotoPostByIdx(i);
             uniqueNames.add(post.author);
         }
         uniqueNames.forEach(function (item) {
@@ -159,9 +159,9 @@ let domFunc = (function () {
     let showFilterHashtags = function () {
         let dataUsers = document.getElementById('hashtags');
         let uniqueHashtags = new Set();
-        for (let i = 0; i < localStorage.length; i++) {
-            let id = localStorage.key(i);
-            let post = dataFunc.getPhotoPost(id);
+        let length = dataFunc.getPhotoPostsLength();
+        for (let i = 0; i < length; i++) {
+            let post = dataFunc.getPhotoPostByIdx(i);
             post.hashtags.forEach(function (hashtag) {
                 uniqueHashtags.add(hashtag);
             });

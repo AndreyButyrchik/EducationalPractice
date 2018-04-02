@@ -10,8 +10,9 @@ let events = (function () {
 
     function getUniqueId() {
         let id = 0;
-        for (let i = 0; i < localStorage.length; i++) {
-            let key = parseInt(localStorage.key(i));
+        let length = dataFunc.getPhotoPostsLength();
+        for (let i = 0; i < length; i++) {
+            let key = parseInt(dataFunc.getPhotoPostByIdx(i).id);
             id = Math.max(id, key);
         }
         id = id + 1;

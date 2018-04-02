@@ -1,4 +1,15 @@
 let dataFunc = (function () {
+    let getPhotoPostsLength = function () {
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/postsLength', false);
+        xhr.send();
+        if (xhr.status !== 200) {
+            console.log('ошибка: ' + (xhr.status ? xhr.statusText : 'запрос не удался'));
+            return 0;
+        }
+        return xhr.responseText;
+    };
+
     let formatDate = function (date) {
 
         let dd = date.getDate();
@@ -28,6 +39,24 @@ let dataFunc = (function () {
         let xhr = new XMLHttpRequest();
         let requestId = '/getPost/' + id;
         xhr.open('GET', requestId, false);
+        xhr.send();
+        if (xhr.status !== 200) {
+            console.log('ошибка: ' + (xhr.status ? xhr.statusText : 'запрос не удался'));
+            return false;
+        }
+
+        return JSON.parse(xhr.responseText, function (key, value) {
+            if (key === 'createdAt') {
+                return new Date(value);
+            }
+            return value;
+        });
+    };
+
+    let getPhotoPostByIdx = function (idx){
+        let xhr = new XMLHttpRequest();
+        let requestIdx = '/getPostByIdx/' + idx;
+        xhr.open('GET', requestIdx, false);
         xhr.send();
         if (xhr.status !== 200) {
             console.log('ошибка: ' + (xhr.status ? xhr.statusText : 'запрос не удался'));
@@ -132,6 +161,11 @@ let dataFunc = (function () {
                     sourcePhotoPost.hashtags = photoPost.hashtags;
                     insertBefore = true;
                 }
+                if (photoPost.likes &&
+                    photoPost.likes !== sourcePhotoPost.likes) {
+                    sourcePhotoPost.likes = photoPost.likes;
+                    insertBefore = true;
+                }
                 if (insertBefore) {
                     let xhr = new XMLHttpRequest();
                     xhr.open('PUT', '/editPost/' + id, false);
@@ -165,18 +199,19 @@ let dataFunc = (function () {
             top = 10;
         }
 
-        for (let i = skip; i < Math.min(skip + top, localStorage.length); i++) {
-            let key = localStorage.key(i);
-            let post = getPhotoPost(key);
+
+        let length = getPhotoPostsLength();
+
+        for (let i = skip; i < Math.min(skip + top, parseInt(length)); i++) {
+            let post = getPhotoPostByIdx(i);
             if (!validatePhotoPost(post)) {
                 return false;
             }
         }
 
         let postsArray = [];
-        for (let i = 0; i < localStorage.length; i++) {
-            let id = localStorage.key(i);
-            let post = getPhotoPost(id);
+        for (let i = 0; i < parseInt(length); i++) {
+            let post = getPhotoPostByIdx(i);
             postsArray.push(post);
         }
 
@@ -242,11 +277,11 @@ let dataFunc = (function () {
             let idxUser = post.likes.indexOf(user);
             if (idxUser === -1) {
                 post.likes.push(user);
-                localStorage.setItem(post.id, JSON.stringify(post));
+                editPhotoPost(id, post);
                 return true
             }
             post.likes.splice(idxUser, 1);
-            localStorage.setItem(post.id, JSON.stringify(post));
+            editPhotoPost(id, post);
         }
         return false;
     };
@@ -259,6 +294,8 @@ let dataFunc = (function () {
         editPhotoPost,
         getPhotoPosts,
         likePhotoPost,
-        formatDate
+        formatDate,
+        getPhotoPostsLength,
+        getPhotoPostByIdx
     }
 })();
