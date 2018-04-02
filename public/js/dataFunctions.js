@@ -82,11 +82,10 @@ let dataFunc = (function () {
 
     let addPhotoPost = function (photoPost) {
         if (validatePhotoPost(photoPost)) {
-            let jsonPost = JSON.stringify(photoPost);
             let xhr = new XMLHttpRequest();
             xhr.open('POST', '/addPost', false);
-            xhr.setRequestHeader("Content-type", "application/json");
-            xhr.send(jsonPost);
+            xhr.setRequestHeader('Content-type', 'application/json');
+            xhr.send(JSON.stringify(photoPost));
             if (xhr.status !== 200) {
                 console.log('ошибка: ' + (xhr.status ? xhr.statusText : 'запрос не удался'));
                 return false;
@@ -134,7 +133,14 @@ let dataFunc = (function () {
                     insertBefore = true;
                 }
                 if (insertBefore) {
-                    localStorage.setItem(sourcePhotoPost.id, JSON.stringify(sourcePhotoPost));
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('PUT', '/editPost/' + id, false);
+                    xhr.setRequestHeader('Content-type','application/json');
+                    xhr.send(JSON.stringify(sourcePhotoPost));
+                    if (xhr.status !== 200) {
+                        console.log('ошибка: ' + (xhr.status ? xhr.statusText : 'запрос не удался'));
+                        return false;
+                    }
                     return true;
                 }
             }

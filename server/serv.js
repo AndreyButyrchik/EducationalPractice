@@ -44,6 +44,40 @@ function deletePhotoPost(id) {
     fs.writeFileSync('./data/photoPosts.json', JSON.stringify(posts));
 }
 
+function editPost(id, photoPost) {
+    let jsonPosts = fs.readFileSync('./data/photoPosts.json');
+    let posts = JSON.parse(jsonPosts, function (key, value) {
+        if (key === 'createdAt') {
+            return new Date(value);
+        }
+        return value;
+    });
+    let postIsEdit = false;
+    let editPost = posts.find((post) => id === post.id);
+    if (photoPost.descriprion &&
+        photoPost.descriprion.length < 200 &&
+        photoPost.descriprion.length !== 0) {
+        editPost.descriprion = photoPost.descriprion;
+        postIsEdit = true;
+    }
+    if (photoPost.photoLink &&
+        photoPost.photoLink.length !== 0) {
+        editPost.photoLink = photoPost.photoLink;
+        postIsEdit = true;
+    }
+    if (photoPost.hashtags &&
+        photoPost.hashtags.length !== 0) {
+        editPost.hashtags = photoPost.hashtags;
+        postIsEdit = true;
+    }
+    if (photoPost.likes &&
+        editPost.likes !== photoPost.likes) {
+        editPost.likes = photoPost.likes
+    }
+    fs.writeFileSync('./data/photoPosts.json', JSON.stringify(posts));
+    return postIsEdit;
+}
+
 app.get('/getPost/:id', function (req, res) {
     let post = getPhotoPost(req.params.id);
     post ? res.send(post) : res.status(404).end();
@@ -56,6 +90,11 @@ app.post('/addPost', (req, res) => {
 
 app.delete('/delete/:id', function (req, res) {
     deletePhotoPost(req.params.id);
+    res.status(200).end();
+});
+
+app.put('/editPost/:id', function (req, res) {
+    editPost(req.params.id, req.body);
     res.status(200).end();
 });
 
