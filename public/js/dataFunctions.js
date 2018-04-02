@@ -24,16 +24,22 @@ let dataFunc = (function () {
             Number(id) < 1) {
             return false;
         }
-        let post = localStorage.getItem(id);
-        if (post) {
-            return JSON.parse(post, function (key, value) {
-                if (key === 'createdAt') {
-                    return new Date(value);
-                }
-                return value;
-            });
+
+        let xhr = new XMLHttpRequest();
+        let requestId = '/getPost/' + id;
+        xhr.open('GET', requestId, false);
+        xhr.send();
+        if (xhr.status !== 200) {
+            console.log('ошибка: ' + (xhr.status ? xhr.statusText : 'запрос не удался'));
+            return false;
         }
-        return false;
+
+        return JSON.parse(xhr.responseText, function (key, value) {
+            if (key === 'createdAt') {
+                return new Date(value);
+            }
+            return value;
+        });
     };
 
     let validatePhotoPost = function (photoPost) {

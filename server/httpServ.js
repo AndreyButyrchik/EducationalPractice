@@ -6,10 +6,10 @@ const serv = http.createServer(function (request, response) {
         let filePath = '';
         let str = request.url.substr(1);
         if (str === '') {
-            filePath = './public/index.html';
+            filePath = '../public/index.html';
         }
         else {
-            filePath = './public/' + str;
+            filePath = '../public/' + str;
         }
         fs.readFile(filePath, function(error, data){
             if(error){
@@ -17,7 +17,6 @@ const serv = http.createServer(function (request, response) {
                 response.end("Ooops!");
             }
             else{
-                response.contentType()
                 response.end(data);
             }
             return true;
