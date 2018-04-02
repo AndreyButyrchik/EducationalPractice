@@ -83,7 +83,14 @@ let dataFunc = (function () {
     let addPhotoPost = function (photoPost) {
         if (validatePhotoPost(photoPost)) {
             let jsonPost = JSON.stringify(photoPost);
-            localStorage.setItem(photoPost.id, jsonPost);
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/addPost', false);
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.send(jsonPost);
+            if (xhr.status !== 200) {
+                console.log('ошибка: ' + (xhr.status ? xhr.statusText : 'запрос не удался'));
+                return false;
+            }
             return true;
         }
         return false;
