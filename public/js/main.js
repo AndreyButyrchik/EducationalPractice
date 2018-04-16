@@ -3,8 +3,28 @@ let user = 'Галя Печка';
 let filterConfig = {createdAt: {}, author: '', hashtags: []};
 
 function showPhotoPosts(skip, top, filterConfig, insertBefore) {
-    let postsArray = dataFunc.getPhotoPosts(skip, top, filterConfig);
+    let postsArray = requestFunctions.getPhotoPosts(skip, top, filterConfig);
     if (typeof postsArray === 'object') {
+        let rem;
+        while(true) {
+            rem = 0;
+            for (let i = 0; i < postsArray.length; i++) {
+                if (postsArray[i].removed === true) {
+                    postsArray.splice(i, 1);
+                    rem++;
+                }
+            }
+            if (rem === 0) {
+                break;
+            }
+            let additionalPosts = requestFunctions.getPhotoPosts(top, rem, filterConfig);
+            if(additionalPosts) {
+                additionalPosts.forEach(function (post) {
+                    postsArray.push(post);
+                });
+            }
+            top += rem;
+        }
         domFunc.showPhotoPosts(postsArray, insertBefore);
         return true;
     }
@@ -12,7 +32,7 @@ function showPhotoPosts(skip, top, filterConfig, insertBefore) {
 }
 
 function addPhotoPost(PhotoPost, insertBefore) {
-    if (dataFunc.addPhotoPost(PhotoPost)) {
+    if (requestFunctions.addPhotoPost(PhotoPost)) {
         domFunc.addPhotoPost(PhotoPost, insertBefore);
         return true;
     }
@@ -20,7 +40,7 @@ function addPhotoPost(PhotoPost, insertBefore) {
 }
 
 function editPhotoPost(id, photoPost) {
-    if (dataFunc.editPhotoPost(id,photoPost)) {
+    if (requestFunctions.editPhotoPost(id,photoPost)) {
         domFunc.editPhotoPost(id, photoPost);
         return true;
     }
@@ -31,7 +51,7 @@ function removePhotoPost(event) {
     let modalWindow = document.getElementById('modalWindowConfirmDelete');
     modalWindow.style.display = 'none';
     let id = event.target.value;
-    if (dataFunc.removePhotoPost(id)) {
+    if (requestFunctions.removePhotoPost(id)) {
         domFunc.removePhotoPost(id);
     }
     return false;
@@ -50,12 +70,7 @@ function showElementsForUser() {
 
 function likePost(event) {
     if (user !== null && event.target.classList.contains('fa-heart')) {
-        if (dataFunc.likePhotoPost(this.id)) {
-            domFunc.likePost(this.id);
-        }
-        else {
-            domFunc.unLikePost(this.id);
-        }
+        requestFunctions.likePhotoPost(this.id) ? domFunc.likePost(this.id) : domFunc.unLikePost(this.id);
     }
 }
 
