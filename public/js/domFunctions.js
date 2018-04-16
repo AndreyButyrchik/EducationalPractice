@@ -71,7 +71,7 @@ let domFunc = (function () {
         newPost.childNodes[3].firstChild.src = photoPost.photoLink;
         newPost.childNodes[7].firstChild.textContent = photoPost.descriprion;
         newPost.childNodes[9].firstChild.textContent = photoPost.hashtags.join(' ');
-        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + dataFunc.formatDate(photoPost.createdAt);
+        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
         if (user === photoPost.author) {
             showButtonEditPost(newPost);
             showButtonTrash(newPost);
@@ -111,7 +111,7 @@ let domFunc = (function () {
             photoPost.hashtags.length !== 0) {
             let hashtagsBox = editPost.getElementsByClassName('hashtagsBox');
             let hashtags = hashtagsBox[0].firstChild;
-            hashtags.textContent = photoPost.hashtags;
+            hashtags.textContent = photoPost.hashtags.join(' ');
         }
     };
 
@@ -133,7 +133,7 @@ let domFunc = (function () {
                 showButtonTrash(item);
             }
             let id = item.id;
-            let dataPost = dataFunc.getPhotoPost(id);
+            let dataPost = requestFunctions.getPhotoPost(id);
             if (dataPost.likes.indexOf(user) !== -1) {
                 let heart = item.getElementsByClassName('fa-heart')[0];
                 heart.className = 'fas fa-heart like';
@@ -143,12 +143,7 @@ let domFunc = (function () {
 
     let showFilterUsers = function () {
         let dataUsers = document.getElementById('userNames');
-        let uniqueNames = new Set();
-        let length = dataFunc.getPhotoPostsLength();
-        for ( let i = 0; i < length; i++) {
-            let post = dataFunc.getPhotoPostByIdx(i);
-            uniqueNames.add(post.author);
-        }
+        let uniqueNames = requestFunctions.getUniqueNames();
         uniqueNames.forEach(function (item) {
             let userName = document.createElement('option');
             userName.value = item;
@@ -158,14 +153,7 @@ let domFunc = (function () {
 
     let showFilterHashtags = function () {
         let dataUsers = document.getElementById('hashtags');
-        let uniqueHashtags = new Set();
-        let length = dataFunc.getPhotoPostsLength();
-        for (let i = 0; i < length; i++) {
-            let post = dataFunc.getPhotoPostByIdx(i);
-            post.hashtags.forEach(function (hashtag) {
-                uniqueHashtags.add(hashtag);
-            });
-        }
+        let uniqueHashtags = requestFunctions.getUniqueHashtags();
         uniqueHashtags.forEach(function (item) {
             let hashtag = document.createElement('option');
             hashtag.value = item;
@@ -198,6 +186,26 @@ let domFunc = (function () {
         let portalName = document.querySelector('.headerPortalName');
         portalName.style.width = '90vw';
     };
+
+    function formatDate(date) {
+
+        let dd = date.getDate();
+        if (dd < 10) {
+            dd = `0${dd}`;
+        }
+
+        let mm = date.getMonth() + 1;
+        if (mm < 10) {
+            mm = `0${mm}`;
+        }
+
+        let yy = date.getFullYear();
+        if (yy < 10) {
+            yy = `0${yy}`;
+        }
+
+        return dd + '.' + mm + '.' + yy;
+    }
 
     return {
         showPhotoPosts,

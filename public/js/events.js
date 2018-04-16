@@ -8,17 +8,6 @@ let events = (function () {
 
     let currentEditedPost = null;
 
-    function getUniqueId() {
-        let id = 0;
-        let length = dataFunc.getPhotoPostsLength();
-        for (let i = 0; i < length; i++) {
-            let key = parseInt(dataFunc.getPhotoPostByIdx(i).id);
-            id = Math.max(id, key);
-        }
-        id = id + 1;
-        return id.toString();
-    }
-
     function resetPosts() {
         let postList = document.getElementsByClassName('postBox');
         let posts = Array.prototype.slice.call(postList);
@@ -287,7 +276,7 @@ let events = (function () {
         window.style.display = 'flex';
         let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
         modalWindow.getElementsByTagName('h2')[0].textContent = user;
-        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + dataFunc.formatDate(new Date());
+        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + formatDate(new Date());
         eDropDownArea();
         let submit = document.getElementsByName('publishPost')[0];
         submit.addEventListener('click', eAddPost);
@@ -306,7 +295,7 @@ let events = (function () {
         document.getElementsByName('addHashtags')[0].value = hashtags;
         document.getElementsByName('publishPost')[0].textContent = 'Изменить';
         modalWindow.getElementsByTagName('h2')[0].textContent = user;
-        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + dataFunc.formatDate(new Date());
+        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + formatDate(new Date());
         eDropDownArea();
         checkSuccess();
         let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
@@ -320,7 +309,7 @@ let events = (function () {
     let eAddPost = function () {
         let addForm = document.forms.submitPost;
         let photoPost = {
-            id: `${getUniqueId()}`,
+            id: ``,
             descriprion: `${document.getElementsByName('addDescription')[0].value}`,
             createdAt: new Date(),
             author: user,
@@ -359,6 +348,26 @@ let events = (function () {
             event.target.style.display = 'none';
         }
     };
+
+    function formatDate(date) {
+
+        let dd = date.getDate();
+        if (dd < 10) {
+            dd = `0${dd}`;
+        }
+
+        let mm = date.getMonth() + 1;
+        if (mm < 10) {
+            mm = `0${mm}`;
+        }
+
+        let yy = date.getFullYear();
+        if (yy < 10) {
+            yy = `0${yy}`;
+        }
+
+        return dd + '.' + mm + '.' + yy;
+    }
 
     return {
         eLikePost,
