@@ -133,32 +133,44 @@ let domFunc = (function () {
                 showButtonTrash(item);
             }
             let id = item.id;
-            let dataPost = requestFunctions.getPhotoPost(id);
-            if (dataPost.likes.indexOf(user) !== -1) {
-                let heart = item.getElementsByClassName('fa-heart')[0];
-                heart.className = 'fas fa-heart like';
-            }
+            requestFunctions.getPhotoPost(id)
+                .then(
+                    dataPost => {
+                        if (dataPost.likes.indexOf(user) !== -1) {
+                            let heart = item.getElementsByClassName('fa-heart')[0];
+                            heart.className = 'fas fa-heart like';
+                        }
+                    }
+                );
         });
     };
 
     let showFilterUsers = function () {
         let dataUsers = document.getElementById('userNames');
-        let uniqueNames = requestFunctions.getUniqueNames();
-        uniqueNames.forEach(function (item) {
-            let userName = document.createElement('option');
-            userName.value = item;
-            dataUsers.appendChild(userName);
-        })
+        requestFunctions.getUniqueNames()
+            .then(
+                uniqueNames => {
+                    uniqueNames.forEach(function (item) {
+                        let userName = document.createElement('option');
+                        userName.value = item;
+                        dataUsers.appendChild(userName);
+                    })
+                }
+            );
     };
 
     let showFilterHashtags = function () {
         let dataUsers = document.getElementById('hashtags');
-        let uniqueHashtags = requestFunctions.getUniqueHashtags();
-        uniqueHashtags.forEach(function (item) {
-            let hashtag = document.createElement('option');
-            hashtag.value = item;
-            dataUsers.appendChild(hashtag);
-        })
+        requestFunctions.getUniqueHashtags()
+            .then(
+                uniqueHashtags => {
+                    uniqueHashtags.forEach(function (item) {
+                        let hashtag = document.createElement('option');
+                        hashtag.value = item;
+                        dataUsers.appendChild(hashtag);
+                    })
+                }
+            );
     };
 
     let likePost = function (id) {

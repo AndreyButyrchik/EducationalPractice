@@ -18,12 +18,17 @@ let events = (function () {
 
     function filtingPhotoPosts() {
         resetPosts();
-        if (!showPhotoPosts(0, 8, filterConfig)) {
-            let error = document.getElementById('modalWindowError');
-            error.style.display = 'flex';
-            let message = error.getElementsByTagName('p')[0];
-            message.textContent = 'Не найдено постов с заданными фильтрами';
-        }
+        showPhotoPosts(0, 8, filterConfig)
+            .then(
+                addPost => {
+                    if (!addPost) {
+                        let error = document.getElementById('modalWindowError');
+                        error.style.display = 'flex';
+                        let message = error.getElementsByTagName('p')[0];
+                        message.textContent = 'Не найдено постов с заданными фильтрами';
+                    }
+                }
+            );
     }
 
     function logIn() {
@@ -318,9 +323,14 @@ let events = (function () {
             likes: [''],
             removed: false
         };
-        if (addPhotoPost(photoPost, true)) {
-            document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
-        }
+        addPhotoPost(photoPost, true)
+            .then(
+                addPost => {
+                    if (addPost) {
+                        document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
+                    }
+                }
+            );
     };
 
     let eEditPost = function () {
@@ -335,9 +345,14 @@ let events = (function () {
             likes: currentEditedPost.likes,
             removed: false
         };
-        if (editPhotoPost(currentEditedPost.id, photoPost)) {
-            document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
-        }
+        editPhotoPost(currentEditedPost.id, photoPost)
+            .then(
+                editPost => {
+                    if (editPost) {
+                        document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
+                    }
+                }
+            );
     };
 
     let closeWindow = function (event) {
