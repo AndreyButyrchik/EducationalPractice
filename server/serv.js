@@ -8,7 +8,7 @@ app.use(bodyParser.json({limit: '50mb', reviver: parseDate}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
 app.use(express.static('../public'));
 
-function parseDate (key, value) {
+function parseDate(key, value) {
     if (key === 'createdAt' && typeof value === 'string') {
         return new Date(value);
     }
@@ -41,7 +41,7 @@ app.put('/editPost', function (req, res) {
 
 app.get('/likePost', function (req, res) {
     let like = dataFunctions.likePost(req.query.id, req.query.user);
-    if(like) {
+    if (like) {
         if (like === 1) {
             res.send(true).end();
         }

@@ -18,17 +18,12 @@ let events = (function () {
 
     function filtingPhotoPosts() {
         resetPosts();
-        showPhotoPosts(0, 8, filterConfig)
-            .then(
-                addPost => {
-                    if (!addPost) {
-                        let error = document.getElementById('modalWindowError');
-                        error.style.display = 'flex';
-                        let message = error.getElementsByTagName('p')[0];
-                        message.textContent = 'Не найдено постов с заданными фильтрами';
-                    }
-                }
-            );
+        if (!showPhotoPosts(0, 8, filterConfig)) {
+            let error = document.getElementById('modalWindowError');
+            error.style.display = 'flex';
+            let message = error.getElementsByTagName('p')[0];
+            message.textContent = 'Не найдено постов с заданными фильтрами';
+        }
     }
 
     function logIn() {
@@ -311,7 +306,7 @@ let events = (function () {
         submit.addEventListener('click', eEditPost);
     };
 
-    let eAddPost = function () {
+    let eAddPost = async function () {
         let addForm = document.forms.submitPost;
         let photoPost = {
             id: ``,
@@ -323,14 +318,10 @@ let events = (function () {
             likes: [''],
             removed: false
         };
-        addPhotoPost(photoPost, true)
-            .then(
-                addPost => {
-                    if (addPost) {
-                        document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
-                    }
-                }
-            );
+
+        if (addPhotoPost(photoPost, true)) {
+            document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
+        }
     };
 
     let eEditPost = function () {
@@ -345,14 +336,11 @@ let events = (function () {
             likes: currentEditedPost.likes,
             removed: false
         };
-        editPhotoPost(currentEditedPost.id, photoPost)
-            .then(
-                editPost => {
-                    if (editPost) {
-                        document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
-                    }
-                }
-            );
+
+        if (editPhotoPost(currentEditedPost.id, photoPost)) {
+            document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
+        }
+
     };
 
     let closeWindow = function (event) {

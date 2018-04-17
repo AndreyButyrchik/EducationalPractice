@@ -126,51 +126,43 @@ let domFunc = (function () {
         }
 
         let posts = document.getElementsByClassName('postBox');
-        [].forEach.call(posts, function (item) {
+        [].forEach.call(posts, async function (item) {
             let author = item.childNodes[1].textContent;
             if (author === user && (item.getElementsByClassName('fa-trash-alt')[0]) === undefined) {
                 showButtonEditPost(item);
                 showButtonTrash(item);
             }
             let id = item.id;
-            requestFunctions.getPhotoPost(id)
-                .then(
-                    dataPost => {
-                        if (dataPost.likes.indexOf(user) !== -1) {
-                            let heart = item.getElementsByClassName('fa-heart')[0];
-                            heart.className = 'fas fa-heart like';
-                        }
-                    }
-                );
+
+            let dataPost = await requestFunctions.getPhotoPost(id);
+            if (dataPost.likes.indexOf(user) !== -1) {
+                let heart = item.getElementsByClassName('fa-heart')[0];
+                heart.className = 'fas fa-heart like';
+            }
+
         });
     };
 
-    let showFilterUsers = function () {
+    let showFilterUsers = async function () {
         let dataUsers = document.getElementById('userNames');
-        requestFunctions.getUniqueNames()
-            .then(
-                uniqueNames => {
-                    uniqueNames.forEach(function (item) {
-                        let userName = document.createElement('option');
-                        userName.value = item;
-                        dataUsers.appendChild(userName);
-                    })
-                }
-            );
+
+        let uniqueNames = await requestFunctions.getUniqueNames();
+        uniqueNames.forEach(function (item) {
+            let userName = document.createElement('option');
+            userName.value = item;
+            dataUsers.appendChild(userName);
+        })
     };
 
-    let showFilterHashtags = function () {
+    let showFilterHashtags = async function () {
         let dataUsers = document.getElementById('hashtags');
-        requestFunctions.getUniqueHashtags()
-            .then(
-                uniqueHashtags => {
-                    uniqueHashtags.forEach(function (item) {
-                        let hashtag = document.createElement('option');
-                        hashtag.value = item;
-                        dataUsers.appendChild(hashtag);
-                    })
-                }
-            );
+        let uniqueHashtags = await requestFunctions.getUniqueHashtags();
+
+        uniqueHashtags.forEach(function (item) {
+            let hashtag = document.createElement('option');
+            hashtag.value = item;
+            dataUsers.appendChild(hashtag);
+        })
     };
 
     let likePost = function (id) {
