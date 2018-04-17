@@ -149,6 +149,24 @@ let requestFunctions = (function () {
         });
     };
 
+    let getNewPosts = function () {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", '/getNewPost', true);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4) return;
+
+            if (xhr.status !== 200) {
+                console.log('Invalid query');
+            }
+            domFunc.addPhotoPost(JSON.parse(xhr.responseText, parseDate), true);
+            getNewPosts();
+
+        };
+
+        xhr.send();
+    };
+
     function parseDate(key, value) {
         if (key === 'createdAt' && typeof value === 'string') {
             return new Date(value);
@@ -164,6 +182,9 @@ let requestFunctions = (function () {
         getPhotoPosts,
         likePhotoPost,
         getUniqueNames,
-        getUniqueHashtags
+        getUniqueHashtags,
+        getNewPosts
     }
 })();
+
+requestFunctions.getNewPosts();

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dataFunctions = require('./dataFunctions');
+const longPolingPosts = require('./longPolingPosts');
 
 const app = express();
 
@@ -28,7 +29,16 @@ app.post('/getPosts', (req, res) => {
 });
 
 app.post('/addPost', (req, res) => {
-    dataFunctions.addPhotoPost(req.body) ? res.status(200).end() : res.status(404).end();
+    let addPost = dataFunctions.addPhotoPost(req.body);
+    if (addPost) {
+        longPolingPosts.clients.forEach(function (item) {
+            item.send(req.body);
+        });
+        res.status(200).end();
+    }
+    else {
+        res.status(404).end();
+    }
 });
 
 app.delete('/delete', function (req, res) {
@@ -43,10 +53,10 @@ app.get('/likePost', function (req, res) {
     let like = dataFunctions.likePost(req.query.id, req.query.user);
     if (like) {
         if (like === 1) {
-            res.send(true).end();
+            res.send(true);
         }
         else {
-            res.send(false).end();
+            res.send(false);
         }
     }
     else {
@@ -56,12 +66,16 @@ app.get('/likePost', function (req, res) {
 
 app.get('/getUniqueNames', function (req, res) {
     let names = dataFunctions.getUniqueNames();
-    names ? res.send(names).end() : res.status(404).end();
+    names ? res.send(names) : res.status(404).end();
 });
 
 app.get('/getUniqueHashtags', function (req, res) {
     let hashtags = dataFunctions.getUniqueHashtags();
-    hashtags ? res.send(hashtags).end() : res.status(404).end();
+    hashtags ? res.send(hashtags) : res.status(404).end();
+});
+
+app.get('/getNewPost', function (req, res) {
+    longPolingPosts.subscribe(res);
 });
 
 app.listen(3000, function () {
