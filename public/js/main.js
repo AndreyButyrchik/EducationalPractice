@@ -3,7 +3,12 @@ let user = 'Галя Печка';
 let filterConfig = {createdAt: {}, author: '', hashtags: []};
 
 async function showPhotoPosts(skip, top, filterConfig, insertBefore) {
-    let postsArray = await requestFunctions.getPhotoPosts(skip, top, filterConfig);
+    let postsArray;
+    try {
+        postsArray = await requestFunctions.getPhotoPosts(skip, top, filterConfig);
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+    }
     if (typeof postsArray === 'object') {
         let rem;
         while (true) {
@@ -17,7 +22,12 @@ async function showPhotoPosts(skip, top, filterConfig, insertBefore) {
             if (rem === 0) {
                 break;
             }
-            let additionalPosts = await requestFunctions.getPhotoPosts(top, rem, filterConfig);
+            let additionalPosts;
+            try {
+                additionalPosts = await requestFunctions.getPhotoPosts(top, rem, filterConfig);
+            } catch (err) {
+                console.log(`Ooops ${err}`);
+            }
             if (additionalPosts) {
                 additionalPosts.forEach(function (post) {
                     postsArray.push(post);
@@ -32,17 +42,25 @@ async function showPhotoPosts(skip, top, filterConfig, insertBefore) {
 }
 
 async function addPhotoPost(PhotoPost, insertBefore) {
-    if (await requestFunctions.addPhotoPost(PhotoPost)) {
-        domFunc.addPhotoPost(PhotoPost, insertBefore);
-        return true;
+    try {
+        if (await requestFunctions.addPhotoPost(PhotoPost)) {
+            domFunc.addPhotoPost(PhotoPost, insertBefore);
+            return true;
+        }
+    } catch (err) {
+        console.log(`Ooops ${err}`);
     }
     return false;
 }
 
 async function editPhotoPost(id, photoPost) {
-    if (await requestFunctions.editPhotoPost(id, photoPost)) {
-        domFunc.editPhotoPost(id, photoPost);
-        return true;
+    try {
+        if (await requestFunctions.editPhotoPost(id, photoPost)) {
+            domFunc.editPhotoPost(id, photoPost);
+            return true;
+        }
+    } catch (err) {
+        console.log(`Ooops ${err}`);
     }
     return false;
 }
@@ -51,8 +69,12 @@ async function removePhotoPost(event) {
     let modalWindow = document.getElementById('modalWindowConfirmDelete');
     modalWindow.style.display = 'none';
     let id = event.target.value;
-    if (await requestFunctions.removePhotoPost(id)) {
-        domFunc.removePhotoPost(id);
+    try {
+        if (await requestFunctions.removePhotoPost(id)) {
+            domFunc.removePhotoPost(id);
+        }
+    } catch (err) {
+        console.log(`Ooops ${err}`);
     }
     return false;
 }
@@ -69,8 +91,12 @@ function showElementsForUser() {
 }
 
 async function likePost(event) {
-    if (user !== null && event.target.classList.contains('fa-heart')) {
-        await requestFunctions.likePhotoPost(this.id) ? domFunc.likePost(this.id) : domFunc.unLikePost(this.id);
+    try {
+        if (user !== null && event.target.classList.contains('fa-heart')) {
+            await requestFunctions.likePhotoPost(this.id) ? domFunc.likePost(this.id) : domFunc.unLikePost(this.id);
+        }
+    } catch (err) {
+        console.log(`Ooops ${err}`);
     }
 }
 

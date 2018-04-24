@@ -26,7 +26,13 @@ function parseDate(key, value) {
 // });
 
 app.get('/getPost', async function (req, res) {
-    let post = await dataFunctions.getPhotoPost(req.query.id);
+    let post;
+    try {
+        post = await dataFunctions.getPhotoPost(req.query.id);
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        res.status(404).end();
+    }
     post ? res.send(post) : res.status(404).end();
 });
 
@@ -38,7 +44,13 @@ app.post('/getPosts', async (req, res) => {
 });
 
 app.post('/addPost', async (req, res) => {
-    let addPost = await dataFunctions.addPhotoPost(req.body);
+    let addPost
+    try {
+        addPost = await dataFunctions.addPhotoPost(req.body);
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        res.status(404).end();
+    }
     if (addPost) {
         // longPolingPosts.clients.forEach(function (item) {
         //     item.send(req.body);
@@ -60,15 +72,31 @@ app.post('/addPost', async (req, res) => {
 });
 
 app.delete('/delete', async function (req, res) {
-    await dataFunctions.removePhotoPost(req.query.id) ? res.status(200).end() : res.status(404).end();
+    try {
+        await dataFunctions.removePhotoPost(req.query.id) ? res.status(200).end() : res.status(404).end();
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        res.status(404).end();
+    }
 });
 
 app.put('/editPost', async function (req, res) {
-    await dataFunctions.editPost(req.query.id, req.body) ? res.status(200).end() : res.status(404).end();
+    try {
+        await dataFunctions.editPost(req.query.id, req.body) ? res.status(200).end() : res.status(404).end();
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        res.status(404).end();
+    }
 });
 
 app.get('/likePost', async function (req, res) {
-    let like = await dataFunctions.likePost(req.query.id, req.query.user);
+    let like;
+    try {
+        like = await dataFunctions.likePost(req.query.id, req.query.user);
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        res.status(404).end();
+    }
     if (like) {
         if (like === 1) {
             res.send(true);
@@ -83,12 +111,24 @@ app.get('/likePost', async function (req, res) {
 });
 
 app.get('/getUniqueNames', async function (req, res) {
-    let names = await dataFunctions.getUniqueNames();
+    let names;
+    try {
+        names = await dataFunctions.getUniqueNames();
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        res.status(404).end();
+    }
     names ? res.send(names) : res.status(404).end();
 });
 
 app.get('/getUniqueHashtags', async function (req, res) {
-    let hashtags = await dataFunctions.getUniqueHashtags();
+    let hashtags;
+    try {
+        hashtags = await dataFunctions.getUniqueHashtags();
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        res.status(404).end();
+    }
     hashtags ? res.send(hashtags) : res.status(404).end();
 });
 
