@@ -159,12 +159,16 @@ let requestFunctions = (function () {
             if (xhr.status !== 200) {
                 console.log('Invalid query');
             }
-            domFunc.addPhotoPost(JSON.parse(xhr.responseText, parseDate), true);
+            else {
+                let post = JSON.parse(xhr.responseText, parseDate);
+                if (post.author !== user) {
+                    domFunc.addPhotoPost(post, true);
+                }
+            }
             getNewPosts();
-
         };
-
-        xhr.send();
+        console.log('SEND');
+        xhr.send()
     };
 
     function parseDate(key, value) {
@@ -186,5 +190,3 @@ let requestFunctions = (function () {
         getNewPosts
     }
 })();
-
-requestFunctions.getNewPosts();

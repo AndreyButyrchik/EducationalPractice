@@ -2,12 +2,12 @@ const fs = require('fs');
 
 let dataFunctions = (function () {
 
-    function getPhotoPost(id) {
+    async function getPhotoPost(id) {
         if (typeof id !== "string" ||
             Number(id) < 1) {
             return false;
         }
-        let jsonPosts = fs.readFileSync('./data/photoPosts.json');
+        let jsonPosts = await readFile('./data/photoPosts.json');
         let posts = JSON.parse(jsonPosts, parseDate);
         let sourcePost = posts.find((post) => id === post.id);
         if (sourcePost && (sourcePost.removed === false)) {
@@ -16,19 +16,19 @@ let dataFunctions = (function () {
         return false;
     }
 
-    function addPhotoPost(photoPost) {
-        photoPost.id = getUniqueId();
+    async function addPhotoPost(photoPost) {
+        photoPost.id = await getUniqueId();
         if (validatePhotoPost(photoPost)) {
-            let jsonPosts = fs.readFileSync('./data/photoPosts.json');
+            let jsonPosts = await readFile('./data/photoPosts.json');
             let posts = JSON.parse(jsonPosts, parseDate);
             posts.push(photoPost);
-            fs.writeFileSync('./data/photoPosts.json', JSON.stringify(posts));
+            await writeFile('./data/photoPosts.json', JSON.stringify(posts));
             return true;
         }
         return false;
     }
 
-    function getPhotoPosts(skip, top, filterConfig) {
+    async function getPhotoPosts(skip, top, filterConfig) {
         if (validateNumber(skip)) {
             skip = 0;
         }
@@ -38,7 +38,7 @@ let dataFunctions = (function () {
             top = 8;
         }
 
-        let jsonPosts = fs.readFileSync('./data/photoPosts.json');
+        let jsonPosts = await readFile('./data/photoPosts.json');
         let postsArray = JSON.parse(jsonPosts, parseDate);
 
         let filtPhotoPosts = postsArray.sort(function (a, b) {
@@ -88,25 +88,25 @@ let dataFunctions = (function () {
         return false;
     }
 
-    function removePhotoPost(id) {
+    async function removePhotoPost(id) {
         if (typeof  id === "undefined" ||
             typeof id !== "string" ||
             Number(id) < 1) {
             return false;
         }
-        let jsonPosts = fs.readFileSync('./data/photoPosts.json');
+        let jsonPosts = await readFile('./data/photoPosts.json');
         let posts = JSON.parse(jsonPosts, parseDate);
         let removePost = posts.find((post) => id === post.id);
         if (removePost !== undefined) {
             removePost.removed = true;
-            fs.writeFileSync('./data/photoPosts.json', JSON.stringify(posts));
+            await writeFile('./data/photoPosts.json', JSON.stringify(posts));
             return true;
         }
         return false;
     }
 
-    function editPost(id, photoPost) {
-        let jsonPosts = fs.readFileSync('./data/photoPosts.json');
+    async function editPost(id, photoPost) {
+        let jsonPosts = await readFile('./data/photoPosts.json');
         let posts = JSON.parse(jsonPosts, parseDate);
         let postIsEdit = false;
         let editPost = posts.find((post) => id === post.id);
@@ -131,14 +131,57 @@ let dataFunctions = (function () {
                 editPost.likes !== photoPost.likes) {
                 editPost.likes = photoPost.likes
             }
-            fs.writeFileSync('./data/photoPosts.json', JSON.stringify(posts));
+            await writeFile('./data/photoPosts.json', JSON.stringify(posts));
             return postIsEdit;
         }
         return false;
     }
 
-    function likePost(id, user) {
-        let jsonPost = getPhotoPost(id);
+    async function getUniqueNames() {
+        let jsonPosts = await readFile('./data/photoPosts.json');
+        let posts = JSON.parse(jsonPosts, parseDate);
+
+        let uniqueNames = new Set();
+        posts.forEach(function (item) {
+            uniqueNames.add(item.author);
+        });
+        if (uniqueNames.length !== 0) {
+            return JSON.stringify(Array.from(uniqueNames));
+        }
+        return false;
+    }
+
+    async function getUniqueHashtags() {
+        let jsonPosts = await readFile('./data/photoPosts.json');
+        let posts = JSON.parse(jsonPosts, parseDate);
+
+        let uniqueHashtags = new Set();
+        posts.forEach(function (item) {
+            if (!item.removed) {
+                item.hashtags.forEach(function (hashtag) {
+                    uniqueHashtags.add(hashtag);
+                });
+            }
+        });
+        if (uniqueHashtags.length !== 0) {
+            return JSON.stringify(Array.from(uniqueHashtags));
+        }
+        return false;
+    }
+
+    async function getUniqueId() {
+        let jsonPosts = await readFile('./data/photoPosts.json');
+        let postsArray = JSON.parse(jsonPosts, parseDate);
+        let id = 0;
+        postsArray.forEach(function (post) {
+            id = Math.max(parseInt(post.id), id);
+        });
+        id = id + 1;
+        return id.toString();
+    }
+
+    async function likePost(id, user) {
+        let jsonPost = await getPhotoPost(id);
         if (jsonPost) {
             let post = JSON.parse(jsonPost, parseDate);
             let idxUser = post.likes.indexOf(user);
@@ -152,38 +195,6 @@ let dataFunctions = (function () {
                 editPost(id, post);
                 return 2;
             }
-        }
-        return false;
-    }
-
-    function getUniqueNames() {
-        let jsonPosts = fs.readFileSync('./data/photoPosts.json');
-        let posts = JSON.parse(jsonPosts, parseDate);
-
-        let uniqueNames = new Set();
-        posts.forEach(function (item) {
-            uniqueNames.add(item.author);
-        });
-        if (uniqueNames.length !== 0) {
-            return JSON.stringify(Array.from(uniqueNames));
-        }
-        return false;
-    }
-
-    function getUniqueHashtags() {
-        let jsonPosts = fs.readFileSync('./data/photoPosts.json');
-        let posts = JSON.parse(jsonPosts, parseDate);
-
-        let uniqueHashtags = new Set();
-        posts.forEach(function (item) {
-            if (!item.removed) {
-                item.hashtags.forEach(function (hashtag) {
-                    uniqueHashtags.add(hashtag);
-                });
-            }
-        });
-        if (uniqueHashtags.length !== 0) {
-            return JSON.stringify(Array.from(uniqueHashtags));
         }
         return false;
     }
@@ -240,15 +251,30 @@ let dataFunctions = (function () {
         return value;
     }
 
-    function getUniqueId() {
-        let jsonPosts = fs.readFileSync('./data/photoPosts.json');
-        let postsArray = JSON.parse(jsonPosts, parseDate);
-        let id = 0;
-        postsArray.forEach(function (post) {
-            id = Math.max(parseInt(post.id), id);
+    function readFile(path) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(path, 'utf8', (err, data) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(data);
+                }
+            });
         });
-        id = id + 1;
-        return id.toString();
+    }
+
+    function writeFile(path, data) {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(path, data, 'utf8', (err, data) => {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(data);
+                }
+            });
+        });
     }
 
     return {

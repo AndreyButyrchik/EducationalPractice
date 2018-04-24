@@ -5,12 +5,20 @@ let longPolingPosts = (function () {
         clients.push(res);
         res.on('close', function () {
             clients.splice(clients.indexOf(res), 1);
-        })
+            console.log('del');
+            console.log(clients.length);
+        });
+        console.log(clients.length);
+    };
+
+    let clearClients = function () {
+        clients = [];
     };
 
     return {
         clients,
-        subscribe
+        subscribe,
+        clearClients
     }
 })();
 

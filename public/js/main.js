@@ -17,7 +17,7 @@ async function showPhotoPosts(skip, top, filterConfig, insertBefore) {
             if (rem === 0) {
                 break;
             }
-            let additionalPosts = requestFunctions.getPhotoPosts(top, rem, filterConfig);
+            let additionalPosts = await requestFunctions.getPhotoPosts(top, rem, filterConfig);
             if (additionalPosts) {
                 additionalPosts.forEach(function (post) {
                     postsArray.push(post);
@@ -73,6 +73,8 @@ async function likePost(event) {
         await requestFunctions.likePhotoPost(this.id) ? domFunc.likePost(this.id) : domFunc.unLikePost(this.id);
     }
 }
+
+requestFunctions.getNewPosts();
 
 showPhotoPosts(0, 8, filterConfig, true);
 
