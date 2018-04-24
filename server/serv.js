@@ -39,12 +39,18 @@ app.get('/getPost', async function (req, res) {
 app.post('/getPosts', async (req, res) => {
     let skip = parseInt(req.query.skip);
     let top = parseInt(req.query.top);
-    let photoPosts = await dataFunctions.getPhotoPosts(skip, top, req.body);
+    let photoPosts;
+    try {
+        photoPosts = await dataFunctions.getPhotoPosts(skip, top, req.body);
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        res.status(404).end();
+    }
     photoPosts ? res.send(photoPosts) : res.status(404).end();
 });
 
 app.post('/addPost', async (req, res) => {
-    let addPost
+    let addPost;
     try {
         addPost = await dataFunctions.addPhotoPost(req.body);
     } catch (err) {

@@ -7,7 +7,12 @@ let dataFunctions = (function () {
             Number(id) < 1) {
             return false;
         }
-        let jsonPosts = await readFile('./data/photoPosts.json');
+        let jsonPosts;
+        try {
+            jsonPosts = await readFile('./data/photoPosts.json');
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         let posts = JSON.parse(jsonPosts, parseDate);
         let sourcePost = posts.find((post) => id === post.id);
         if (sourcePost && (sourcePost.removed === false)) {
@@ -17,12 +22,25 @@ let dataFunctions = (function () {
     }
 
     async function addPhotoPost(photoPost) {
-        photoPost.id = await getUniqueId();
+        try {
+            photoPost.id = await getUniqueId();
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         if (validatePhotoPost(photoPost)) {
-            let jsonPosts = await readFile('./data/photoPosts.json');
+            let jsonPosts;
+            try {
+                jsonPosts = await readFile('./data/photoPosts.json');
+            } catch (err) {
+                console.log(`Ooops ${err}`);
+            }
             let posts = JSON.parse(jsonPosts, parseDate);
             posts.push(photoPost);
-            await writeFile('./data/photoPosts.json', JSON.stringify(posts));
+            try {
+                await writeFile('./data/photoPosts.json', JSON.stringify(posts));
+            } catch (err) {
+                console.log(`Ooops ${err}`);
+            }
             return true;
         }
         return false;
@@ -38,7 +56,12 @@ let dataFunctions = (function () {
             top = 8;
         }
 
-        let jsonPosts = await readFile('./data/photoPosts.json');
+        let jsonPosts;
+        try {
+            jsonPosts = await readFile('./data/photoPosts.json');
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         let postsArray = JSON.parse(jsonPosts, parseDate);
 
         let filtPhotoPosts = postsArray.sort(function (a, b) {
@@ -94,19 +117,33 @@ let dataFunctions = (function () {
             Number(id) < 1) {
             return false;
         }
-        let jsonPosts = await readFile('./data/photoPosts.json');
+        let jsonPosts;
+        try {
+            jsonPosts = await readFile('./data/photoPosts.json');
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         let posts = JSON.parse(jsonPosts, parseDate);
         let removePost = posts.find((post) => id === post.id);
         if (removePost !== undefined) {
             removePost.removed = true;
-            await writeFile('./data/photoPosts.json', JSON.stringify(posts));
+            try {
+                await writeFile('./data/photoPosts.json', JSON.stringify(posts));
+            } catch (err) {
+                console.log(`Ooops ${err}`);
+            }
             return true;
         }
         return false;
     }
 
     async function editPost(id, photoPost) {
-        let jsonPosts = await readFile('./data/photoPosts.json');
+        let jsonPosts;
+        try {
+            jsonPosts = await readFile('./data/photoPosts.json');
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         let posts = JSON.parse(jsonPosts, parseDate);
         let postIsEdit = false;
         let editPost = posts.find((post) => id === post.id);
@@ -131,14 +168,23 @@ let dataFunctions = (function () {
                 editPost.likes !== photoPost.likes) {
                 editPost.likes = photoPost.likes
             }
-            await writeFile('./data/photoPosts.json', JSON.stringify(posts));
+            try {
+                await writeFile('./data/photoPosts.json', JSON.stringify(posts));
+            } catch (err) {
+                console.log(`Ooops ${err}`);
+            }
             return postIsEdit;
         }
         return false;
     }
 
     async function getUniqueNames() {
-        let jsonPosts = await readFile('./data/photoPosts.json');
+        let jsonPosts;
+        try {
+            jsonPosts = await readFile('./data/photoPosts.json');
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         let posts = JSON.parse(jsonPosts, parseDate);
 
         let uniqueNames = new Set();
@@ -152,7 +198,12 @@ let dataFunctions = (function () {
     }
 
     async function getUniqueHashtags() {
-        let jsonPosts = await readFile('./data/photoPosts.json');
+        let jsonPosts;
+        try {
+            jsonPosts = await readFile('./data/photoPosts.json');
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         let posts = JSON.parse(jsonPosts, parseDate);
 
         let uniqueHashtags = new Set();
@@ -170,7 +221,12 @@ let dataFunctions = (function () {
     }
 
     async function getUniqueId() {
-        let jsonPosts = await readFile('./data/photoPosts.json');
+        let jsonPosts;
+        try {
+            jsonPosts = await readFile('./data/photoPosts.json');
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         let postsArray = JSON.parse(jsonPosts, parseDate);
         let id = 0;
         postsArray.forEach(function (post) {
@@ -181,7 +237,12 @@ let dataFunctions = (function () {
     }
 
     async function likePost(id, user) {
-        let jsonPost = await getPhotoPost(id);
+        let jsonPost;
+        try {
+            jsonPost = await getPhotoPost(id);
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         if (jsonPost) {
             let post = JSON.parse(jsonPost, parseDate);
             let idxUser = post.likes.indexOf(user);

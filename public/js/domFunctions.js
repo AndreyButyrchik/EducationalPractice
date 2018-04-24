@@ -134,7 +134,12 @@ let domFunc = (function () {
             }
             let id = item.id;
 
-            let dataPost = await requestFunctions.getPhotoPost(id);
+            let dataPost;
+            try {
+                dataPost = await requestFunctions.getPhotoPost(id);
+            } catch (err) {
+                console.log(`Ooops ${err}`);
+            }
             if (dataPost.likes.indexOf(user) !== -1) {
                 let heart = item.getElementsByClassName('fa-heart')[0];
                 heart.className = 'fas fa-heart like';
@@ -146,7 +151,12 @@ let domFunc = (function () {
     let showFilterUsers = async function () {
         let dataUsers = document.getElementById('userNames');
 
-        let uniqueNames = await requestFunctions.getUniqueNames();
+        let uniqueNames;
+        try {
+            uniqueNames = await requestFunctions.getUniqueNames();
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         uniqueNames.forEach(function (item) {
             let userName = document.createElement('option');
             userName.value = item;
@@ -156,7 +166,12 @@ let domFunc = (function () {
 
     let showFilterHashtags = async function () {
         let dataUsers = document.getElementById('hashtags');
-        let uniqueHashtags = await requestFunctions.getUniqueHashtags();
+        let uniqueHashtags;
+        try {
+            uniqueHashtags = await requestFunctions.getUniqueHashtags();
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
 
         uniqueHashtags.forEach(function (item) {
             let hashtag = document.createElement('option');
