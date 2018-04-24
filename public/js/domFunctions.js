@@ -71,7 +71,7 @@ let domFunc = (function () {
         newPost.childNodes[3].firstChild.src = photoPost.photoLink;
         newPost.childNodes[7].firstChild.textContent = photoPost.descriprion;
         newPost.childNodes[9].firstChild.textContent = photoPost.hashtags.join(' ');
-        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
+        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + utilites.formatDate(photoPost.createdAt);
         if (user === photoPost.author) {
             showButtonEditPost(newPost);
             showButtonTrash(newPost);
@@ -190,26 +190,6 @@ let domFunc = (function () {
         let portalName = document.querySelector('.headerPortalName');
         portalName.style.width = '90vw';
     };
-
-    function formatDate(date) {
-
-        let dd = date.getDate();
-        if (dd < 10) {
-            dd = `0${dd}`;
-        }
-
-        let mm = date.getMonth() + 1;
-        if (mm < 10) {
-            mm = `0${mm}`;
-        }
-
-        let yy = date.getFullYear();
-        if (yy < 10) {
-            yy = `0${yy}`;
-        }
-
-        return dd + '.' + mm + '.' + yy;
-    }
 
     return {
         showPhotoPosts,
