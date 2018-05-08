@@ -17,8 +17,17 @@ let utilites = (function(){
         }
 
         return dd + '.' + mm + '.' + yy;
-    }
+    };
+
+    let parseDate = function(key, value) {
+        if (key === 'createdAt' && typeof value === 'string') {
+            return new Date(value);
+        }
+        return value;
+    };
+
     return {
-        formatDate
+        formatDate,
+        parseDate
     }
 }());

@@ -8,53 +8,9 @@ let events = (function () {
 
     let currentEditedPost = null;
 
-    function resetPosts() {
-        let postList = document.getElementsByClassName('postBox');
-        let posts = Array.prototype.slice.call(postList);
-        posts.forEach(function (post) {
-            post.remove();
-        });
-    }
-
-    function filtingPhotoPosts() {
-        resetPosts();
-        if (!showPhotoPosts(0, 8, filterConfig)) {
-            let error = document.getElementById('modalWindowError');
-            error.style.display = 'flex';
-            let message = error.getElementsByTagName('p')[0];
-            message.textContent = 'Не найдено постов с заданными фильтрами';
-        }
-    }
-
-    function logIn() {
-        let modalWindow = document.getElementById('modalWindowSingIn');
-        let inputLogin = document.getElementsByName('login')[0];
-        let inputPassword = document.getElementsByName('password')[0]; // ?
-        if (inputLogin.checkValidity() && inputPassword.checkValidity()) {
-            user = inputLogin.value;
-            let buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
-            buttonSignOut.remove();
-            domFunc.showElementsForAuthUser();
-            modalWindow.style.display = 'none';
-        }
-    }
-
     function preventDefaults(e) {
         e.preventDefault();
         e.stopPropagation();
-    }
-
-    function setImgSrc(src) {
-        let submitPost = document.forms.submitPost;
-        submitPost.value = src;
-    }
-
-    function loadFoto(file) {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function () {
-            setImgSrc(reader.result);
-        };
     }
 
     function validFileType(file) {
@@ -66,47 +22,16 @@ let events = (function () {
         return false;
     }
 
-    function checkSuccess() {
-        let window = document.getElementById('modalWindowAddEditPhotoPost');
-        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
-        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
-
-        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
-        upLoadIcon.className = 'fas fa-check';
-        upLoadIcon.style.color = '#0f0';
-
-        let label = drugDrop.getElementsByClassName('chous')[0];
-        label.textContent = 'Фото загружено';
-    }
-
-    function checkInvalid() {
-        let window = document.getElementById('modalWindowAddEditPhotoPost');
-        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
-        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
-
-        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
-        upLoadIcon.className = 'fas fa-exclamation-circle';
-        upLoadIcon.style.color = '#f00';
-
-        let label = drugDrop.getElementsByClassName('chous')[0];
-        label.textContent = 'Ошибка';
-
-        let submitForm = document.forms.submitPost;
-        document.getElementsByName('addDescription')[0].value = '';
-        document.getElementsByName('addHashtags')[0].value = [];
-        submitForm.value = '';
-    }
-
     function handleDrop(e) {
         let dt = e.dataTransfer;
         let dtfiles = dt.files;
         let file = Array.from(dtfiles);
         if (validFileType(file[0])) {
-            loadFoto(file[0]);
-            checkSuccess();
+            upload(file[0]);
+            domFunc.checkSuccess();
         }
         else {
-            checkInvalid();
+            domFunc.checkInvalid();
         }
 
     }
@@ -140,53 +65,25 @@ let events = (function () {
     }
 
     function resetFormAddPhoto() {
-        let window = document.getElementById('modalWindowAddEditPhotoPost');
-        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
-        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
-
-        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
-        upLoadIcon.className = 'fas fa-upload';
-        upLoadIcon.style.color = '#474143';
-
-        let label = drugDrop.getElementsByClassName('chous')[0];
-        label.textContent = 'Перетащите фото для загрузки';
-
-        let submitForm = document.forms.submitPost;
-        document.getElementsByName('addDescription')[0].value = '';
-        document.getElementsByName('addHashtags')[0].value = [];
-        submitForm.value = '';
-        document.getElementsByName('publishPost')[0].textContent = 'Опубликовать';
+        domFunc.resetFormAddPhoto();
 
         let submit = document.getElementsByName('publishPost')[0];
         submit.removeEventListener('click', eEditPost);
         submit.removeEventListener('click', eAddPost);
     }
 
-    let eChooseFile = function () {
-        let file = document.getElementById('upPhoto').files;
-        if (file.length === 0) {
-            checkInvalid();
-        } else {
-            if (validFileType(file[0])) {
-                loadFoto(file[0]);
-                checkSuccess();
-            }
-            else {
-                checkInvalid();
-            }
-        }
-        return false;
-    };
-
     let showModalRemovePost = function (event) {
         let modalWindow = document.getElementById('modalWindowConfirmDelete');
-        modalWindow.style.display = 'flex';
+        domFunc.showModalRemovePost();
+
         let buttonConfirm = document.getElementsByName('Yes')[0];
         buttonConfirm.onclick = removePhotoPost;
         buttonConfirm.value = event.target.parentElement.id;
+
         let buttonReset = document.getElementsByName('No')[0];
         buttonReset.addEventListener('click', function () {
-            modalWindow.style.display = 'none';
+            modalWindow.classList.remove('visible');
+            modalWindow.classList.add('hidden');
         });
     };
 
@@ -195,43 +92,19 @@ let events = (function () {
     };
 
     let eSingIn = function () {
-        let modalWindow = document.getElementById('modalWindowSingIn');
-        modalWindow.style.display = 'flex';
+        domFunc.showModalSingIn();
         let buttonNext = document.getElementsByName('next')[0];
-        buttonNext.onclick = logIn;
+        buttonNext.onclick = domFunc.logIn;
     };
 
     let logOut = function () {
         user = null;
-
-        let author = document.getElementsByClassName('headerUserName')[0];
-        author.remove();
-
-        let buttonAddPhoto = document.getElementsByClassName('headerAddFoto')[0];
-        buttonAddPhoto.remove();
-
-        let buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
-        buttonSignOut.remove();
-
-        domFunc.showButtonSingIn();
-
-        let posts = document.getElementsByClassName('postBox');
-        [].forEach.call(posts, function (item) {
-            let like = item.getElementsByClassName('fa-heart')[0];
-            like.className = 'fas fa-heart unlike';
-
-            let edit = item.getElementsByClassName('fa-edit')[0];
-            let trash = item.getElementsByClassName('fa-trash-alt')[0];
-            if (edit !== undefined || trash !== undefined) {
-                edit.remove();
-                trash.remove();
-            }
-        });
-
+        domFunc.logOut();
     };
 
     let eShowMorePhotoPosts = function () {
         let cntShowPosts = document.getElementsByClassName('postBox').length;
+        console.log(cntShowPosts);
         showPhotoPosts(cntShowPosts, 8, filterConfig, false);
     };
 
@@ -239,7 +112,7 @@ let events = (function () {
         let filtForm = document.forms.author;
         let filtInput = filtForm.childNodes[1];
         filterConfig.author = filtInput.value;
-        filtingPhotoPosts();
+        domFunc.filtingPhotoPosts();
     };
 
     let filterByDate = function () {
@@ -253,7 +126,7 @@ let events = (function () {
         else {
             filterConfig.createdAt = {};
         }
-        filtingPhotoPosts();
+        domFunc.filtingPhotoPosts();
     };
 
     let filterByHashtags = function () {
@@ -267,16 +140,34 @@ let events = (function () {
         else {
             filterConfig.hashtags = [];
         }
-        filtingPhotoPosts();
+        domFunc.filtingPhotoPosts();
+    };
+
+    let upload = async function (e) {
+        let file = e.target.files[0];
+        if (validFileType(file)) {
+            domFunc.checkSuccess();
+            let formData = new FormData();
+            formData.append('upPhoto', file);
+            let submitPost = document.forms.submitPost;
+            try {
+                submitPost.value = await requestFunctions.uploadFile(formData);
+            } catch (err) {
+                console.log(`Ooops ${err}`);
+            }
+        }
+        else {
+            domFunc.checkInvalid();
+            return false;
+        }
+        return true;
     };
 
     let eShowModalAddPost = function () {
         resetFormAddPhoto();
-        let window = document.getElementById('modalWindowAddEditPhotoPost');
-        window.style.display = 'flex';
-        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
-        modalWindow.getElementsByTagName('h2')[0].textContent = user;
-        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + utilites.formatDate(new Date());
+        let inputFile = document.getElementsByName('upPhoto')[0];
+        inputFile.onchange = upload;
+        domFunc.showModalAddEditPost();
         eDropDownArea();
         let submit = document.getElementsByName('publishPost')[0];
         submit.addEventListener('click', eAddPost);
@@ -284,63 +175,69 @@ let events = (function () {
 
     let eShowModalEditPost = function (event) {
         resetFormAddPhoto();
+        let inputFile = document.getElementsByName('upPhoto')[0];
+        inputFile.onchange = upload;
         let post = event.target.parentElement;
         currentEditedPost = post;
-        let description = post.getElementsByClassName('commentBox')[0].textContent;
-        let hashtags = post.getElementsByClassName('hashtagsBox')[0].textContent;
-        let window = document.getElementById('modalWindowAddEditPhotoPost');
-        window.style.display = 'flex';
-        let modalWindow = window.childNodes[1];
-        document.getElementsByName('addDescription')[0].value = description;
-        document.getElementsByName('addHashtags')[0].value = hashtags;
-        document.getElementsByName('publishPost')[0].textContent = 'Изменить';
-        modalWindow.getElementsByTagName('h2')[0].textContent = user;
-        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + utilites.formatDate(new Date());
+        domFunc.showModalEdit(post);
         eDropDownArea();
-        checkSuccess();
-        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
-        let label = drugDrop.getElementsByClassName('chous')[0];
-        label.textContent = 'Загрузить другое фото';
-        document.forms.submitPost.value = post.getElementsByClassName('foto')[0].src;
+        domFunc.checkSuccess();
         let submit = document.getElementsByName('publishPost')[0];
         submit.addEventListener('click', eEditPost);
     };
 
     let eAddPost = async function () {
         let addForm = document.forms.submitPost;
+        let inputDescription = document.getElementsByName('addDescription')[0];
+        let inputHashtags = document.getElementsByName('addHashtags')[0];
         let photoPost = {
             id: ``,
-            descriprion: `${document.getElementsByName('addDescription')[0].value}`,
+            descriprion: `${inputDescription.value}`,
             createdAt: new Date(),
             author: user,
             photoLink: `${addForm.value}`,
-            hashtags: document.getElementsByName('addHashtags')[0].value.split(' '),
+            hashtags: inputHashtags.value.split(' '),
             likes: [''],
             removed: false
         };
 
-        if (addPhotoPost(photoPost, true)) {
-            document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
+        if (inputDescription.value.length !== 0 &&
+            new RegExp(inputHashtags.getAttribute("pattern")).test(inputHashtags.value) &&
+            addPhotoPost(photoPost, true)) {
+            let modalWindow = document.getElementById('modalWindowAddEditPhotoPost');
+            modalWindow.classList.remove('visible');
+            modalWindow.classList.add('hidden');
+            return true;
         }
+        domFunc.checkInvalid();
+        return false;
     };
 
     let eEditPost = function () {
         let editForm = document.forms.submitPost;
+        let inputDescription = document.getElementsByName('addDescription')[0];
+        let inputHashtags = document.getElementsByName('addHashtags')[0];
         let photoPost = {
             id: currentEditedPost.id,
-            descriprion: `${document.getElementsByName('addDescription')[0].value}`,
+            descriprion: `${inputDescription.value}`,
             createdAt: currentEditedPost.createdAt,
             author: user,
             photoLink: `${editForm.value}`,
-            hashtags: document.getElementsByName('addHashtags')[0].value.split(' '),
+            hashtags: inputHashtags.value.split(' '),
             likes: currentEditedPost.likes,
             removed: false
         };
 
-        if (editPhotoPost(currentEditedPost.id, photoPost)) {
-            document.getElementById('modalWindowAddEditPhotoPost').style.display = 'none';
+        if (inputDescription.value.length !== 0 &&
+            new RegExp(inputHashtags.getAttribute("pattern")).test(inputHashtags.value) &&
+            editPhotoPost(currentEditedPost.id, photoPost)) {
+            let modalWindow = document.getElementById('modalWindowAddEditPhotoPost');
+            modalWindow.classList.remove('visible');
+            modalWindow.classList.add('hidden');
+            return true;
         }
-
+        domFunc.checkInvalid();
+        return false;
     };
 
     let closeWindow = function (event) {
@@ -348,22 +245,33 @@ let events = (function () {
             event.target.id === 'modalWindowConfirmDelete' ||
             event.target.id === 'modalWindowSingIn' ||
             event.target.id === 'modalWindowError') {
-            event.target.style.display = 'none';
+            let modalWindow = event.target;
+            modalWindow.classList.remove('visible');
+            modalWindow.classList.add('hidden');
         }
+    };
+
+    let eToMain = function () {
+        let modalWindow = document.getElementById('modalWindowError');
+        modalWindow.classList.remove('visible');
+        modalWindow.classList.add('hidden');
+
+        filterConfig = {createdAt: {}, author: '', hashtags: []};
+        showPhotoPosts(0, 8, filterConfig, true);
     };
 
     return {
         eLikePost,
         showModalRemovePost,
+        eSingIn,
+        logOut,
+        eShowModalAddPost,
+        eShowModalEditPost,
+        closeWindow,
         eShowMorePhotoPosts,
         filterByAuthor,
         filterByDate,
         filterByHashtags,
-        eSingIn,
-        logOut,
-        eShowModalAddPost,
-        eChooseFile,
-        eShowModalEditPost,
-        closeWindow
+        eToMain
     }
 })();

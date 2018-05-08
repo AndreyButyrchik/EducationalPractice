@@ -56,7 +56,7 @@
             <h2>Удаление</h2>
             <h3>Вы действительно хотите удалить пост?</h3>
             <form name="confirmDelete">
-                <button name="Yes" type="submit" class="box">Да</button>
+                <button name="Yes" type="button" class="box">Да</button>
                 <button name="No" type="reset" class="box">Нет</button>
             </form>
         </div>
@@ -81,8 +81,7 @@
                 <h3>Перетащите фото для загрузки</h3>
                 <form name="uploadPhoto">
                     <label for="upPhoto" class="chous box">Или нажмите добавить фото</label>
-                    <input name="upPhoto" id="upPhoto" type="file" accept="image/*" class="box"
-                           onchange="events.eChooseFile();" required>
+                    <input name="upPhoto" id="upPhoto" type="file" accept="image/*" class="box" required>
                 </form>
             </div>
             <form name="submitPost">
@@ -99,6 +98,7 @@
         <div class="box modalBox error">
             <h2>Ошибка</h2>
             <p></p>
+            <button name="toMain" type="reset" class="box" onclick="events.eToMain()">Вернуться на главную страницу</button>
         </div>
     </dialog>
     <i class="fas fa-angle-down fa-3x moreFotoButton" onclick="events.eShowMorePhotoPosts();"></i>

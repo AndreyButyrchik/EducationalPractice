@@ -95,7 +95,7 @@ let requestFunctions = (function () {
         });
     };
 
-    let likePhotoPost = function (id) {
+    let likePhotoPost = function (id, user) {
         return new Promise((resolve, reject) => {
             let xhr = new XMLHttpRequest();
             xhr.open('GET', `/likePost/?id=${id}&user=${user}`, true);
@@ -151,24 +151,43 @@ let requestFunctions = (function () {
 
     let getNewPosts = function () {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", '/getNewPost', true);
+        xhr.open("GET", '/getNewPost');
 
         xhr.onreadystatechange = function () {
-            if (xhr.readyState !== 4) return;
+            if (xhr.readyState !== 4) {
+                return;
+            }
 
             if (xhr.status !== 200) {
                 console.log('Invalid query');
             }
             else {
-                let post = JSON.parse(xhr.responseText, parseDate);
+                let post = JSON.parse(xhr.responseText, utilites.parseDate);
                 if (post.author !== user) {
                     domFunc.addPhotoPost(post, true);
                 }
             }
             getNewPosts();
         };
-        console.log('SEND');
-        xhr.send()
+        xhr.send();
+    };
+
+    let uploadFile = function (file) {
+        return new Promise((resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/uploadPhoto', true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState !== 4) return;
+
+                if (xhr.status !== 200) {
+                    reject(new Error('Invalid query'));
+                }
+                resolve(xhr.responseText);
+            };
+
+            xhr.send(file);
+        });
     };
 
     function parseDate(key, value) {
@@ -187,6 +206,7 @@ let requestFunctions = (function () {
         likePhotoPost,
         getUniqueNames,
         getUniqueHashtags,
-        getNewPosts
+        getNewPosts,
+        uploadFile
     }
 })();

@@ -1,17 +1,38 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dataFunctions = require('./dataFunctions');
-
+const longPolingPosts = require('./longPolingPosts');
+const multer = require('multer');
 const app = express();
-const longPoll = require("express-longpoll")(app);
 
-app.use(bodyParser.json({limit: '50mb', reviver: parseDate}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
+app.use(bodyParser.json({reviver: parseDate}));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('../public'));
-longPoll.create('/getNewPost')
-    .catch((err) => {
-        console.log('Something went wrong!', err);
-    });
+
+const multerConfig = {
+
+    storage: multer.diskStorage({
+        destination: function (req, file, next) {
+            next(null, './data/images');
+        },
+
+        filename: function (req, file, next) {
+            next(null, `${file.originalname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
+        }
+    }),
+
+    fileFilter: function (req, file, next) {
+        if (!file) {
+            next();
+        }
+        const image = file.mimetype.startsWith('image/');
+        if (image) {
+            next(null, true);
+        } else {
+            return next();
+        }
+    }
+};
 
 function parseDate(key, value) {
     if (key === 'createdAt' && typeof value === 'string') {
@@ -20,10 +41,27 @@ function parseDate(key, value) {
     return value;
 }
 
-// app.get('/getNewPost', function (req, res, next) {
-//     console.log('subscribe');
-//     longPolingPosts.subscribe(res);
-// });
+app.get('/image/:name', function (req, res, next) {
+    let options = {
+        root: __dirname + '/data/images/',
+        dotfiles: 'deny',
+        headers: {
+            'x-timestamp': Date.now(),
+            'x-sent': true
+        }
+    };
+
+    let fileName = req.params.name;
+    res.sendFile(fileName, options, function (err) {
+        if (err) {
+            next(err);
+        }
+    });
+});
+
+app.get('/getNewPost', function (req, res) {
+    longPolingPosts.subscribe(res);
+});
 
 app.get('/getPost', async function (req, res) {
     let post;
@@ -58,18 +96,10 @@ app.post('/addPost', async (req, res) => {
         res.status(404).end();
     }
     if (addPost) {
-        // longPolingPosts.clients.forEach(function (item) {
-        //     item.send(req.body);
-        // });
-        // longPolingPosts.clearClients();
-        longPoll.publish('/getNewPost', req.body)
-            .then(() => {
-                console.log('send Data');
-            })
-            .catch((err) => {
-                console.log('Something went wrong!', err);
-            });
-
+        longPolingPosts.clients.forEach(function (item) {
+            item.send(req.body);
+        });
+        longPolingPosts.clearClients();
         res.status(200).end();
     }
     else {
@@ -136,6 +166,11 @@ app.get('/getUniqueHashtags', async function (req, res) {
         res.status(404).end();
     }
     hashtags ? res.send(hashtags) : res.status(404).end();
+});
+
+app.post('/uploadPhoto', multer(multerConfig).single('upPhoto'), function (req, res) {
+    let filename = req.file.filename;
+    res.send(`/image/${filename}`);
 });
 
 app.listen(3000, function () {

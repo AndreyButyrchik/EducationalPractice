@@ -8,34 +8,10 @@ async function showPhotoPosts(skip, top, filterConfig, insertBefore) {
         postsArray = await requestFunctions.getPhotoPosts(skip, top, filterConfig);
     } catch (err) {
         console.log(`Ooops ${err}`);
+        return false;
     }
     if (typeof postsArray === 'object') {
-        let rem;
-        while (true) {
-            rem = 0;
-            for (let i = 0; i < postsArray.length; i++) {
-                if (postsArray[i].removed === true) {
-                    postsArray.splice(i, 1);
-                    rem++;
-                }
-            }
-            if (rem === 0) {
-                break;
-            }
-            let additionalPosts;
-            try {
-                additionalPosts = await requestFunctions.getPhotoPosts(top, rem, filterConfig);
-            } catch (err) {
-                console.log(`Ooops ${err}`);
-            }
-            if (additionalPosts) {
-                additionalPosts.forEach(function (post) {
-                    postsArray.push(post);
-                });
-            }
-            top += rem;
-        }
-        domFunc.showPhotoPosts(postsArray, insertBefore);
+        domFunc.domShowPhotoPosts(postsArray, insertBefore);
         return true;
     }
     return false;
@@ -67,7 +43,8 @@ async function editPhotoPost(id, photoPost) {
 
 async function removePhotoPost(event) {
     let modalWindow = document.getElementById('modalWindowConfirmDelete');
-    modalWindow.style.display = 'none';
+    modalWindow.classList.remove('visible');
+    modalWindow.classList.add('hidden');
     let id = event.target.value;
     try {
         if (await requestFunctions.removePhotoPost(id)) {
@@ -93,7 +70,7 @@ function showElementsForUser() {
 async function likePost(event) {
     try {
         if (user !== null && event.target.classList.contains('fa-heart')) {
-            await requestFunctions.likePhotoPost(this.id) ? domFunc.likePost(this.id) : domFunc.unLikePost(this.id);
+            await requestFunctions.likePhotoPost(this.id, user) ? domFunc.likePost(this.id) : domFunc.unLikePost(this.id);
         }
     } catch (err) {
         console.log(`Ooops ${err}`);
