@@ -2,57 +2,56 @@ let user = 'Галя Печка';
 
 let filterConfig = {createdAt: {}, author: '', hashtags: []};
 
-function showPhotoPosts(skip, top, filterConfig, insertBefore) {
-    let postsArray = requestFunctions.getPhotoPosts(skip, top, filterConfig);
+async function showPhotoPosts(skip, top, filterConfig, insertBefore) {
+    let postsArray;
+    try {
+        postsArray = await requestFunctions.getPhotoPosts(skip, top, filterConfig);
+    } catch (err) {
+        console.log(`Ooops ${err}`);
+        return false;
+    }
     if (typeof postsArray === 'object') {
-        let rem;
-        while(true) {
-            rem = 0;
-            for (let i = 0; i < postsArray.length; i++) {
-                if (postsArray[i].removed === true) {
-                    postsArray.splice(i, 1);
-                    rem++;
-                }
-            }
-            if (rem === 0) {
-                break;
-            }
-            let additionalPosts = requestFunctions.getPhotoPosts(top, rem, filterConfig);
-            if(additionalPosts) {
-                additionalPosts.forEach(function (post) {
-                    postsArray.push(post);
-                });
-            }
-            top += rem;
+        domFunc.domShowPhotoPosts(postsArray, insertBefore);
+        return true;
+    }
+    return false;
+}
+
+async function addPhotoPost(PhotoPost, insertBefore) {
+    try {
+        if (await requestFunctions.addPhotoPost(PhotoPost)) {
+            domFunc.addPhotoPost(PhotoPost, insertBefore);
+            return true;
         }
-        domFunc.showPhotoPosts(postsArray, insertBefore);
-        return true;
+    } catch (err) {
+        console.log(`Ooops ${err}`);
     }
     return false;
 }
 
-function addPhotoPost(PhotoPost, insertBefore) {
-    if (requestFunctions.addPhotoPost(PhotoPost)) {
-        domFunc.addPhotoPost(PhotoPost, insertBefore);
-        return true;
+async function editPhotoPost(id, photoPost) {
+    try {
+        if (await requestFunctions.editPhotoPost(id, photoPost)) {
+            domFunc.editPhotoPost(id, photoPost);
+            return true;
+        }
+    } catch (err) {
+        console.log(`Ooops ${err}`);
     }
     return false;
 }
 
-function editPhotoPost(id, photoPost) {
-    if (requestFunctions.editPhotoPost(id,photoPost)) {
-        domFunc.editPhotoPost(id, photoPost);
-        return true;
-    }
-    return false;
-}
-
-function removePhotoPost(event) {
+async function removePhotoPost(event) {
     let modalWindow = document.getElementById('modalWindowConfirmDelete');
-    modalWindow.style.display = 'none';
+    modalWindow.classList.remove('visible');
+    modalWindow.classList.add('hidden');
     let id = event.target.value;
-    if (requestFunctions.removePhotoPost(id)) {
-        domFunc.removePhotoPost(id);
+    try {
+        if (await requestFunctions.removePhotoPost(id)) {
+            domFunc.removePhotoPost(id);
+        }
+    } catch (err) {
+        console.log(`Ooops ${err}`);
     }
     return false;
 }
@@ -68,11 +67,17 @@ function showElementsForUser() {
     domFunc.showFilterHashtags();
 }
 
-function likePost(event) {
-    if (user !== null && event.target.classList.contains('fa-heart')) {
-        requestFunctions.likePhotoPost(this.id) ? domFunc.likePost(this.id) : domFunc.unLikePost(this.id);
+async function likePost(event) {
+    try {
+        if (user !== null && event.target.classList.contains('fa-heart')) {
+            await requestFunctions.likePhotoPost(this.id, user) ? domFunc.likePost(this.id) : domFunc.unLikePost(this.id);
+        }
+    } catch (err) {
+        console.log(`Ooops ${err}`);
     }
 }
+
+requestFunctions.getNewPosts();
 
 showPhotoPosts(0, 8, filterConfig, true);
 

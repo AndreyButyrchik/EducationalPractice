@@ -51,7 +51,7 @@ let domFunc = (function () {
         item.insertBefore(trashImage, commentBox);
     }
 
-    let showPhotoPosts = function (postsArray, insertBefore) {
+    let domShowPhotoPosts = function (postsArray, insertBefore) {
         if (insertBefore) {
             postsArray.reverse();
         }
@@ -71,7 +71,7 @@ let domFunc = (function () {
         newPost.childNodes[3].firstChild.src = photoPost.photoLink;
         newPost.childNodes[7].firstChild.textContent = photoPost.descriprion;
         newPost.childNodes[9].firstChild.textContent = photoPost.hashtags.join(' ');
-        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + formatDate(photoPost.createdAt);
+        newPost.childNodes[11].firstChild.textContent = 'Фото было опубликовано ' + utilites.formatDate(photoPost.createdAt);
         if (user === photoPost.author) {
             showButtonEditPost(newPost);
             showButtonTrash(newPost);
@@ -126,24 +126,37 @@ let domFunc = (function () {
         }
 
         let posts = document.getElementsByClassName('postBox');
-        [].forEach.call(posts, function (item) {
+        [].forEach.call(posts, async function (item) {
             let author = item.childNodes[1].textContent;
             if (author === user && (item.getElementsByClassName('fa-trash-alt')[0]) === undefined) {
                 showButtonEditPost(item);
                 showButtonTrash(item);
             }
             let id = item.id;
-            let dataPost = requestFunctions.getPhotoPost(id);
+
+            let dataPost;
+            try {
+                dataPost = await requestFunctions.getPhotoPost(id);
+            } catch (err) {
+                console.log(`Ooops ${err}`);
+            }
             if (dataPost.likes.indexOf(user) !== -1) {
                 let heart = item.getElementsByClassName('fa-heart')[0];
                 heart.className = 'fas fa-heart like';
             }
+
         });
     };
 
-    let showFilterUsers = function () {
+    let showFilterUsers = async function () {
         let dataUsers = document.getElementById('userNames');
-        let uniqueNames = requestFunctions.getUniqueNames();
+
+        let uniqueNames;
+        try {
+            uniqueNames = await requestFunctions.getUniqueNames();
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
         uniqueNames.forEach(function (item) {
             let userName = document.createElement('option');
             userName.value = item;
@@ -151,9 +164,15 @@ let domFunc = (function () {
         })
     };
 
-    let showFilterHashtags = function () {
+    let showFilterHashtags = async function () {
         let dataUsers = document.getElementById('hashtags');
-        let uniqueHashtags = requestFunctions.getUniqueHashtags();
+        let uniqueHashtags;
+        try {
+            uniqueHashtags = await requestFunctions.getUniqueHashtags();
+        } catch (err) {
+            console.log(`Ooops ${err}`);
+        }
+
         uniqueHashtags.forEach(function (item) {
             let hashtag = document.createElement('option');
             hashtag.value = item;
@@ -187,28 +206,165 @@ let domFunc = (function () {
         portalName.style.width = '90vw';
     };
 
-    function formatDate(date) {
+    let resetPosts = function () {
+        let postList = document.getElementsByClassName('postBox');
+        let posts = Array.prototype.slice.call(postList);
+        posts.forEach(function (post) {
+            post.remove();
+        });
+    };
 
-        let dd = date.getDate();
-        if (dd < 10) {
-            dd = `0${dd}`;
+    let filtingPhotoPosts = async function () {
+        domFunc.resetPosts();
+        if (!await showPhotoPosts(0, 8, filterConfig, true)) {
+            let error = document.getElementById('modalWindowError');
+            error.classList.remove('hidden');
+            error.classList.add('visible');
+            let message = error.getElementsByTagName('p')[0];
+            message.textContent = 'Не найдено постов с заданными фильтрами';
         }
+    };
 
-        let mm = date.getMonth() + 1;
-        if (mm < 10) {
-            mm = `0${mm}`;
+    let logIn = function () {
+        let modalWindow = document.getElementById('modalWindowSingIn');
+        let inputLogin = document.getElementsByName('login')[0];
+        let inputPassword = document.getElementsByName('password')[0]; // ?
+        if (inputLogin.checkValidity() && inputPassword.checkValidity()) {
+            user = inputLogin.value;
+            let buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
+            buttonSignOut.remove();
+            domFunc.showElementsForAuthUser();
+            modalWindow.classList.remove('visible');
+            modalWindow.classList.add('hidden');
         }
+    };
 
-        let yy = date.getFullYear();
-        if (yy < 10) {
-            yy = `0${yy}`;
-        }
 
-        return dd + '.' + mm + '.' + yy;
-    }
+    let checkSuccess = function () {
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
+        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
+
+        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
+        upLoadIcon.className = 'fas fa-check';
+        upLoadIcon.style.color = '#0f0';
+
+        let label = drugDrop.getElementsByClassName('chous')[0];
+        label.textContent = 'Фото загружено';
+    };
+
+    let checkInvalid = function () {
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
+        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
+
+        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
+        upLoadIcon.className = 'fas fa-exclamation-circle';
+        upLoadIcon.style.color = '#f00';
+
+        let label = drugDrop.getElementsByClassName('chous')[0];
+        label.textContent = 'Ошибка';
+
+        let submitForm = document.forms.submitPost;
+        document.getElementsByName('addDescription')[0].value = '';
+        document.getElementsByName('addHashtags')[0].value = [];
+        submitForm.value = '';
+
+        let inputFile = document.getElementsByName('upPhoto')[0];
+        inputFile.value = null;
+    };
+
+    let resetFormAddPhoto = function () {
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
+        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
+
+        let upLoadIcon = drugDrop.getElementsByClassName('fas')[0];
+        upLoadIcon.className = 'fas fa-upload';
+        upLoadIcon.style.color = '#474143';
+
+        let label = drugDrop.getElementsByClassName('chous')[0];
+        label.textContent = 'Перетащите фото для загрузки';
+
+        let submitForm = document.forms.submitPost;
+        document.getElementsByName('addDescription')[0].value = '';
+        document.getElementsByName('addHashtags')[0].value = [];
+        submitForm.value = '';
+        document.getElementsByName('publishPost')[0].textContent = 'Опубликовать';
+
+        let inputFile = document.getElementsByName('upPhoto')[0];
+        inputFile.value = null;
+    };
+
+    let showModalRemovePost = function () {
+        let modalWindow = document.getElementById('modalWindowConfirmDelete');
+        modalWindow.classList.remove('hidden');
+        modalWindow.classList.add('visible');
+    };
+
+    let showModalSingIn = function () {
+        let modalWindow = document.getElementById('modalWindowSingIn');
+        modalWindow.classList.remove('hidden');
+        modalWindow.classList.add('visible');
+    };
+
+    let logOut = function () {
+        let author = document.getElementsByClassName('headerUserName')[0];
+        author.remove();
+
+        let buttonAddPhoto = document.getElementsByClassName('headerAddFoto')[0];
+        buttonAddPhoto.remove();
+
+        let buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
+        buttonSignOut.remove();
+
+        domFunc.showButtonSingIn();
+
+        let posts = document.getElementsByClassName('postBox');
+        [].forEach.call(posts, function (item) {
+            let like = item.getElementsByClassName('fa-heart')[0];
+            like.className = 'fas fa-heart unlike';
+
+            let edit = item.getElementsByClassName('fa-edit')[0];
+            let trash = item.getElementsByClassName('fa-trash-alt')[0];
+            if (edit !== undefined || trash !== undefined) {
+                edit.remove();
+                trash.remove();
+            }
+        });
+    };
+
+    let showModalAddEditPost = function () {
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        window.classList.remove('hidden');
+        window.classList.add('visible');
+
+        let modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
+        modalWindow.getElementsByTagName('h2')[0].textContent = user;
+        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + utilites.formatDate(new Date());
+    };
+
+    let showModalEdit = function (post) {
+        let description = post.getElementsByClassName('commentBox')[0].textContent;
+        let hashtags = post.getElementsByClassName('hashtagsBox')[0].textContent;
+        let window = document.getElementById('modalWindowAddEditPhotoPost');
+        window.classList.remove('hidden');
+        window.classList.add('visible');
+        let modalWindow = window.childNodes[1];
+        document.getElementsByName('addDescription')[0].value = description;
+        document.getElementsByName('addHashtags')[0].value = hashtags;
+        document.getElementsByName('publishPost')[0].textContent = 'Изменить';
+        modalWindow.getElementsByTagName('h2')[0].textContent = user;
+        modalWindow.getElementsByTagName('h4')[0].textContent = 'Дата: ' + utilites.formatDate(new Date());
+
+        let drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
+        let label = drugDrop.getElementsByClassName('chous')[0];
+        label.textContent = 'Загрузить другое фото';
+        document.forms.submitPost.value = post.getElementsByClassName('foto')[0].src;
+    };
 
     return {
-        showPhotoPosts,
+        domShowPhotoPosts,
         addPhotoPost,
         removePhotoPost,
         editPhotoPost,
@@ -217,7 +373,18 @@ let domFunc = (function () {
         showFilterHashtags,
         likePost,
         unLikePost,
-        showButtonSingIn
+        showButtonSingIn,
+        resetPosts,
+        filtingPhotoPosts,
+        logIn,
+        checkSuccess,
+        checkInvalid,
+        resetFormAddPhoto,
+        showModalRemovePost,
+        showModalSingIn,
+        logOut,
+        showModalAddEditPost,
+        showModalEdit,
     }
 
 })();

@@ -135,7 +135,7 @@ main {
     animation-duration: 0.4s
 }
 
-button[name=Yes], [name=No], [name=next] {
+button[name=Yes], [name=No], [name=next], [name=toMain] {
     font-family: Roboto;
     font-weight: bold;
     background-color: #C4C4C4;
@@ -262,8 +262,20 @@ button[name=publishPost] {
     line-height: 1.5em;
 }
 
+[name=toMain] {
+    width: 20em;
+}
+
 .highlight {
     background-color: #A69E9D;
+}
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: flex;
 }
 
 @media screen and (max-width: 960px) {
