@@ -1,22 +1,22 @@
-let longPolingPosts = (function () {
-    let clients = [];
+const longPolingPosts = (function longPolingPosts() {
+  let clients = [];
 
-    let subscribe = function (res) {
-        clients.push(res);
-        res.on('close', function () {
-            clients.splice(clients.indexOf(res), 1);
-        });
-    };
+  const subscribe = function subscribe(res) {
+    clients.push(res);
+    res.on('close', () => {
+      clients.splice(clients.indexOf(res), 1);
+    });
+  };
 
-    let clearClients = function () {
-        clients = [];
-    };
+  const clearClients = function clearClients() {
+    clients = [];
+  };
 
-    return {
-        clients,
-        subscribe,
-        clearClients
-    }
-})();
+  return {
+    clients,
+    subscribe,
+    clearClients
+  };
+}());
 
 module.exports = longPolingPosts;
