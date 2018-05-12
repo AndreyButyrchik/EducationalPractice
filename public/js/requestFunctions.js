@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const requestFunctions = (function requestFunctions() {
   function parseDate(key, value) {
     if (key === 'createdAt' && typeof value === 'string') {
@@ -196,6 +195,43 @@ const requestFunctions = (function requestFunctions() {
     });
   };
 
+  const logIn = function logIn(login, password) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/login', true);
+      xhr.setRequestHeader('Content-type', 'application/json');
+
+      xhr.onreadystatechange = function onreadystatechange() {
+        if (xhr.readyState !== 4) return;
+
+        if (xhr.status !== 200) {
+          reject(new Error('Invalid query'));
+        }
+        resolve(xhr.responseText);
+      };
+
+      xhr.send(JSON.stringify({ username: login, password }));
+    });
+  };
+
+  const logOut = function logOut() {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/logout', true);
+
+      xhr.onreadystatechange = function onreadystatechange() {
+        if (xhr.readyState !== 4) return;
+
+        if (xhr.status !== 200) {
+          reject(new Error('Invalid query'));
+        }
+        resolve(xhr.responseText);
+      };
+
+      xhr.send();
+    });
+  };
+
   return {
     getPhotoPost,
     removePhotoPost,
@@ -206,6 +242,8 @@ const requestFunctions = (function requestFunctions() {
     getUniqueNames,
     getUniqueHashtags,
     getNewPosts,
-    uploadFile
+    uploadFile,
+    logIn,
+    logOut
   };
 }());
