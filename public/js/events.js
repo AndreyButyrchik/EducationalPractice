@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 const events = (function events() {
   const fileTypes = [
     'image/jpeg',
@@ -102,15 +101,28 @@ const events = (function events() {
     post.addEventListener('click', likePost);
   };
 
+  async function authorization() {
+    const login = document.getElementsByName('login')[0].value;
+    const password = document.getElementsByName('password')[0].value;
+    const isLogin = await requestFunctions.logIn(login, password);
+    if (isLogin !== 'false') {
+      domFunc.logIn();
+    } else {
+      domFunc.invalidLogIn();
+    }
+  }
+
   const eSingIn = function eSingIn() {
     domFunc.showModalSingIn();
     const buttonNext = document.getElementsByName('next')[0];
-    buttonNext.onclick = domFunc.logIn;
+    buttonNext.onclick = authorization;
   };
 
-  const logOut = function logOut() {
-    user = null;
-    domFunc.logOut();
+  const logOut = async function logOut() {
+    if (await requestFunctions.logOut()) {
+      user = null;
+      domFunc.logOut();
+    }
   };
 
   const eShowMorePhotoPosts = async function eShowMorePhotoPosts() {

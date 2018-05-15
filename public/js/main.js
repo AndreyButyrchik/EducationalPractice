@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars,prefer-const */
-let user = 'Галя Печка';
+let user = null;
 let filterConfig = { createdAt: {}, author: '', hashtags: [] };
 
 async function showPhotoPosts(skip, top, filterConf, insertBefore) {
@@ -56,7 +55,7 @@ async function removePhotoPost(event) {
 }
 
 function showElementsForUser() {
-  if (user !== '') {
+  if (user !== null) {
     domFunc.showElementsForAuthUser();
   } else {
     domFunc.showButtonSingIn();

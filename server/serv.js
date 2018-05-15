@@ -1,10 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const passport = require('passport');
+const session = require('express-session');
+const JsonStrategy = require('passport-json').Strategy;
+const cookieParser = require('cookie-parser');
+
+const verification = require('./verification');
 const dataFunctions = require('./dataFunctions');
 const longPolingPosts = require('./longPolingPosts');
-const multer = require('multer');
-
-const app = express();
 
 function parseDate(key, value) {
   if (key === 'createdAt' && typeof value === 'string') {
@@ -13,9 +17,14 @@ function parseDate(key, value) {
   return value;
 }
 
+const app = express();
 app.use(bodyParser.json({ reviver: parseDate }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('../public'));
+app.use(cookieParser());
+app.use(session({ secret: 'wildCherry' }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 const multerConfig = {
 
@@ -41,6 +50,39 @@ const multerConfig = {
     return next();
   }
 };
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.use(new JsonStrategy(async (username, password, done) => {
+  try {
+    const user = await verification.verifyPassword(username, password);
+    if (user) {
+      return done(null, user);
+    }
+    return done(null, false);
+  } catch (err) {
+    return done(err);
+  }
+}));
+
+app.post('/login', passport.authenticate('json', { failureRedirect: '/loginfail' }), (req, res) => {
+  res.redirect('/');
+});
+
+app.get('/loginfail', (req, res) => {
+  res.json(200, false);
+});
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.json(200, true);
+});
 
 app.get('/image/:name', (req, res, next) => {
   const options = {

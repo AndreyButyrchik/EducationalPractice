@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const domFunc = (function domFunc() {
   function showUserName() {
     const header = document.getElementsByTagName('header')[0];
@@ -227,17 +226,23 @@ const domFunc = (function domFunc() {
   const logIn = function logIn() {
     const modalWindow = document.getElementById('modalWindowSingIn');
     const inputLogin = document.getElementsByName('login')[0];
-    const inputPassword = document.getElementsByName('password')[0]; // ?
-    if (inputLogin.checkValidity() && inputPassword.checkValidity()) {
-      user = inputLogin.value;
-      const buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
-      buttonSignOut.remove();
-      showElementsForAuthUser();
-      modalWindow.classList.remove('visible');
-      modalWindow.classList.add('hidden');
-    }
+    const inputPassword = document.getElementsByName('password')[0];
+    user = inputLogin.value;
+    inputLogin.value = '';
+    inputPassword.value = '';
+    const buttonSignOut = document.getElementsByClassName('headerSingInOut')[0];
+    buttonSignOut.remove();
+    showElementsForAuthUser();
+    modalWindow.classList.remove('visible');
+    modalWindow.classList.add('hidden');
   };
 
+  const invalidLogIn = function invalidLogIn() {
+    const inputLogin = document.getElementsByName('login')[0];
+    const inputPassword = document.getElementsByName('password')[0];
+    inputLogin.value = 'Неверный логин или пароль';
+    inputPassword.value = '';
+  };
 
   const checkSuccess = function checkSuccess() {
     const window = document.getElementById('modalWindowAddEditPhotoPost');
@@ -384,5 +389,6 @@ const domFunc = (function domFunc() {
     logOut,
     showModalAddEditPost,
     showModalEdit,
+    invalidLogIn
   };
 }());
