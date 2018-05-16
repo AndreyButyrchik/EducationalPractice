@@ -1,9 +1,9 @@
-const events = (function events() {
+const moduleEvents = (function moduleEvents() {
   const fileTypes = [
     'image/jpeg',
     'image/img',
     'image/png',
-    'image/jpg'
+    'image/jpg',
   ];
 
   let currentEditedPost = null;
@@ -26,17 +26,17 @@ const events = (function events() {
   const upload = async function upload(e) {
     const file = e.target.files[0];
     if (validFileType(file)) {
-      domFunc.checkSuccess();
+      moduleDomFunc.checkSuccess();
       const formData = new FormData();
       formData.append('upPhoto', file);
       const submitPost = document.getElementsByName('submitPost')[0];
       try {
-        submitPost.value = await requestFunctions.uploadFile(formData);
+        submitPost.value = await moduleRequestFunctions.uploadFile(formData);
       } catch (err) {
         throw new Error(`Ooops ${err}`);
       }
     } else {
-      domFunc.checkInvalid();
+      moduleDomFunc.checkInvalid();
       return false;
     }
     return true;
@@ -48,9 +48,9 @@ const events = (function events() {
     const file = Array.from(dtfiles);
     if (validFileType(file[0]) &&
       upload(file[0])) {
-      domFunc.checkSuccess();
+      moduleDomFunc.checkSuccess();
     } else {
-      domFunc.checkInvalid();
+      moduleDomFunc.checkInvalid();
     }
   }
 
@@ -84,10 +84,10 @@ const events = (function events() {
 
   const showModalRemovePost = function showModalRemovePost(event) {
     const modalWindow = document.getElementById('modalWindowConfirmDelete');
-    domFunc.showModalRemovePost();
+    moduleDomFunc.showModalRemovePost();
 
     const buttonConfirm = document.getElementsByName('Yes')[0];
-    buttonConfirm.onclick = removePhotoPost;
+    buttonConfirm.onclick = mainRemovePhotoPost;
     buttonConfirm.value = event.target.parentElement.id;
 
     const buttonReset = document.getElementsByName('No')[0];
@@ -98,37 +98,37 @@ const events = (function events() {
   };
 
   const eLikePost = function eLikePost(post) {
-    post.addEventListener('click', likePost);
+    post.addEventListener('click', mainLikePost);
   };
 
   async function authorization() {
     const login = document.getElementsByName('login')[0].value;
     const password = document.getElementsByName('password')[0].value;
-    const isLogin = await requestFunctions.logIn(login, password);
+    const isLogin = await moduleRequestFunctions.logIn(login, password);
     if (isLogin !== 'false') {
-      domFunc.logIn();
+      moduleDomFunc.logIn();
     } else {
-      domFunc.invalidLogIn();
+      moduleDomFunc.invalidLogIn();
     }
   }
 
   const eSingIn = function eSingIn() {
-    domFunc.showModalSingIn();
+    moduleDomFunc.showModalSingIn();
     const buttonNext = document.getElementsByName('next')[0];
     buttonNext.onclick = authorization;
   };
 
   const logOut = async function logOut() {
-    if (await requestFunctions.logOut()) {
+    if (await moduleRequestFunctions.logOut()) {
       user = null;
-      domFunc.logOut();
+      moduleDomFunc.logOut();
     }
   };
 
   const eShowMorePhotoPosts = async function eShowMorePhotoPosts() {
     const cntShowPosts = document.getElementsByClassName('postBox').length;
     try {
-      return await showPhotoPosts(cntShowPosts, 8, filterConfig, false);
+      return await mainShowPhotoPosts(cntShowPosts, 8, filterConfig, false);
     } catch (err) {
       throw new Error(`Ooops ${err}`);
     }
@@ -139,7 +139,7 @@ const events = (function events() {
     const filtInput = filtForm.childNodes[1];
     filterConfig.author = filtInput.value;
     try {
-      return await domFunc.filtingPhotoPosts();
+      return await moduleDomFunc.filtingPhotoPosts();
     } catch (err) {
       throw new Error(`Ooops ${err}`);
     }
@@ -156,7 +156,7 @@ const events = (function events() {
       filterConfig.createdAt = {};
     }
     try {
-      return await domFunc.filtingPhotoPosts();
+      return await moduleDomFunc.filtingPhotoPosts();
     } catch (err) {
       throw new Error(`Ooops ${err}`);
     }
@@ -173,7 +173,7 @@ const events = (function events() {
       filterConfig.hashtags = [];
     }
     try {
-      return await domFunc.filtingPhotoPosts();
+      return await moduleDomFunc.filtingPhotoPosts();
     } catch (err) {
       throw new Error(`Ooops ${err}`);
     }
@@ -191,18 +191,18 @@ const events = (function events() {
       photoLink: `${addForm.value}`,
       hashtags: inputHashtags.value.split(' '),
       likes: [''],
-      removed: false
+      removed: false,
     };
 
     if (inputDescription.value.length !== 0 &&
       new RegExp(inputHashtags.getAttribute('pattern')).test(inputHashtags.value) &&
-      addPhotoPost(photoPost, true)) {
+      mainAddPhotoPost(photoPost, true)) {
       const modalWindow = document.getElementById('modalWindowAddEditPhotoPost');
       modalWindow.classList.remove('visible');
       modalWindow.classList.add('hidden');
       return true;
     }
-    domFunc.checkInvalid();
+    moduleDomFunc.checkInvalid();
     return false;
   };
 
@@ -218,23 +218,23 @@ const events = (function events() {
       photoLink: `${editForm.value}`,
       hashtags: inputHashtags.value.split(' '),
       likes: currentEditedPost.likes,
-      removed: false
+      removed: false,
     };
 
     if (inputDescription.value.length !== 0 &&
       new RegExp(inputHashtags.getAttribute('pattern')).test(inputHashtags.value) &&
-      editPhotoPost(currentEditedPost.id, photoPost)) {
+      mainEditPhotoPost(currentEditedPost.id, photoPost)) {
       const modalWindow = document.getElementById('modalWindowAddEditPhotoPost');
       modalWindow.classList.remove('visible');
       modalWindow.classList.add('hidden');
       return true;
     }
-    domFunc.checkInvalid();
+    moduleDomFunc.checkInvalid();
     return false;
   };
 
   function resetFormAddPhoto() {
-    domFunc.resetFormAddPhoto();
+    moduleDomFunc.resetFormAddPhoto();
 
     const submit = document.getElementsByName('publishPost')[0];
     submit.removeEventListener('click', eEditPost);
@@ -245,7 +245,7 @@ const events = (function events() {
     resetFormAddPhoto();
     const inputFile = document.getElementsByName('upPhoto')[0];
     inputFile.onchange = upload;
-    domFunc.showModalAddEditPost();
+    moduleDomFunc.showModalAddEditPost();
     eDropDownArea();
     const submit = document.getElementsByName('publishPost')[0];
     submit.addEventListener('click', eAddPost);
@@ -257,9 +257,9 @@ const events = (function events() {
     inputFile.onchange = upload;
     const post = event.target.parentElement;
     currentEditedPost = post;
-    domFunc.showModalEdit(post);
+    moduleDomFunc.showModalEdit(post);
     eDropDownArea();
-    domFunc.checkSuccess();
+    moduleDomFunc.checkSuccess();
     const submit = document.getElementsByName('publishPost')[0];
     submit.addEventListener('click', eEditPost);
   };
@@ -284,7 +284,7 @@ const events = (function events() {
     filterConfig.hashtags = [];
     filterConfig.createdAt = {};
     try {
-      return await showPhotoPosts(0, 8, filterConfig, true);
+      return await mainShowPhotoPosts(0, 8, filterConfig, true);
     } catch (err) {
       throw new Error(`Ooops ${err}`);
     }
@@ -302,6 +302,6 @@ const events = (function events() {
     filterByAuthor,
     filterByDate,
     filterByHashtags,
-    eToMain
+    eToMain,
   };
 }());

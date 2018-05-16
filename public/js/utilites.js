@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-const utilities = (function utilities() {
+const moduleUtilities = (function utilities() {
   const formatDate = function formatDate(date) {
     let dd = date.getDate();
     if (dd < 10) {
@@ -28,6 +27,6 @@ const utilities = (function utilities() {
 
   return {
     formatDate,
-    parseDate
+    parseDate,
   };
 }());

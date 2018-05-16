@@ -18,21 +18,21 @@
 </header>
 <main>
     <div class="filtersBox">
-        <form name="author" class="filterName" autocomplete="off" onsubmit="events.filterByAuthor(); return false;">
+        <form name="author" class="filterName" autocomplete="off" onsubmit="moduleEvents.filterByAuthor(); return false;">
             <input type="text" list="userNames" placeholder="Введите имя пользователя" spellcheck="false"
                    class="filter">
             <datalist id="userNames">
             </datalist>
             <button type="submit"></button>
         </form>
-        <form name="date" class="filterDate" autocomplete="off" onsubmit="events.filterByDate(); return false;">
+        <form name="date" class="filterDate" autocomplete="off" onsubmit="moduleEvents.filterByDate(); return false;">
             <input type="text" name="date" placeholder="Введите дату"
                    pattern="\d\d\.\d\d\.\d\d\d\d" spellcheck="false" title="Формат: чч.мм.гггг Пример: '13.01.2018'"
                    class="filter">
             <button type="submit"></button>
         </form>
         <form name="hashtags" class="filterHashtags" autocomplete="off"
-              onsubmit="events.filterByHashtags(); return false;">
+              onsubmit="moduleEvents.filterByHashtags(); return false;">
             <input type="text" list="hashtags" placeholder="Введите хештеги" spellcheck="false" class="filter"
                    pattern="((#\b\w+\b)(\s?))+" title="Формат: #хештег1 [#хештег2...] Пример: '#smile #intergalactic'">
             <datalist id="hashtags">
@@ -51,7 +51,7 @@
             <div class="dateBox"><p></p></div>
         </div>
     </template>
-    <dialog id="modalWindowConfirmDelete" onclick="events.closeWindow(event)">
+    <dialog id="modalWindowConfirmDelete" onclick="moduleEvents.closeWindow(event)">
         <div class="box modalBox">
             <h2>Удаление</h2>
             <h3>Вы действительно хотите удалить пост?</h3>
@@ -61,7 +61,7 @@
             </form>
         </div>
     </dialog>
-    <dialog id="modalWindowSingIn" onclick="events.closeWindow(event);">
+    <dialog id="modalWindowSingIn" onclick="moduleEvents.closeWindow(event);">
         <div class="box modalBox">
             <h2>Вход</h2>
             <form name="authorization">
@@ -73,7 +73,7 @@
             </form>
         </div>
     </dialog>
-    <dialog id="modalWindowAddEditPhotoPost" onclick="events.closeWindow(event);">
+    <dialog id="modalWindowAddEditPhotoPost" onclick="moduleEvents.closeWindow(event);">
         <div class="box modalBox modalBoxAddEditPhoto">
             <h2></h2>
             <div class="drug-drop">
@@ -94,14 +94,14 @@
             </form>
         </div>
     </dialog>
-    <dialog id="modalWindowError" onclick="events.closeWindow(event);">
+    <dialog id="modalWindowError" onclick="moduleEvents.closeWindow(event);">
         <div class="box modalBox error">
             <h2>Ошибка</h2>
             <p></p>
-            <button name="toMain" type="reset" class="box" onclick="events.eToMain()">Вернуться на главную страницу</button>
+            <button name="toMain" type="reset" class="box" onclick="moduleEvents.eToMain()">Вернуться на главную страницу</button>
         </div>
     </dialog>
-    <i class="fas fa-angle-down fa-3x moreFotoButton" onclick="events.eShowMorePhotoPosts();"></i>
+    <i class="fas fa-angle-down fa-3x moreFotoButton" onclick="moduleEvents.eShowMorePhotoPosts();"></i>
 </main>
 <footer>
     <div class="footerBox">

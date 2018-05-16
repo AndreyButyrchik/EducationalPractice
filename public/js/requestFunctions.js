@@ -1,4 +1,4 @@
-const requestFunctions = (function requestFunctions() {
+const moduleRequestFunctions = (function requestFunctions() {
   function parseDate(key, value) {
     if (key === 'createdAt' && typeof value === 'string') {
       return new Date(value);
@@ -167,9 +167,9 @@ const requestFunctions = (function requestFunctions() {
       if (xhr.status !== 200) {
         throw new Error('Invalid query');
       } else {
-        const post = JSON.parse(xhr.responseText, utilities.parseDate);
+        const post = JSON.parse(xhr.responseText, moduleUtilities.parseDate);
         if (post.author !== user) {
-          domFunc.addPhotoPost(post, true);
+          moduleDomFunc.addPhotoPost(post, true);
         }
       }
       getNewPosts();
@@ -244,6 +244,6 @@ const requestFunctions = (function requestFunctions() {
     getNewPosts,
     uploadFile,
     logIn,
-    logOut
+    logOut,
   };
 }());

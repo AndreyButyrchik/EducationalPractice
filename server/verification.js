@@ -1,23 +1,16 @@
-const fs = require('fs');
+const mongoose = require('mongoose');
 const hash = require('./hashFunc');
 
 const verification = (function verification() {
-  function readFile(path) {
-    return new Promise((resolve, reject) => {
-      fs.readFile(path, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
-    });
-  }
+  const PostScheme = new mongoose.Schema({
+    password: Object,
+    login: String,
+  });
 
-  const getUserPassword = async function getUser(login) {
-    const data = await readFile('./data/passwords.json');
-    const users = new Map(JSON.parse(data));
-    const password = users.get(login);
+  const Passwords = mongoose.model('Passwords', PostScheme);
+
+  const getUserPassword = async function getUser(log) {
+    const password = await Passwords.findOne({ login: log });
     if (password !== undefined) {
       return password;
     }
@@ -29,14 +22,15 @@ const verification = (function verification() {
     if (!userPassword) {
       return false;
     }
-    const hashPassword = hash.sha512(password, userPassword.salt);
-    if (hashPassword.value !== userPassword.value) {
+    const hashPassword = hash.sha512(password, userPassword.password.salt);
+    if (hashPassword.value !== userPassword.password.value) {
       return false;
     }
     return { username: login, password };
   };
+
   return {
-    verifyPassword
+    verifyPassword,
   };
 }());
 

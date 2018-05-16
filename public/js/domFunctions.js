@@ -1,4 +1,4 @@
-const domFunc = (function domFunc() {
+const moduleDomFunc = (function moduleDomFunc() {
   function showUserName() {
     const header = document.getElementsByTagName('header')[0];
     const headerUserName = document.createElement('div');
@@ -16,7 +16,7 @@ const domFunc = (function domFunc() {
     const addFotoImg = document.createElement('i');
     addFotoImg.className = 'fas fa-plus-circle';
     addFotoImg.style.cursor = 'pointer';
-    addFotoImg.onclick = events.eShowModalAddPost;
+    addFotoImg.onclick = moduleEvents.eShowModalAddPost;
     headerAddFoto.appendChild(addFotoImg);
     header.appendChild(headerAddFoto);
   }
@@ -27,7 +27,7 @@ const domFunc = (function domFunc() {
     headerSingIn.className = 'headerSingInOut';
     const singInImg = document.createElement('i');
     singInImg.className = 'fas fa-sign-out-alt';
-    singInImg.onclick = events.logOut;
+    singInImg.onclick = moduleEvents.logOut;
     singInImg.style.cursor = 'pointer';
     headerSingIn.appendChild(singInImg);
     header.appendChild(headerSingIn);
@@ -37,7 +37,7 @@ const domFunc = (function domFunc() {
     const commentBox = item.getElementsByClassName('commentBox')[0];
     const editImage = document.createElement('i');
     editImage.className = 'fas fa-edit';
-    editImage.onclick = events.eShowModalEditPost;
+    editImage.onclick = moduleEvents.eShowModalEditPost;
     item.insertBefore(editImage, commentBox);
   }
 
@@ -46,7 +46,7 @@ const domFunc = (function domFunc() {
     const trashImage = document.createElement('i');
     trashImage.className = 'fas fa-trash-alt';
     trashImage.style.cursor = 'pointer';
-    trashImage.onclick = events.showModalRemovePost;
+    trashImage.onclick = moduleEvents.showModalRemovePost;
     item.insertBefore(trashImage, commentBox);
   }
 
@@ -55,13 +55,13 @@ const domFunc = (function domFunc() {
     const template = document.getElementById('templatePost');
     const newPost = template.content.cloneNode(true).childNodes[1];
     const heart = newPost.getElementsByClassName('fa-heart')[0];
-    events.eLikePost(newPost);
+    moduleEvents.eLikePost(newPost);
     newPost.id = photoPost.id;
     newPost.childNodes[1].textContent = photoPost.author;
     newPost.childNodes[3].firstChild.src = photoPost.photoLink;
     newPost.childNodes[7].firstChild.textContent = photoPost.descriprion;
     newPost.childNodes[9].firstChild.textContent = photoPost.hashtags.join(' ');
-    newPost.childNodes[11].firstChild.textContent = `Фото было опубликовано ${utilities.formatDate(photoPost.createdAt)}`;
+    newPost.childNodes[11].firstChild.textContent = `Фото было опубликовано ${moduleUtilities.formatDate(photoPost.createdAt)}`;
     if (user === photoPost.author) {
       showButtonEditPost(newPost);
       showButtonTrash(newPost);
@@ -134,7 +134,7 @@ const domFunc = (function domFunc() {
 
       let dataPost;
       try {
-        dataPost = await requestFunctions.getPhotoPost(idPost);
+        dataPost = await moduleRequestFunctions.getPhotoPost(idPost);
       } catch (err) {
         throw new Error(`Ooops ${err}`);
       }
@@ -150,7 +150,7 @@ const domFunc = (function domFunc() {
 
     let uniqueNames;
     try {
-      uniqueNames = await requestFunctions.getUniqueNames();
+      uniqueNames = await moduleRequestFunctions.getUniqueNames();
     } catch (err) {
       throw new Error(`Ooops ${err}`);
     }
@@ -166,7 +166,7 @@ const domFunc = (function domFunc() {
     const dataUsers = document.getElementById('hashtags');
     let uniqueHashtags;
     try {
-      uniqueHashtags = await requestFunctions.getUniqueHashtags();
+      uniqueHashtags = await moduleRequestFunctions.getUniqueHashtags();
     } catch (err) {
       throw new Error(`Ooops ${err}`);
     }
@@ -197,7 +197,7 @@ const domFunc = (function domFunc() {
     const singOutImg = document.createElement('i');
     singOutImg.className = 'fas fa-sign-in-alt';
     singOutImg.style.cursor = 'pointer';
-    singOutImg.addEventListener('click', events.eSingIn);
+    singOutImg.addEventListener('click', moduleEvents.eSingIn);
     headerSingOut.appendChild(singOutImg);
     header[0].appendChild(headerSingOut);
     const portalName = document.querySelector('.headerPortalName');
@@ -214,7 +214,7 @@ const domFunc = (function domFunc() {
 
   const filtingPhotoPosts = async function filtingPhotoPosts() {
     resetPosts();
-    if (!await showPhotoPosts(0, 8, filterConfig, true)) {
+    if (!await mainShowPhotoPosts(0, 8, filterConfig, true)) {
       const error = document.getElementById('modalWindowError');
       error.classList.remove('hidden');
       error.classList.add('visible');
@@ -345,7 +345,7 @@ const domFunc = (function domFunc() {
 
     const modalWindow = window.getElementsByClassName('modalBoxAddEditPhoto')[0];
     modalWindow.getElementsByTagName('h2')[0].textContent = user;
-    modalWindow.getElementsByTagName('h4')[0].textContent = `Дата: ${utilities.formatDate(new Date())}`;
+    modalWindow.getElementsByTagName('h4')[0].textContent = `Дата: ${moduleUtilities.formatDate(new Date())}`;
   };
 
   const showModalEdit = function showModalEdit(post) {
@@ -359,7 +359,7 @@ const domFunc = (function domFunc() {
     document.getElementsByName('addHashtags')[0].value = hashtags;
     document.getElementsByName('publishPost')[0].textContent = 'Изменить';
     modalWindow.getElementsByTagName('h2')[0].textContent = user;
-    modalWindow.getElementsByTagName('h4')[0].textContent = `Дата: ${utilities.formatDate(new Date())}`;
+    modalWindow.getElementsByTagName('h4')[0].textContent = `Дата: ${moduleUtilities.formatDate(new Date())}`;
 
     const drugDrop = modalWindow.getElementsByClassName('drug-drop')[0];
     const label = drugDrop.getElementsByClassName('chous')[0];
@@ -378,7 +378,6 @@ const domFunc = (function domFunc() {
     likePost,
     unLikePost,
     showButtonSingIn,
-    resetPosts,
     filtingPhotoPosts,
     logIn,
     checkSuccess,
@@ -389,6 +388,6 @@ const domFunc = (function domFunc() {
     logOut,
     showModalAddEditPost,
     showModalEdit,
-    invalidLogIn
+    invalidLogIn,
   };
 }());
