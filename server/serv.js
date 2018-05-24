@@ -5,6 +5,19 @@ const passport = require('passport');
 const session = require('express-session');
 const JsonStrategy = require('passport-json').Strategy;
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
+
+async function connectDatabase() {
+  mongoose.Promise = global.Promise;
+  mongoose.connect('mongodb://localhost:27017/PhotoPortal')
+    .then(() => {
+      console.log('Connected to database');
+    })
+    .catch((err) => {
+      throw new Error(err);
+    });
+  mongoose.Promise = global.Promise;
+}
 
 const verification = require('./verification');
 const dataFunctions = require('./dataFunctions');
@@ -35,7 +48,7 @@ const multerConfig = {
 
     filename(req, file, next) {
       next(null, `${file.originalname}-${Date.now()}.${file.mimetype.split('/')[1]}`);
-    }
+    },
   }),
 
   fileFilter(req, file, next) {
@@ -48,10 +61,11 @@ const multerConfig = {
       return true;
     }
     return next();
-  }
+  },
 };
 
 passport.serializeUser((user, done) => {
+  // Set-Cookie: sessionid = user.sessionId;
   done(null, user);
 });
 
@@ -90,8 +104,8 @@ app.get('/image/:name', (req, res, next) => {
     dotfiles: 'deny',
     headers: {
       'x-timestamp': Date.now(),
-      'x-sent': true
-    }
+      'x-sent': true,
+    },
   };
 
   const fileName = req.params.name;
@@ -232,3 +246,5 @@ app.post('/uploadPhoto', multer(multerConfig).single('upPhoto'), (req, res) => {
 app.listen(3000, () => {
   console.log('Server is running...');
 });
+
+connectDatabase();

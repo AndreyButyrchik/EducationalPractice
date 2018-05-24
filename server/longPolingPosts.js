@@ -15,7 +15,7 @@ const longPolingPosts = (function longPolingPosts() {
   return {
     clients,
     subscribe,
-    clearClients
+    clearClients,
   };
 }());
 

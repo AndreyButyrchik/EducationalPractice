@@ -13,7 +13,7 @@ const hashFunc = (function hashFunc() {
     const value = hash.digest('hex');
     return {
       salt,
-      value
+      value,
     };
   };
 
@@ -24,7 +24,7 @@ const hashFunc = (function hashFunc() {
 
   return {
     sha512,
-    saltHashPassword
+    saltHashPassword,
   };
 }());
 
